@@ -1,25 +1,35 @@
+// src/App.tsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Button } from '@mui/material';
-import HomePage from './pages/HomePage';
-import ItemDetails from './features/events/ItemDetails'; // или реэкспортировать через pages
+import HomePage from './pages/HomePage'; // Главная страница (например, список объектов)
+import LoginPage from './features/auth/LoginPage';
+import RegistrationPage from './features/auth/RegistrationPage';
+import ProfilePage from './features/auth/ProfilePage';
+import { AuthProvider } from './features/auth/authContext';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AppBar position="static">
-        <Toolbar>
-          <Button color="inherit" component={Link} to="/">
-            Главная
-          </Button>
-        </Toolbar>
-      </AppBar>
-
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/items/:id" element={<ItemDetails />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppBar position="static">
+          <Toolbar>
+            <Button color="inherit" component={Link} to="/">
+              Главная
+            </Button>
+            <Button color="inherit" component={Link} to="/profile">
+              Профиль
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 

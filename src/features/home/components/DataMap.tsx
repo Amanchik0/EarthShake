@@ -1,10 +1,12 @@
+// src/features/home/components/DataMap.tsx
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
+import GoogleMapComponent from '../../map/components/GoogleMapComponent';
 
 const DataMap: React.FC = () => {
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
-      <Typography variant="h4">Режим карты (скоро появится)</Typography>
+    <Box sx={{ mt: 2 }}>
+      <GoogleMapComponent />
     </Box>
   );
 };

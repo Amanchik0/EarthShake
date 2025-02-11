@@ -1,1 +1,1 @@
-export { default } from '../features/events/EventDetails';
+export { default } from '../features/events/ItemDetails';

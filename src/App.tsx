@@ -7,6 +7,8 @@ import LoginPage from './features/auth/LoginPage';
 import RegistrationPage from './features/auth/RegistrationPage';
 import ProfilePage from './features/auth/ProfilePage';
 import { AuthProvider } from './features/auth/authContext';
+import EventsMap from './features/events/EventsMap';
+import EventCRUD from './features/events/EventCRUD';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +22,9 @@ const App: React.FC = () => {
             <Button color="inherit" component={Link} to="/profile">
               Профиль
             </Button>
+            <Button color="inherit" component={Link} to="/events">
+  Катаклизмы
+</Button>
           </Toolbar>
         </AppBar>
         <Routes>
@@ -27,6 +32,9 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/events" element={<EventsMap />} />
+          <Route path="/events/crud" element={<EventCRUD />} />
+
         </Routes>
       </Router>
     </AuthProvider>

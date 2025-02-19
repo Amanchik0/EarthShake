@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box } from '@mui/material';
-import SearchBar from '../features/home/components/SearchBar';
-import ViewModeToggle from '../features/home/components/ViewModeToggle';
-import DataList, { DataItem } from '../features/home/components/DataList';
-import DataMap from '../features/home/components/DataMap';
+import SearchBar from '../features/home/SearchBar';
+import ViewModeToggle from '../features/home/ViewModeToggle';
+import DataList, { DataItem } from '../features/home/DataList';
+import DataMap from '../features/home/DataMap';
 
 const initialData: DataItem[] = [
-  { id: 1, name: 'Объект 1' },
-  { id: 2, name: 'Объект 2' },
-  { id: 3, name: 'Объект 3' },
+  { id: 1, name: 'Объект 1', description: 'Описание объекта 1', date: '2025-05-10', location: 'somewher' },
+  { id: 2, name: 'Объект 2s', description: 'Описание объекта 2', date: '2025-06-15', location: 'almaty' },
+  { id: 3, name: 'Объект 3', description: 'Описание объекта 3', date: '2025-07-20', location: 'paradise' },
 ];
 
 const HomePage: React.FC = () => {

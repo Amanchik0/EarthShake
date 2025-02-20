@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Container, Box } from '@mui/material';
 import SearchBar from '../features/home/SearchBar';
 import ViewModeToggle from '../features/home/ViewModeToggle';
-import DataList, { DataItem } from '../features/home/DataList';
+import DataList from '../features/home/DataList';
 import DataMap from '../features/home/DataMap';
+import { DataItem } from '../features/home/DataItem';
 
 const initialData: DataItem[] = [
   { id: 1, name: 'Объект 1', description: 'Описание объекта 1', date: '2025-05-10', location: 'somewher' },

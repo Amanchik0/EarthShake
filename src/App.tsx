@@ -9,6 +9,7 @@ import ProfilePage from './features/auth/ProfilePage';
 import { AuthProvider } from './features/auth/authContext';
 import EventsMap from './features/events/EventsMap';
 import EventCRUD from './features/events/EventCRUD';
+import AddEvent from './features/home/components/AddEvent';
 
 const App: React.FC = () => {
   return (
@@ -34,6 +35,7 @@ const App: React.FC = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/events" element={<EventsMap />} />
           <Route path="/events/crud" element={<EventCRUD />} />
+          <Route path="/organ/crud" element={<AddEvent />} />
 
         </Routes>
       </Router>

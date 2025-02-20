@@ -1,15 +1,9 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { DataItem } from './DataItem';
 
-export interface DataItem {
-  id: number;
-  name: string;
-  // можно добавить дополнительные поля, например: цену и тд тп => потом передадим на бэк чет такое 
-  description?: string;
-  date?: string;
-  location?: string;
-}
+
 
 interface DataListProps {
   data: DataItem[];

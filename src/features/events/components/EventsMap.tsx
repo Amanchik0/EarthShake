@@ -11,8 +11,8 @@ import {
   InfoWindow,
   Circle
 } from '@react-google-maps/api';
-import { Event } from './Event';
-import eventsData from '../../data/events.json';
+import { Event } from '../types//Event';
+import eventsData from '../../../data/events.json';
 
 const containerStyle = {
   width: '100%',

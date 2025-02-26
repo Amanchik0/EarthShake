@@ -9,11 +9,12 @@ import LoginPage from './features/auth/pages/LoginPage';
 import RegistrationPage from './features/auth/pages/RegistrationPage';
 import ProfilePage from './features/profile/pages/ProfilePage';
 import { AuthProvider } from './features/auth/authContext';
-import EventsMap from './features/events/EventsMap';
-import EventCRUD from './features/events/EventCRUD';
+import EventsMap from './features/events/components/EventsMap';
+import EventCRUD from './features/events/components/EventCRUD';
 import AddEvent from './features/home/components/AddEvent';
 import EventsPage from './pages/EventPage';
 import NewsPage from './features/news/pages/NewsPage';
+import MainPage from './features/home/pages/MainPage';
 
 const App: FC = () => {
   return (
@@ -34,6 +35,7 @@ const App: FC = () => {
         </AppBar>
 
         <Routes>
+          <Route path="/main" element={<MainPage/>} />
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />

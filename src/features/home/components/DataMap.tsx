@@ -1,7 +1,7 @@
 // src/features/home/components/DataMap.tsx
 import React from 'react';
 import { Box } from '@mui/material';
-import GoogleMapComponent from '../map/components/GoogleMapComponent';
+import GoogleMapComponent from '../../map/components/GoogleMapComponent';
 
 const DataMap: React.FC = () => {
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { DataItem } from './DataItem';
+import { DataItem } from '../types/DataItem';
 
 
 

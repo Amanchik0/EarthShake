@@ -18,7 +18,7 @@ const HomePage: FC = () => {
       <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography variant="h3" gutterBottom>
-            Добро пожаловать!
+            Compo пожаловать!
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" paragraph>
             Здесь вы можете ознакомиться с последними событиями, добавить новые события

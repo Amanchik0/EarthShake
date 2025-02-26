@@ -18,9 +18,9 @@ import {
   TableBody,
   Grid
 } from '@mui/material';
-import { Event } from './Event';
+import { Event } from '../types/Event';
 // Импортируем данные из JSON
-import eventsData from '../../data/events.json';
+import eventsData from '../../../data/events.json';
 
 const EventCRUD: React.FC = () => {
   // Инициализируем события из JSON

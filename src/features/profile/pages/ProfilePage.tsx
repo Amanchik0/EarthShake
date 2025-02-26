@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Typography, Button } from '@mui/material';
-import { useAuth } from './authContext';
 import { useNavigate, Navigate } from 'react-router-dom';
+import { useAuth } from '../../auth/authContext';
 
 const ProfilePage: React.FC = () => {
   const { user, logout } = useAuth();

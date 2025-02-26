@@ -1,25 +1,24 @@
-// src/features/auth/RegistrationPage.tsx
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from './authContext';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
+import { useAuth } from '../authContext';
 
-const RegistrationPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { register } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
+
+  // Если пользователь уже авторизован, сразу переходим в профиль (или на главную)
+  if (user) {
+    return <Navigate to="/profile" replace />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError('Пароли не совпадают');
-      return;
-    }
     try {
-      await register(username, password);
+      await login(username, password);
       navigate('/profile');
     } catch (err: any) {
       setError(err.message);
@@ -29,7 +28,7 @@ const RegistrationPage: React.FC = () => {
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Регистрация
+        Вход
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
@@ -49,31 +48,22 @@ const RegistrationPage: React.FC = () => {
           onChange={(e) => setPassword(e.target.value)}
           sx={{ mb: 2 }}
         />
-        <TextField
-          label="Подтверждение пароля"
-          type="password"
-          variant="outlined"
-          fullWidth
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          sx={{ mb: 2 }}
-        />
         {error && (
           <Typography color="error" sx={{ mb: 2 }}>
             {error}
           </Typography>
         )}
         <Button type="submit" variant="contained" fullWidth>
-          Зарегистрироваться
+          Войти
         </Button>
       </form>
       <Box mt={2}>
         <Typography variant="body2">
-          Уже есть аккаунт? <Link to="/login">Войти</Link>
+          Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
         </Typography>
       </Box>
     </Container>
   );
 };
 
-export default RegistrationPage;
+export default LoginPage;

@@ -10,7 +10,7 @@ interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string, firstname?:string, lastname?: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const register = async (username: string, password: string) => {
+  const register = async (username: string, password: string, firstname?:string , lastname?:string) => {
     // Здесь должен быть запрос на регистрацию.
     // Симулируем успешную регистрацию:
     setUser({ id: 1, username });

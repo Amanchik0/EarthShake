@@ -183,7 +183,7 @@ const KazakhstanMap: React.FC = () => {
     return () => map.remove();
   }, []);
 
-  return <div ref={mapContainerRef} style={{ width: "100%", height: "900px" }} />;
+  return <div ref={mapContainerRef} style={{ width: "30%", height: "20%" }} />;
 };
 
 export default KazakhstanMap;

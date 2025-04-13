@@ -6,7 +6,7 @@ import RoomIcon from "@mui/icons-material/Room";
 import WarningIcon from "@mui/icons-material/Warning";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 
-const LandingPage: React.FC = () => {
+const HomePage: React.FC = () => {
   return (
     <Container sx={{ mt: 5 }}>
       {/* Hero Section */}
@@ -151,4 +151,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage;
+export default HomePage;

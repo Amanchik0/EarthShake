@@ -15,7 +15,8 @@ const KazakhstanMap: React.FC = () => {
       container: mapContainerRef.current,
       style: "mapbox://styles/mapbox/light-v11",
       center: [67.5, 48],
-      zoom: 4.5,
+      zoom: 2.5,
+      attributionControl: false,
       maxBounds: [
         [46, 40],
         [87, 56],
@@ -183,7 +184,7 @@ const KazakhstanMap: React.FC = () => {
     return () => map.remove();
   }, []);
 
-  return <div ref={mapContainerRef} style={{ width: "30%", height: "20%" }} />;
+  return <div ref={mapContainerRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default KazakhstanMap;

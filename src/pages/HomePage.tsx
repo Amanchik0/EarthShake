@@ -8,7 +8,7 @@ import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 
 const HomePage: React.FC = () => {
   return (
-    <Container sx={{ mt: 5 }}>
+    <Container sx={{ mt: 9 }}>
       {/* Hero Section */}
       <Grid container spacing={4} alignItems="center">
         <Grid item xs={12} md={6} textAlign="center">
@@ -35,9 +35,12 @@ const HomePage: React.FC = () => {
         </Grid>
 
         <Grid item xs={12} md={6} sx={{ display: "flex", justifyContent: "center" }}>
-          <KazakhstanMap />
-        </Grid>
-      </Grid>
+  <Box sx={{ width: "100%", maxWidth: 900, height: 500  }}>
+    <KazakhstanMap />
+  </Box>
+</Grid></Grid>
+
+
 
       {/* Description Section */}
       <Box sx={{ textAlign: "center", mt: 6 }}>

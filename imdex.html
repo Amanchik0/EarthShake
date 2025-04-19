@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Управление сообществом</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      background-color: #e84c88;
+      color: white;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+    }
+
+    header button {
+      background-color: #f7c9da;
+      color: #e84c88;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .tabs {
+      background-color: white;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      padding: 0 100px;
+    }
+
+    .tab {
+      padding: 15px 20px;
+      color: #888;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: #e84c88;
+      border-bottom: 3px solid #e84c88;
+    }
+
+    .container {
+      padding: 20px 100px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background-color: #f7c9da;
+      border: 3px solid #e84c88;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: #e84c88;
+      font-weight: bold;
+    }
+
+    .info {
+      margin-left: 40px;
+      flex-grow: 1;
+    }
+
+    .info label {
+      display: block;
+      font-weight: 600;
+      margin-top: 10px;
+      color: #4a4a4a;
+    }
+
+    .info input,
+    .info textarea,
+    .info select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #e0e0e0;
+      font-size: 16px;
+    }
+
+    .events {
+      margin-top: 40px;
+    }
+
+    .event-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .event-card h4 {
+      margin: 10px 0;
+      color: #4a4a4a;
+    }
+
+    .event-card p {
+      color: #888;
+      margin: 5px 0;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn.cancel {
+      background-color: #e0e0e0;
+      color: #4a4a4a;
+    }
+
+    .btn.save {
+      background-color: #e84c88;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>Управление сообществом</div>
+    <button>Выйти</button>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active">Профиль сообщества</div>
+    <div class="tab">События</div>
+    <div class="tab">Участники</div>
+    <div class="tab">Статистика</div>
+    <div class="tab">Настройки</div>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <h2>Редактирование профиля</h2>
+      <div class="profile-header">
+        <div class="avatar">РГ</div>
+        <div class="info">
+          <label>Название сообщества</label>
+          <input type="text" value="Творческое объединение 'Розовая гармония'" />
+
+          <label>URL сообщества</label>
+          <input type="text" value="pink-harmony" />
+
+          <label>Описание</label>
+          <textarea rows="3">Мы объединяем творческих людей, интересующихся искусством, музыкой и танцами...</textarea>
+
+          <label>Категория</label>
+          <select>
+            <option>Искусство и творчество</option>
+          </select>
+
+          <label>Приватность</label>
+          <select>
+            <option>Открытое сообщество</option>
+          </select>
+
+          <label>Контактная информация</label>
+          <textarea rows="2">Email: info@pink-harmony.com, Телефон: +7 (999) 123-45-67</textarea>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="btn cancel">Отменить</button>
+        <button class="btn save">Сохранить изменения</button>
+      </div>
+    </div>
+
+    <div class="card events">
+      <h2>События сообщества</h2>
+
+      <div class="event-card">
+        <small style="color:#e84c88">27 апреля, 2025 • 15:00</small>
+        <h4>Мастер-класс по акварельной живописи</h4>
+        <p>Учимся рисовать весенние пейзажи акварелью под руководством профессионального художника.</p>
+        <p>Участники: 12/20</p>
+      </div>
+
+      <div class="event-card">
+        <small style="color:#e84c88">10 мая, 2025 • 18:30</small>
+        <h4>Творческий вечер "Поэзия в цвете"</h4>
+        <p>Соединяем чтение стихов с визуальными образами и музыкальными композициями.</p>
+        <p>Участники: 8/30</p>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

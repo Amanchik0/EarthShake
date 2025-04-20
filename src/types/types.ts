@@ -215,3 +215,31 @@ export interface ProfileFormData {
     bio: string;
   
 }
+
+//event edit 
+export interface EventPhotoUploadProps {
+  photoUrl: string;
+  onPhotoChange: () => void;
+}
+
+export interface EventDateTimeInputProps {
+  date: string;
+  time: string;
+  onDateChange: (date: string) => void;
+  onTimeChange: (time: string) => void;
+}
+export interface EventFormData {
+  name: string;
+  description: string;
+  location: string;
+  type: string;
+  date: string;
+  time: string;
+  photoUrl: string;
+}
+
+export interface EventFormProps {
+  initialData: EventFormData;
+  onCancel: () => void;
+  onSubmit: (data: EventFormData) => void;
+}

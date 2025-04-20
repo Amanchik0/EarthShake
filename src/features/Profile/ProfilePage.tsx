@@ -72,7 +72,7 @@ const ProfilePage: React.FC = () => {
       members: '1.7K участников',
       logoUrl: '/api/placeholder/64/64',
     },
-  ];
+  ];  
 
   const renderTabContent = () => {
     switch (activeTab) {

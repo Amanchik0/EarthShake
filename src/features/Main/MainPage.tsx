@@ -9,7 +9,6 @@ const MainPage: React.FC = () => {
   console.log('====================================');
   return (
     <div className="page-wrapper">
-      <Header />
       
       <main>
       <section className="hero-section">
@@ -197,7 +196,6 @@ const MainPage: React.FC = () => {
     </section>
       </main>
 
-      <Footer />
     </div>
   );
 };

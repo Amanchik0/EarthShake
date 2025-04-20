@@ -1,24 +1,22 @@
 import React from 'react';
-import styles from './CommunityHeader.module.css';
-import { Community } from '../../../types/types';
+import { Community } from '../../types/types';
 
 interface CommunityHeaderProps {
   community: Community;
   onJoin: () => void;
-  onBack: () => void;
 }
 
-const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin, onBack }) => {
+const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin }) => {
   return (
-    <section className={styles.communityHeader}>
-      <div className={styles.communityAvatar}>
+    <section className="community-header">
+      <div className="community-avatar">
         <img src={community.avatarUrl} alt="Логотип сообщества" />
       </div>
       
-      <div className={styles.communityInfo}>
-        <h1 className={styles.communityName}>{community.name}</h1>
+      <div className="community-info">
+        <h1 className="community-name">{community.name}</h1>
         
-        <div className={styles.communityMeta}>
+        <div className="community-meta">
           <div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -37,14 +35,14 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin, on
           </div>
         </div>
         
-        <div className={styles.communityDescription}>
+        <div className="community-description">
           {community.description.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
         
         <button 
-          className={`${styles.joinButton} ${community.isMember ? styles.joined : ''}`}
+          className={`join-button ${community.isMember ? 'joined' : ''}`}
           onClick={onJoin}
         >
           {community.isMember ? 'Вы участник' : 'Вступить в сообщество'}

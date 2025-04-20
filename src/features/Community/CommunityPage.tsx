@@ -1,24 +1,24 @@
 import React from 'react';
-import CommunityHeader from '../../components/Community/CommunityHeader/CommunityHeader';
-import StatisticsBar from '../../components/Community/StatisticsBar/StatisticsBar';
-import AdminCard from '../../components/Community/AdminCard/AdminCard';
-import EventCard from '../../components/Community/EventCard/EventCard';
-import MemberItem from '../../components/Community/MemberItem/MemberItem';
-import CommunityCard from '../../components/Community/CommunityCard/CommunityCard';
+import CommunityHeader from '../../components/Community/CommunityHeader';
+import StatisticsBar from '../../components/Community/StatisticsBar';
+import AdminCard from '../../components/Community/AdminCard';
+import EventCard from '../../components/Community/EventCard';
+import MemberItem from '../../components/Community/MemberItem';
+import CommunityCard from '../../components/Community/CommunityCard';
 import { 
   Community, 
   Admin, 
   CommunityEvent, 
   Member 
 } from '../../types/types';
-import styles from './CommunityPage.module.css';
+import './CommunityPage.css';
 
 const CommunityPage: React.FC = () => {
   // Данные сообщества
   const communityData: Community = {
     id: '1',
     name: 'Название сообщества',
-    location: 'Москва',
+    location: 'Good persons',
     createdAt: '15 января 2025',
     description: [
       'Здесь размещается описание сообщества. Оно может включать в себя информацию о целях и задачах сообщества, его истории, правилах участия и других важных аспектах. Описание может быть довольно подробным и содержать несколько абзацев текста.',
@@ -34,9 +34,9 @@ const CommunityPage: React.FC = () => {
 
   // Администраторы
   const admins: Admin[] = [
-    { id: '1', name: 'Алексей Иванов', role: 'Создатель', avatarUrl: '/api/placeholder/50/50' },
-    { id: '2', name: 'Елена Петрова', role: 'Модератор', avatarUrl: '/api/placeholder/50/50' },
-    { id: '3', name: 'Дмитрий Смирнов', role: 'Администратор', avatarUrl: '/api/placeholder/50/50' }
+    { id: '1', name: 'Дильназ Сагындык', role: 'Создатель', avatarUrl: '/api/placeholder/50/50' },
+    { id: '2', name: 'somebody', role: 'Модератор', avatarUrl: '/api/placeholder/50/50' },
+    { id: '3', name: 'кто то ', role: 'Администратор', avatarUrl: '/api/placeholder/50/50' }
   ];
 
   // События
@@ -117,9 +117,9 @@ const CommunityPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.pageHeader}>
-        <button className={styles.backButton} onClick={handleBack}>
+    <div className="container">
+      <header className="page-header">
+        <button className="back-button" onClick={handleBack}>
           ← Назад
         </button>
       </header>
@@ -127,8 +127,7 @@ const CommunityPage: React.FC = () => {
       <main>
         <CommunityHeader 
           community={communityData} 
-          onJoin={handleJoinCommunity} 
-          onBack={handleBack} 
+          onJoin={handleJoinCommunity}
         />
         
         <StatisticsBar 
@@ -138,22 +137,22 @@ const CommunityPage: React.FC = () => {
           postsCount={communityData.postsCount}
         />
         
-        <section className={styles.contentSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Администраторы</h2>
+        <section className="content-section">
+          <div className="section-header">
+            <h2 className="section-title">Администраторы</h2>
           </div>
           
-          <div className={styles.adminList}>
+          <div className="admin-list">
             {admins.map(admin => (
               <AdminCard key={admin.id} admin={admin} />
             ))}
           </div>
         </section>
         
-        <section className={styles.contentSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Ближайшие события</h2>
-            <a href="#" className={styles.seeAll}>
+        <section className="content-section">
+          <div className="section-header">
+            <h2 className="section-title">Ближайшие события</h2>
+            <a href="#" className="see-all">
               Все события
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -161,17 +160,17 @@ const CommunityPage: React.FC = () => {
             </a>
           </div>
           
-          <div className={styles.eventsGrid}>
+          <div className="events-grid">
             {events.map(event => (
               <EventCard key={event.id} event={event} />
             ))}
           </div>
         </section>
         
-        <section className={styles.membersSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Участники</h2>
-            <a href="#" className={styles.seeAll}>
+        <section className="members-section">
+          <div className="section-header">
+            <h2 className="section-title">Участники</h2>
+            <a href="#" className="see-all">
               Все участники
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -179,17 +178,17 @@ const CommunityPage: React.FC = () => {
             </a>
           </div>
           
-          <div className={styles.membersGrid}>
+          <div className="members-grid">
             {members.map(member => (
               <MemberItem key={member.id} member={member} />
             ))}
           </div>
         </section>
         
-        <section className={styles.recommendations}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Рекомендуемые сообщества</h2>
-            <a href="#" className={styles.seeAll}>
+        <section className="recommendations">
+          <div className="section-header">
+            <h2 className="section-title">Рекомендуемые сообщества</h2>
+            <a href="#" className="see-all">
               Все рекомендации
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -197,7 +196,7 @@ const CommunityPage: React.FC = () => {
             </a>
           </div>
           
-          <div className={styles.recommendationGrid}>
+          <div className="recommendation-grid">
             {recommendedCommunities.map(community => (
               <CommunityCard key={community.id} community={community} />
             ))}

@@ -1,0 +1,40 @@
+:root {
+    --pink-primary: #ff6b9b;
+    --pink-light: #ffd0e0;
+    --gray-dark: #4a4a4a;
+    --gray-medium: #7a7a7a;
+    --gray-light: #e5e5e5;
+    --white: #ffffff;
+}
+
+.profileContainer {
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    overflow: hidden;
+}
+
+.header {
+    background-color: var(--pink-primary);
+    color: var(--white);
+    padding: 25px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.profileEditModalContent {
+    background-color: var(--white);
+    /* border-radius: 15px; */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    overflow: hidden;
+}
+
+/* Остальные общие стили можно оставить в глобальном файле стилей */

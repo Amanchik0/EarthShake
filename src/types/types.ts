@@ -60,11 +60,19 @@ export interface Event {
   isMember: boolean;
 }
 
-export interface Admin {
+export interface Community {
   id: string;
   name: string;
-  role: string;
   avatarUrl: string;
+  coverUrl?: string;
+  location: string;
+  createdAt: string;
+  description: string[];
+  membersCount: number;
+  eventsCount: number;
+  rating: number;
+  postsCount: number;
+  isMember: boolean;
 }
 
 export interface CommunityEvent {
@@ -76,8 +84,134 @@ export interface CommunityEvent {
   imageUrl: string;
 }
 
+
+//
+
+
+export interface Admin {
+  id: string;
+  name: string;
+  role: string;
+  avatarUrl: string;
+}
+
+
+
 export interface Member {
   id: string;
   name: string;
   avatarUrl: string;
+}
+
+export interface StatisticsBarProps {
+  membersCount: number;
+  eventsCount: number;
+  rating: number;
+  postsCount: number;
+}
+ /// evacuationTypes
+export interface Location {
+  id: string;
+  name: string;
+  address: string;
+  type: 'shelter' | 'medical' | 'food';
+  status: 'open' | 'limited' | 'full';
+  capacity: number;
+  workingHours: string;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  icon: string;
+}
+
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  checked: boolean;
+}
+
+export interface InfoItem {
+  id: string;
+  icon: string;
+  title: string;
+  text: string;
+}
+export interface Location {
+  id: string;
+  name: string;
+  address: string;
+  type: 'shelter' | 'medical' | 'food';
+  status: 'open' | 'limited' | 'full';
+  capacity: number;
+  workingHours: string;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  icon: string;
+}
+
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  checked: boolean;
+}
+
+export interface InfoItem {
+  id: string;
+  icon: string;
+  title: string;
+  text: string;
+}
+
+// profile
+
+export interface ProfileHeaderProps {
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  city: string;
+  registrationDate: string;
+}
+
+export interface EventCardProps {
+  title: string;
+  date: string;
+  participants: string;
+  imageUrl: string;
+}
+
+
+export interface CommunityCardProps {
+  name: string;
+  members: string;
+  logoUrl: string;
+}
+export interface ProfileTabsProps {
+  activeTab: number;
+  onTabChange: (index: number) => void;
+}
+
+// profile edit 
+
+export interface ProfilePhotoUploadProps {
+  photoUrl: string;
+  onPhotoChange: () => void;
+}
+
+export interface ProfileFormData {
+
+    firstName: string;
+    lastName: string;
+    email: string;
+    bio: string;
+  
 }

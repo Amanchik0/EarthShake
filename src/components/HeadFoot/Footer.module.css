@@ -1,0 +1,119 @@
+.footerRoot {
+    background-color: #343a40;
+    color: white;
+    padding: 60px 0 30px;
+  }
+  
+  .footerContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .footerContent {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  
+  .footerLogo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .footerLogoImg {
+    height: 40px;
+    margin-right: 12px;
+  }
+  
+  .footerLogoText {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+  }
+  
+  .footerDescription {
+    font-size: 15px;
+    color: #adb5bd;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  
+  .footerSocialLinks {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .footerSocialLink {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(232, 62, 140, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  
+  .footerSocialLink:hover {
+    background-color: rgba(232, 62, 140, 0.5);
+  }
+  
+  .footerTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: white;
+  }
+  
+  .footerLinks {
+    list-style-type: none;
+  }
+  
+  .footerLinkItem {
+    margin-bottom: 12px;
+  }
+  
+  .footerLink {
+    color: #adb5bd;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s;
+  }
+  
+  .footerLink:hover {
+    color: white;
+  }
+  
+  .footerBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .footerCopyright {
+    font-size: 14px;
+    color: #adb5bd;
+  }
+  
+  .footerBottomLinks {
+    display: flex;
+    gap: 24px;
+  }
+  
+  .footerBottomLink {
+    color: #adb5bd;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  
+  .footerBottomLink:hover {
+    color: white;
+  }

@@ -1,0 +1,77 @@
+.headerRoot {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .headerContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .headerContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+  }
+  
+  .headerLogo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .headerLogoImg {
+    height: 40px;
+    margin-right: 12px;
+  }
+  
+  .headerLogoText {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e83e8c;
+  }
+  
+  .headerNavMenu {
+    display: flex;
+    list-style-type: none;
+  }
+  
+  .headerNavItem {
+    margin-left: 32px;
+  }
+  
+  .headerNavLink {
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
+    font-size: 16px;
+    transition: color 0.2s;
+  }
+  
+  .headerNavLink:hover {
+    color: #e83e8c;
+  }
+  
+  .headerNavLinkActive {
+    color: #e83e8c;
+  }
+  
+  .headerProfileButton {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .headerProfileAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+  }

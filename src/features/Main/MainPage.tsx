@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Header from '../../components/HeadFoot/Header';
+import Footer from '../../components/HeadFoot/Footer';
 import './mainStyle.css';
 
 const MainPage: React.FC = () => {

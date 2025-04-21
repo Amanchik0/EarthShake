@@ -1,9 +1,11 @@
 import React from 'react';
 
 const EventPhoto: React.FC = () => {
+
+  //TODO фотки чтоб норм загружалсиь фиг его как но сделать над 
+  
   const handlePhotoUpload = () => {
     console.log('Photo upload clicked');
-    // Add photo upload logic here
   };
 
   return (

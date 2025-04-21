@@ -14,7 +14,8 @@ import {
 import './CommunityPage.css';
 
 const CommunityPage: React.FC = () => {
-  // Данные сообщества
+  // TODO апи доставать 
+  // тут комьюнити 
   const communityData: Community = {
     id: '1',
     name: 'Название сообщества',

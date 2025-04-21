@@ -180,6 +180,7 @@ export interface ProfileHeaderProps {
   phone: string;
   city: string;
   registrationDate: string;
+  subscription?: boolean;
 }
 
 export interface EventCardProps {

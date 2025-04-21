@@ -1,22 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import './ModalSubs.css'
+import { createPortal } from 'react-dom';
+import './ModalSubs.css';
+
 interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubscribe: () => Promise<void> | void;
+  hasSubscription?: boolean;
 }
 
 const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ 
   isOpen, 
   onClose, 
-  onSubscribe 
+  onSubscribe,
+  hasSubscription = false
 }) => {
   const [isSubscribing, setIsSubscribing] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    let modalRootElement = document.getElementById('modal-root');
+    if (!modalRootElement) {
+      modalRootElement = document.createElement('div');
+      modalRootElement.id = 'modal-root';
+      document.body.appendChild(modalRootElement);
+    }
+    setModalRoot(modalRootElement);
+    
+    return () => {
+      if (modalRootElement && modalRootElement.parentNode) {
+        modalRootElement.parentNode.removeChild(modalRootElement);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
-      setIsMounted(true);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -45,18 +64,11 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     }
   };
 
-  if (!isOpen && !isMounted) return null;
+  if (!modalRoot || !isOpen) return null;
 
-  return (
-    <div 
-      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 ${
-        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-      }`}
-      onClick={handleOverlayClick}
-    >
-      <div className={`modal transform transition-transform duration-300 ${
-        isOpen ? 'scale-100' : 'scale-95'
-      }`}>
+  const modalContent = (
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal">
         <div className="modal-header">
           <button 
             className="close-btn"
@@ -111,13 +123,15 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 </svg>
                 Обработка...
               </span>
-            ) : 'Оформить подписку'}
+            ) : hasSubscription ? 'Отменить подписку' : 'Оформить подписку'}
           </button>
           <p>Подписка автоматически продлевается каждый месяц</p>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, modalRoot);
 };
 
 export default SubscriptionModal;

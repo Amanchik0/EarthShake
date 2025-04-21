@@ -73,7 +73,10 @@ const ProfilePage: React.FC = () => {
       logoUrl: '/api/placeholder/64/64',
     },
   ];  
-
+  const handleSubscribe = async () => {
+    console.log('Subscription handler triggered');
+    // Здесь может быть логика API запроса для оформления подписки
+  };
   const renderTabContent = () => {
     switch (activeTab) {
       case 0: // События
@@ -102,7 +105,7 @@ const ProfilePage: React.FC = () => {
         return (
           <div className="content-section">
             <h2 className="section-title">Подписка</h2>
-            <SubscriptionSection />
+            <SubscriptionSection   hasSubscription={false} onSubscribe={handleSubscribe} />
           </div>
         );
     //   case 3: // Настройки

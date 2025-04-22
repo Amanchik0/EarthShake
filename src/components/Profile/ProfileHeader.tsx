@@ -23,7 +23,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
   const handleSave = (data: ProfileFormData) => {
     console.log('Сохраненные данные:', data);
-    // Здесь должна быть логика обновления профиля
+    // TODO загрузка профиля 
     setIsEditModalOpen(false);
   };
 

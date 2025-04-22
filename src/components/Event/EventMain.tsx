@@ -9,6 +9,7 @@ const EventMain: React.FC<EventMainProps> = ({ event }) => {
   const renderStars = () => {
     const stars = [];
     // можно снаружи опционки 
+    // я сам забыл что за опицонки имелл ввиду вчера
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <div key={i} className="star" style={{ color: i <= (event.rating ?? 0)  ? 'gold' : 'var(--light-gray)' }}>

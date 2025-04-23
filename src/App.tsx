@@ -11,6 +11,8 @@ import ProfileEditPage from './features/Profile/ProfileEditPage';
 import EventEditPage from './features/Events/EventEditPage';
 import ReferencePage from './features/Reference/ReferencePage';
 import SubscriptionModal from './components/Modal/SubscriptionModal';
+import SupportPage from './features/Support/SupportPage';
+import AdminPage from './features/Admin/AdminPage';
 const App: React.FC = () => {
 
 
@@ -18,17 +20,19 @@ const App: React.FC = () => {
 
   return ( 
     <div>
+      
     <Header/>
     {/* <CommunityPage />  */}
     {/* <MainPage/> */}
     {/* <EventsListPage/> */}
     {/* <EventPage/> */}
     {/* <EvacuationPage/> */}
-    <ProfilePage/>
+    {/* <ProfilePage/> */}
     {/* <ProfileEditPage/> */}
     {/* <EventEditPage/> */}
     {/* <ReferencePage/> */}
-
+    {/* <SupportPage/> */}
+    <AdminPage/>
     <Footer/> 
   </div>
 

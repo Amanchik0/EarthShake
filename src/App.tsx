@@ -13,6 +13,7 @@ import ReferencePage from './features/Reference/ReferencePage';
 import SubscriptionModal from './components/Modal/SubscriptionModal';
 import SupportPage from './features/Support/SupportPage';
 import AdminPage from './features/Admin/AdminPage';
+import CommunityEditPage from './features/Community/CommunityEditPage';
 const App: React.FC = () => {
 
 
@@ -32,7 +33,8 @@ const App: React.FC = () => {
     {/* <EventEditPage/> */}
     {/* <ReferencePage/> */}
     {/* <SupportPage/> */}
-    <AdminPage/>
+    {/* <AdminPage/> */}
+    <CommunityEditPage/>
     <Footer/> 
   </div>
 

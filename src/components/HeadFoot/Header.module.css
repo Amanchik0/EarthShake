@@ -12,6 +12,13 @@
     padding: 0 20px;
   }
   
+.logo {
+  display: flex;
+  justify-content: center;
+  margin:0px 10px;
+}
+
+
   .headerContent {
     display: flex;
     justify-content: space-between;

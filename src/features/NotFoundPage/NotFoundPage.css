@@ -1,0 +1,245 @@
+:root {
+    --color-pink-light: #f8d7e3;
+    --color-pink-main: #e498b4;
+    --color-pink-dark: #d27190;
+    --color-grey-light: #f0f0f2;
+    --color-grey-main: #bcbcbc;
+    --color-grey-dark: #808080;
+    --color-text: #333333;
+    --font-main: 'Segoe UI', Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--color-text);
+    background-color: var(--color-grey-light);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.error-container {
+    text-align: center;
+    max-width: 800px;
+}
+
+.error-code {
+    font-size: 10rem;
+    font-weight: bold;
+    line-height: 1;
+    color: var(--color-pink-dark);
+    text-shadow: 3px 3px 0 var(--color-grey-main);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.error-code::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    background-color: var(--color-pink-light);
+    bottom: 15px;
+    left: 10px;
+    z-index: -1;
+    transform: rotate(-2deg);
+}
+
+.error-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-grey-dark);
+}
+
+.error-message {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--color-grey-dark);
+    line-height: 1.6;
+}
+
+.error-illustration {
+    margin: 2rem 0;
+    position: relative;
+}
+
+.error-illustration svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.btn {
+    background-color: var(--color-pink-main);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0.5rem;
+}
+
+.btn:hover {
+    background-color: var(--color-pink-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--color-grey-main);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-grey-dark);
+}
+
+.search-form {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--color-grey-main);
+    border-radius: 25px 0 0 25px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    border-color: var(--color-pink-main);
+}
+
+.search-btn {
+    background-color: var(--color-pink-main);
+    color: white;
+    border: none;
+    border-radius: 0 25px 25px 0;
+    padding: 0 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+    background-color: var(--color-pink-dark);
+}
+
+.back-link {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--color-grey-dark);
+    text-decoration: none;
+    display: inline-block;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: var(--color-pink-dark);
+}
+
+.floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.floating-element {
+    position: absolute;
+    background-color: var(--color-pink-light);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: float 15s infinite ease-in-out;
+}
+
+.floating-element:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    top: 20%;
+    right: 20%;
+    background-color: var(--color-grey-main);
+    animation-delay: 2s;
+}
+
+.floating-element:nth-child(3) {
+    width: 40px;
+    height: 40px;
+    bottom: 15%;
+    left: 30%;
+    animation-delay: 4s;
+}
+
+.floating-element:nth-child(4) {
+    width: 70px;
+    height: 70px;
+    bottom: 20%;
+    right: 10%;
+    background-color: var(--color-grey-main);
+    animation-delay: 6s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0);
+    }
+    50% {
+        transform: translateY(-20px) rotate(10deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 6rem;
+    }
+    
+    .error-title {
+        font-size: 1.8rem;
+    }
+    
+    .search-form {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .search-input {
+        border-radius: 25px;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+    
+    .search-btn {
+        border-radius: 25px;
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+    }
+}

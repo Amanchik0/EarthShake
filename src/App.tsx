@@ -14,6 +14,9 @@ import SubscriptionModal from './components/Modal/SubscriptionModal';
 import SupportPage from './features/Support/SupportPage';
 import AdminPage from './features/Admin/AdminPage';
 import CommunityEditPage from './features/Community/CommunityEditPage';
+import NotFoundPage from './features/NotFoundPage/NotFoundPage';
+import AuthPage from './features/AuthPage/AuthPage';
+import LoginPage from './features/AuthPage/LoginPage';
 const App: React.FC = () => {
 
 
@@ -34,8 +37,12 @@ const App: React.FC = () => {
     {/* <ReferencePage/> */}
     {/* <SupportPage/> */}
     {/* <AdminPage/> */}
-    <CommunityEditPage/>
+    {/* <CommunityEditPage/> */}
+    {/* <NotFoundPage/> */}
+    <AuthPage/>
+    {/* <LoginPage/> */}
     <Footer/> 
+
   </div>
 
 );

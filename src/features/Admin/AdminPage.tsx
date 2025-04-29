@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './AdminPage.css'
+import styles from './AdminPage.module.css';
+
 const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'users' | 'events' | 'communities'>('users');
   const [showUsersFilter, setShowUsersFilter] = useState(false);
@@ -27,123 +28,113 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="container">
-      {/* Боковая панель */}
-      <aside className="sidebar">
-        <div className="logo">
-          <div className="logo-icon">A</div>
-          <div className="logo-text">Админ-панель</div>
+    <div className={styles.container}>
+      <aside className={styles.sidebar}>
+        <div className={styles.logo}>
+          <div className={styles.logoIcon}>A</div>
+          
+          <div className={styles.logoText}>Админ-панель</div>
+          
         </div>
         
-        <ul className="nav-menu">
-          <li className="nav-item">
-            <a href="#" className={`nav-link ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
+        <ul className={styles.navMenu}>
+          <li className={styles.navItem}>
+            <a href="#" className={`${styles.navLink} ${activeTab === 'users' ? styles.active : ''}`} onClick={() => setActiveTab('users')}>
               <span>👥</span>
               <span>Пользователи</span>
             </a>
           </li>
-          <li className="nav-item">
-            <a href="#" className={`nav-link ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
+          <li className={styles.navItem}>
+            <a href="#" className={`${styles.navLink} ${activeTab === 'events' ? styles.active : ''}`} onClick={() => setActiveTab('events')}>
               <span>🗓️</span>
               <span>События</span>
             </a>
           </li>
-          <li className="nav-item">
-            <a href="#" className={`nav-link ${activeTab === 'communities' ? 'active' : ''}`} onClick={() => setActiveTab('communities')}>
+          <li className={styles.navItem}>
+            <a href="#" className={`${styles.navLink} ${activeTab === 'communities' ? styles.active : ''}`} onClick={() => setActiveTab('communities')}>
               <span>👪</span>
               <span>Сообщества</span>
             </a>
           </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              <span>⚙️</span>
-              <span>Настройки</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              <span>📊</span>
-              <span>Статистика</span>
-            </a>
-          </li>
+
         </ul>
         
-        <div className="admin-profile">
-          <div className="admin-avatar">А</div>
-          <div className="admin-info">
-            <div className="admin-name">Администратор</div>
-            <div className="admin-role">Главный админ</div>
+        <div className={styles.adminProfile}>
+          <div className={styles.adminAvatar}>А</div>
+          <div className={styles.adminInfo}>
+            <div className={styles.adminName}>Администратор</div>
+            <div className={styles.adminRole}>Главный админ</div>
           </div>
         </div>
       </aside>
       
-      {/* Основной контент */}
-      <main className="content">
-        <div className="header">
-          <h1 className="title">Панель управления</h1>
+      {/* Main content */}
+      <main className={styles.content}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Панель управления</h1>
         </div>
         
-        {/* Табы */}
-        <div className="tab-container">
-          <div className="tabs">
-            <div className={`tab ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>
-              <div className="badge">
+        {/* Tabs */}
+        <div className={styles.tabContainer}>
+          <div className={styles.tabs}>
+            <div className={`${styles.tab} ${activeTab === 'users' ? styles.tabActive : ''}`} onClick={() => setActiveTab('users')}>
+              <div className={styles.badge}>
                 <span>Пользователи</span>
-                <span className="badge-count">254</span>
+                <span className={styles.badgeCount}>254</span>
               </div>
             </div>
-            <div className={`tab ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
-              <div className="badge">
+            <div className={`${styles.tab} ${activeTab === 'events' ? styles.tabActive : ''}`} onClick={() => setActiveTab('events')}>
+              <div className={styles.badge}>
                 <span>События</span>
-                <span className="badge-count">45</span>
+                <span className={styles.badgeCount}>45</span>
               </div>
             </div>
-            <div className={`tab ${activeTab === 'communities' ? 'active' : ''}`} onClick={() => setActiveTab('communities')}>
-              <div className="badge">
+            <div className={`${styles.tab} ${activeTab === 'communities' ? styles.tabActive : ''}`} onClick={() => setActiveTab('communities')}>
+              <div className={styles.badge}>
                 <span>Сообщества</span>
-                <span className="badge-count">32</span>
+                <span className={styles.badgeCount}>32</span>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Содержимое таба "Пользователи" */}
-        <div id="users" className={`tab-content ${activeTab === 'users' ? 'active' : ''}`}>
-          <div className="search-filter-container">
-            <div className="search-bar">
-              <span className="search-icon">🔍</span>
-              <input type="text" className="search-input" placeholder="Поиск пользователей..." />
+        {/* Users tab content */}
+        <div className={`${styles.tabContent} ${activeTab === 'users' ? styles.tabContentActive : ''}`}>
+          <div className={styles.searchFilterContainer}>
+            <div className={styles.searchBar}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input type="text" className={styles.searchInput} placeholder="Поиск пользователей..." />
             </div>
             
             <div style={{ position: 'relative' }}>
-              <button className="filter-button" onClick={() => toggleFilterDropdown('users')}>
+              <button className={styles.filterButton} onClick={() => toggleFilterDropdown('users')}>
                 <span>Фильтр</span>
                 <span>▼</span>
               </button>
               
-              <div id="usersFilter" className={`filter-dropdown ${showUsersFilter ? 'show' : ''}`}>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="withSubscription" />
+              <div className={`${styles.filterDropdown} ${showUsersFilter ? styles.show : ''}`}>
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="withSubscription" />
                   <label htmlFor="withSubscription">С подпиской</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="withoutSubscription" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="withoutSubscription" />
                   <label htmlFor="withoutSubscription">Без подписки</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="activeUsers" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="activeUsers" />
                   <label htmlFor="activeUsers">Активные</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="blockedUsers" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="blockedUsers" />
                   <label htmlFor="blockedUsers">Заблокированные</label>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="data-card">
-            <table className="table">
+          <div className={styles.dataCard}>
+            <table className={styles.table}>
               <thead>
                 <tr>
                   <th>Пользователь</th>
@@ -155,75 +146,75 @@ const AdminPage: React.FC = () => {
               <tbody>
                 <tr>
                   <td>
-                    <div className="user-info">
-                      <div className="avatar">АМ</div>
-                      <div className="user-details">
-                        <span className="user-name">Алексей Морозов</span>
-                        <span className="user-email">alex@example.com</span>
+                    <div className={styles.userInfo}>
+                      <div className={styles.avatar}>АМ</div>
+                      <div className={styles.userDetails}>
+                        <span className={styles.userName}>Алексей Морозов</span>
+                        <span className={styles.userEmail}>alex@example.com</span>
                       </div>
                     </div>
                   </td>
-                  <td><span className="status status-premium">С подпиской</span></td>
-                  <td className="date-cell">15 апр 2025</td>
+                  <td><span className={`${styles.status} ${styles.statusPremium}`}>С подпиской</span></td>
+                  <td className={styles.dateCell}>15 апр 2025</td>
                   <td>
-                    <div className="actions">
-                      <button className="action-btn">✏️</button>
-                      <button className="action-btn">🔒</button>
-                      <button className="action-btn">❌</button>
+                    <div className={styles.actions}>
+                      <button className={styles.actionBtn}>✏️</button>
+                      <button className={styles.actionBtn}>🔒</button>
+                      <button className={styles.actionBtn}>❌</button>
                     </div>
                   </td>
                 </tr>
-                {/* Остальные строки таблицы пользователей */}
+                {/* Other rows can be added here */}
               </tbody>
             </table>
           </div>
           
-          <div className="pagination">
-            <button className="page-button">«</button>
-            <button className="page-button active">1</button>
-            <button className="page-button">2</button>
-            <button className="page-button">3</button>
-            <button className="page-button">»</button>
+          <div className={styles.pagination}>
+            <button className={styles.pageButton}>«</button>
+            <button className={`${styles.pageButton} ${styles.pageButtonActive}`}>1</button>
+            <button className={styles.pageButton}>2</button>
+            <button className={styles.pageButton}>3</button>
+            <button className={styles.pageButton}>»</button>
           </div>
         </div>
         
-        {/* Содержимое таба "События" */}
-        <div id="events" className={`tab-content ${activeTab === 'events' ? 'active' : ''}`}>
-          <div className="search-filter-container">
-            <div className="search-bar">
-              <span className="search-icon">🔍</span>
-              <input type="text" className="search-input" placeholder="Поиск событий..." />
+        {/* Events tab content */}
+        <div className={`${styles.tabContent} ${activeTab === 'events' ? styles.tabContentActive : ''}`}>
+          <div className={styles.searchFilterContainer}>
+            <div className={styles.searchBar}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input type="text" className={styles.searchInput} placeholder="Поиск событий..." />
             </div>
             
             <div style={{ position: 'relative' }}>
-              <button className="filter-button" onClick={() => toggleFilterDropdown('events')}>
+              <button className={styles.filterButton} onClick={() => toggleFilterDropdown('events')}>
                 <span>Фильтр</span>
                 <span>▼</span>
               </button>
               
-              <div id="eventsFilter" className={`filter-dropdown ${showEventsFilter ? 'show' : ''}`}>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="activeEvents" />
+              <div className={`${styles.filterDropdown} ${showEventsFilter ? styles.show : ''}`}>
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="activeEvents" />
                   <label htmlFor="activeEvents">Активные</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="pastEvents" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="pastEvents" />
                   <label htmlFor="pastEvents">Прошедшие</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="privateEvents" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="privateEvents" />
                   <label htmlFor="privateEvents">Приватные</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="publicEvents" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="publicEvents" />
                   <label htmlFor="publicEvents">Публичные</label>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="data-card">
-            <table className="table">
+          <div className={styles.dataCard}>
+            <table className={styles.table}>
               <thead>
                 <tr>
                   <th>Событие</th>
@@ -237,76 +228,76 @@ const AdminPage: React.FC = () => {
               <tbody>
                 <tr>
                   <td>
-                    <div className="user-info">
-                      <div className="event-image">🎉</div>
-                      <div className="user-details">
-                        <span className="user-name">Встреча разработчиков</span>
-                        <span className="user-email">Технологии, Нетворкинг</span>
+                    <div className={styles.userInfo}>
+                      <div className={styles.eventImage}>🎉</div>
+                      <div className={styles.userDetails}>
+                        <span className={styles.userName}>Встреча разработчиков</span>
+                        <span className={styles.userEmail}>Технологии, Нетворкинг</span>
                       </div>
                     </div>
                   </td>
                   <td>Алексей Морозов</td>
-                  <td><span className="status status-active">Активный</span></td>
+                  <td><span className={`${styles.status} ${styles.statusActive}`}>Активный</span></td>
                   <td>24</td>
-                  <td className="date-cell">25 апр 2025</td>
+                  <td className={styles.dateCell}>25 апр 2025</td>
                   <td>
-                    <div className="actions">
-                      <button className="action-btn">✏️</button>
-                      <button className="action-btn">🔒</button>
-                      <button className="action-btn">❌</button>
+                    <div className={styles.actions}>
+                      <button className={styles.actionBtn}>✏️</button>
+                      <button className={styles.actionBtn}>🔒</button>
+                      <button className={styles.actionBtn}>❌</button>
                     </div>
                   </td>
                 </tr>
-                {/* Остальные строки таблицы событий */}
+                {/* Other rows can be added here */}
               </tbody>
             </table>
           </div>
           
-          <div className="pagination">
-            <button className="page-button">«</button>
-            <button className="page-button active">1</button>
-            <button className="page-button">2</button>
-            <button className="page-button">»</button>
+          <div className={styles.pagination}>
+            <button className={styles.pageButton}>«</button>
+            <button className={`${styles.pageButton} ${styles.pageButtonActive}`}>1</button>
+            <button className={styles.pageButton}>2</button>
+            <button className={styles.pageButton}>»</button>
           </div>
         </div>
         
-        {/* Содержимое таба "Сообщества" */}
-        <div id="communities" className={`tab-content ${activeTab === 'communities' ? 'active' : ''}`}>
-          <div className="search-filter-container">
-            <div className="search-bar">
-              <span className="search-icon">🔍</span>
-              <input type="text" className="search-input" placeholder="Поиск сообществ..." />
+        {/* Communities tab content */}
+        <div className={`${styles.tabContent} ${activeTab === 'communities' ? styles.tabContentActive : ''}`}>
+          <div className={styles.searchFilterContainer}>
+            <div className={styles.searchBar}>
+              <span className={styles.searchIcon}>🔍</span>
+              <input type="text" className={styles.searchInput} placeholder="Поиск сообществ..." />
             </div>
             
             <div style={{ position: 'relative' }}>
-              <button className="filter-button" onClick={() => toggleFilterDropdown('communities')}>
+              <button className={styles.filterButton} onClick={() => toggleFilterDropdown('communities')}>
                 <span>Фильтр</span>
                 <span>▼</span>
               </button>
               
-              <div id="communitiesFilter" className={`filter-dropdown ${showCommunitiesFilter ? 'show' : ''}`}>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="activeCommunities" />
+              <div className={`${styles.filterDropdown} ${showCommunitiesFilter ? styles.show : ''}`}>
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="activeCommunities" />
                   <label htmlFor="activeCommunities">Активные</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="privateCommunities" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="privateCommunities" />
                   <label htmlFor="privateCommunities">Приватные</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="publicCommunities" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="publicCommunities" />
                   <label htmlFor="publicCommunities">Публичные</label>
                 </div>
-                <div className="filter-option">
-                  <input type="checkbox" className="filter-checkbox" id="verifiedCommunities" />
+                <div className={styles.filterOption}>
+                  <input type="checkbox" className={styles.filterCheckbox} id="verifiedCommunities" />
                   <label htmlFor="verifiedCommunities">Верифицированные</label>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="data-card">
-            <table className="table">
+          <div className={styles.dataCard}>
+            <table className={styles.table}>
               <thead>
                 <tr>
                   <th>Сообщество</th>
@@ -320,36 +311,36 @@ const AdminPage: React.FC = () => {
               <tbody>
                 <tr>
                   <td>
-                    <div className="user-info">
-                      <div className="community-image">💻</div>
-                      <div className="user-details">
-                        <span className="user-name">Программисты</span>
-                        <span className="user-email">Технологии, IT</span>
+                    <div className={styles.userInfo}>
+                      <div className={styles.communityImage}>💻</div>
+                      <div className={styles.userDetails}>
+                        <span className={styles.userName}>Программисты</span>
+                        <span className={styles.userEmail}>Технологии, IT</span>
                       </div>
                     </div>
                   </td>
                   <td>Алексей Морозов</td>
-                  <td><span className="status status-active">Публичное</span></td>
+                  <td><span className={`${styles.status} ${styles.statusActive}`}>Публичное</span></td>
                   <td>156</td>
-                  <td className="date-cell">1 мар 2025</td>
+                  <td className={styles.dateCell}>1 мар 2025</td>
                   <td>
-                    <div className="actions">
-                      <button className="action-btn">✏️</button>
-                      <button className="action-btn">🔒</button>
-                      <button className="action-btn">❌</button>
+                    <div className={styles.actions}>
+                      <button className={styles.actionBtn}>✏️</button>
+                      <button className={styles.actionBtn}>🔒</button>
+                      <button className={styles.actionBtn}>❌</button>
                     </div>
                   </td>
                 </tr>
-                {/* Остальные строки таблицы сообществ */}
+                {/* Other rows can be added here */}
               </tbody>
             </table>
           </div>
           
-          <div className="pagination">
-            <button className="page-button">«</button>
-            <button className="page-button active">1</button>
-            <button className="page-button">2</button>
-            <button className="page-button">»</button>
+          <div className={styles.pagination}>
+            <button className={styles.pageButton}>«</button>
+            <button className={`${styles.pageButton} ${styles.pageButtonActive}`}>1</button>
+            <button className={styles.pageButton}>2</button>
+            <button className={styles.pageButton}>»</button>
           </div>
         </div>
       </main>

@@ -8,7 +8,7 @@ import ReferenceSection from '../../components/Reference/ReferenceSection';
 import RelatedArticles from '../../components/Reference/RelatedArticles';
 import FooterNavigation from '../../components/Reference/FooterNavigation';
 import InfoBox from '../../components/Reference/InfoBox';
-import './Reference.css';
+import styles from './Reference.module.css';
 
 // Define content structure for easier management
 interface ContentItem {
@@ -33,7 +33,6 @@ const ReferencePage: React.FC = () => {
     'Инструкции',
     'Справочная информация',
     'Часто задаваемые вопросы',
-
   ];
 
   const allSidebarItems = [
@@ -74,7 +73,7 @@ const ReferencePage: React.FC = () => {
                 <ReferenceSection 
                   title="Ключевые термины" 
                   content={
-                    <table className="reference-table">
+                    <table className={styles.referenceTable}>
                       <thead>
                         <tr>
                           <th>Термин</th>
@@ -104,25 +103,28 @@ const ReferencePage: React.FC = () => {
                         </tr>
                       </tbody>
                     </table>
-                  } 
+                  }
+                  styles={styles}
                 />
                 
                 <ReferenceSection 
                   title="Типы событий" 
                   content={
-                    <ul className="reference-list">
+                    <ul className={styles.referenceList}>
                       <li><strong>Обычные события</strong> - регулярные мероприятия, организуемые пользователями или сообществами</li>
                       <li><strong>ЧС события</strong> - события чрезвычайного характера, требующие особого внимания</li>
                       <li><strong>Частные события</strong> - мероприятия с ограниченным доступом</li>
                       <li><strong>Публичные события</strong> - открытые для всех мероприятия</li>
                       <li><strong>Онлайн события</strong> - мероприятия, проводимые в виртуальном формате</li>
                     </ul>
-                  } 
+                  }
+                  styles={styles}
                 />
                 
                 <InfoBox 
                   title="Важно знать" 
-                  content="Все пользователи должны соблюдать правила платформы при создании событий и участии в них. Нарушение правил может привести к ограничению доступа к функциям сервиса." 
+                  content="Все пользователи должны соблюдать правила платформы при создании событий и участии в них. Нарушение правил может привести к ограничению доступа к функциям сервиса."
+                  styles={styles}
                 />
                 
                 <ReferenceSection 
@@ -130,7 +132,7 @@ const ReferencePage: React.FC = () => {
                   content={
                     <>
                       <p>На платформе существуют различные роли пользователей, определяющие их возможности и уровень доступа:</p>
-                      <ul className="reference-list">
+                      <ul className={styles.referenceList}>
                         <li><strong>Обычный пользователь</strong> - может участвовать в событиях и присоединяться к сообществам</li>
                         <li><strong>Организатор</strong> - может создавать и управлять событиями</li>
                         <li><strong>Администратор сообщества</strong> - управляет сообществом и его контентом</li>
@@ -138,10 +140,12 @@ const ReferencePage: React.FC = () => {
                         <li><strong>Создатель сообщества</strong> - имеет полный контроль над сообществом</li>
                       </ul>
                     </>
-                  } 
+                  }
+                  styles={styles}
                 />
               </>
-            } 
+            }
+            styles={styles}
           />
         </>
       ),
@@ -169,7 +173,7 @@ const ReferencePage: React.FC = () => {
                 <ReferenceSection
                   title="Регистрация и вход"
                   content={
-                    <ol className="reference-list">
+                    <ol className={styles.referenceList}>
                       <li>Перейдите на главную страницу платформы</li>
                       <li>Нажмите кнопку "Регистрация" в правом верхнем углу</li>
                       <li>Заполните необходимые поля формы</li>
@@ -177,14 +181,17 @@ const ReferencePage: React.FC = () => {
                       <li>Войдите в систему, используя созданные учетные данные</li>
                     </ol>
                   }
+                  styles={styles}
                 />
                 
                 <InfoBox
                   title="Совет"
                   content="Рекомендуем использовать надежный пароль, содержащий не менее 8 символов, включая буквы разного регистра, цифры и специальные символы."
+                  styles={styles}
                 />
               </>
             }
+            styles={styles}
           />
         </>
       ),
@@ -243,28 +250,31 @@ const ReferencePage: React.FC = () => {
   };
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <Header
         title="Справочник" 
         searchQuery={searchQuery} 
-        onSearchChange={handleSearchChange} 
+        onSearchChange={handleSearchChange}
+        styles={styles}
       />
       
       <CategoryNav 
         categories={categories} 
         activeCategory={activeCategory} 
-        onCategoryClick={handleCategoryClick} 
+        onCategoryClick={handleCategoryClick}
+        styles={styles}
       />
       
-      <div className="content-grid">
+      <div className={styles.contentGrid}>
         <Sidebar 
           items={filteredSidebarItems} 
           activeItem={activeSidebarItem} 
           onItemClick={handleSidebarItemClick} 
-          popularTopics={popularTopics} 
+          popularTopics={popularTopics}
+          styles={styles}
         />
         
-        <main className="main-content">
+        <main className={styles.mainContent}>
           {currentContent && (
             <>
               <ContentHeader 
@@ -272,16 +282,20 @@ const ReferencePage: React.FC = () => {
                 updateDate={currentContent.updateDate} 
                 articlesCount={
                   filteredSidebarItems.find(item => item.name === activeSidebarItem)?.count || 0
-                } 
+                }
+                styles={styles}
               />
               
               {currentContent.content}
               
-              <RelatedArticles articles={currentContent.relatedArticles} />
+              <RelatedArticles 
+                articles={currentContent.relatedArticles}
+                styles={styles}
+              />
             </>
           )}
           
-          <FooterNavigation />
+          <FooterNavigation styles={styles} />
         </main>
       </div>
     </div>

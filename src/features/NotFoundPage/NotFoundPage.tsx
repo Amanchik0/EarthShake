@@ -1,29 +1,36 @@
 import React from 'react';
-import './NotFoundPage.css';
+import styles from './NotFoundPage.module.css';
 
-const NotFoundPage: React.FC = () => {
+interface NotFoundPageProps {
+  styles?: any; // Опциональный пропс для совместимости с вашим подходом передачи стилей
+}
+
+const NotFoundPage: React.FC<NotFoundPageProps> = ({ styles: propStyles }) => {
+  // Используем переданные стили или импортированные локально
+  const s = propStyles || styles;
+  
   return (
-    <div className="not-found-page">
-      <div className="floating-elements">
-        <div className="floating-element"></div>
-        <div className="floating-element"></div>
-        <div className="floating-element"></div>
-        <div className="floating-element"></div>
+    <div className={s.notFoundPage}>
+      <div className={s.floatingElements}>
+        <div className={s.floatingElement}></div>
+        <div className={s.floatingElement}></div>
+        <div className={s.floatingElement}></div>
+        <div className={s.floatingElement}></div>
       </div>
       
-      <div className="error-container">
-        <div className="error-code">404</div>
-        <h1 className="error-title">Страница не найдена</h1>
-        <p className="error-message">
+      <div className={s.errorContainer}>
+        <div className={s.errorCode}>404</div>
+        <h1 className={s.errorTitle}>Страница не найдена</h1>
+        <p className={s.errorMessage}>
           Упс! Кажется, вы заблудились. Страница, которую вы ищете, не существует или была перемещена.
         </p>
         
-        <div className="action-buttons">
-          <a href="/" className="btn">На главную</a>
-          <a href="/contact" className="btn btn-secondary">Связаться с нами</a>
+        <div className={s.actionButtons}>
+          <a href="/" className={s.btn}>На главную</a>
+          <a href="/contact" className={`${s.btn} ${s.btnSecondary}`}>Связаться с нами</a>
         </div>
         
-        <a href="#" className="back-link" onClick={(e) => { e.preventDefault(); window.history.back(); }}>
+        <a href="#" className={s.backLink} onClick={(e) => { e.preventDefault(); window.history.back(); }}>
           <svg 
             width="16" 
             height="16" 

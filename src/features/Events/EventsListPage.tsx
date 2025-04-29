@@ -58,13 +58,13 @@ console.log('====================================');
       price: 'от 1500 руб.',
       rating: 4,
       reviewsCount: 42,
-      imageUrl: '/api/placeholder/100/100',
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
       type: '1',
       tag:'regular', 
        author: {
             name: 'Иван Иванов',
             role: 'Организатор',
-            avatarUrl: '/api/placeholder/40/40'
+            avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk=https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
           }
 
     },
@@ -76,13 +76,13 @@ console.log('====================================');
       price: '800 руб.',
       rating: 5,
       reviewsCount: 78,
-      imageUrl: '/api/placeholder/100/100',
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
       type: '3',
       tag:'regular', 
        author: {
             name: 'Иван Иванов',
             role: 'Организатор',
-            avatarUrl: '/api/placeholder/40/40'
+            avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk=https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
           }
     },
     {
@@ -93,13 +93,13 @@ console.log('====================================');
       price: 'от 1000 руб.',
       rating: 3,
       reviewsCount: 126,
-      imageUrl: '/api/placeholder/100/100',
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
       type: '4',
       tag:'regular', 
        author: {
             name: 'Иван Иванов',
             role: 'Организатор',
-            avatarUrl: '/api/placeholder/40/40'
+            avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk=https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
           }
     },
     {
@@ -110,13 +110,13 @@ console.log('====================================');
       price: '2500 руб.',
       rating: 4,
       reviewsCount: 31,
-      imageUrl: '/api/placeholder/100/100',
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
       type: '2',
       tag:'regular', 
        author: {
             name: 'Иван Иванов',
             role: 'Организатор',
-            avatarUrl: '/api/placeholder/40/40'
+            avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk=https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
           }
     },
   ];

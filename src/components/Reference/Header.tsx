@@ -4,24 +4,24 @@ interface HeaderProps {
   title: string;
   searchQuery: string;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  styles: any;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, searchQuery, onSearchChange }) => {
+const Header: React.FC<HeaderProps> = ({ title, searchQuery, onSearchChange, styles }) => {
   return (
-    <header>
-      <h1 className="page-title">{title}</h1>
-      <div className="search-container">
-        <input 
-          type="text" 
-          className="search-input" 
-          placeholder="Поиск по справочнику..." 
+    <header className={styles.header}>
+      <h1 className={styles.pageTitle}>
+        {title}
+      </h1>
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Поиск..."
           value={searchQuery}
           onChange={onSearchChange}
+          className={styles.searchInput}
         />
-        <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
+        <span className={styles.searchIcon}>🔍</span>
       </div>
     </header>
   );

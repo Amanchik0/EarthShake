@@ -1,12 +1,12 @@
 import React from 'react';
+import styles from '../../features/Evacuation/EvacuationPage.module.css';
 
 interface EventHeaderProps {
   onBack: () => void;
   tag: string;
-  styles: any; 
 }
 
-const EventHeader: React.FC<EventHeaderProps> = ({ onBack, tag, styles }) => {
+const EventHeader: React.FC<EventHeaderProps> = ({ onBack, tag }) => {
   return (
     <header className={styles.header}>
       <button className={styles.backButton} onClick={onBack}>

@@ -3,12 +3,15 @@ import React, { ReactNode } from 'react';
 interface ReferenceSectionProps {
   title: string;
   content: ReactNode;
+  styles: any;
 }
 
-const ReferenceSection: React.FC<ReferenceSectionProps> = ({ title, content }) => {
+const ReferenceSection: React.FC<ReferenceSectionProps> = ({ title, content, styles }) => {
   return (
-    <div className="reference-section">
-      <h4 className="section-title">{title}</h4>
+    <div className={styles.referenceSection}>
+      <h3 className={styles.sectionTitle}>
+        {title}
+      </h3>
       {content}
     </div>
   );

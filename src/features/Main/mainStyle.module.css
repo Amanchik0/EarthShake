@@ -5,7 +5,7 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body {
+.pageWrapper {
     background-color: #f8f9fa;
     color: #333;
 }
@@ -16,7 +16,7 @@ body {
     padding: 0 20px;
 }
 
-.app-header {
+.appHeader {
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     position: sticky;
@@ -24,39 +24,39 @@ body {
     z-index: 100;
 }
 
-.app-header-content {
+.appHeaderContent {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
 }
 
-.app-header-logo {
+.appHeaderLogo {
     display: flex;
     align-items: center;
 }
 
-.app-header-logo img {
+.appHeaderLogo img {
     height: 40px;
     margin-right: 12px;
 }
 
-.app-header-logo-text {
+.appHeaderLogoText {
     font-size: 22px;
     font-weight: 700;
     color: #e83e8c;
 }
 
-.app-header-nav-menu {
+.appHeaderNavMenu {
     display: flex;
     list-style-type: none;
 }
 
-.app-header-nav-item {
+.appHeaderNavItem {
     margin-left: 32px;
 }
 
-.app-header-nav-link {
+.appHeaderNavLink {
     text-decoration: none;
     color: #555;
     font-weight: 600;
@@ -64,15 +64,15 @@ body {
     transition: color 0.2s;
 }
 
-.app-header-nav-link:hover {
+.appHeaderNavLink:hover {
     color: #e83e8c;
 }
 
-.app-header-nav-link.active {
+.appHeaderNavLink.active {
     color: #e83e8c;
 }
 
-.app-header-profile-button {
+.appHeaderProfileButton {
     display: flex;
     align-items: center;
     background: none;
@@ -80,7 +80,7 @@ body {
     cursor: pointer;
 }
 
-.profile-avatar {
+.profileAvatar {
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -88,25 +88,25 @@ body {
     margin-right: 8px;
 }
 
-.hero-section {
+.heroSection {
     padding: 80px 0;
     background: linear-gradient(rgba(232, 62, 140, 0.1), rgba(232, 62, 140, 0.05));
     margin-bottom: 60px;
     border-radius: 0 0 20px 20px;
 }
 
-.hero-content {
+.heroContent {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.hero-text {
+.heroText {
     flex: 1;
     padding-right: 40px;
 }
 
-.hero-title {
+.heroTitle {
     font-size: 48px;
     font-weight: 800;
     margin-bottom: 20px;
@@ -114,18 +114,18 @@ body {
     line-height: 1.2;
 }
 
-.hero-title span {
+.heroTitle span {
     color: #e83e8c;
 }
 
-.hero-description {
+.heroDescription {
     font-size: 18px;
     line-height: 1.6;
     color: #4a5568;
     margin-bottom: 32px;
 }
 
-.cta-button {
+.ctaButton {
     display: inline-block;
     background-color: #e83e8c;
     color: white;
@@ -137,17 +137,17 @@ body {
     transition: background-color 0.2s;
 }
 
-.cta-button:hover {
+.ctaButton:hover {
     background-color: #d33076;
 }
 
-.hero-image {
+.heroImage {
     flex: 1;
     display: flex;
     justify-content: flex-end;
 }
 
-.hero-image img {
+.heroImage img {
     max-width: 100%;
     height: auto;
     border-radius: 16px;
@@ -158,26 +158,26 @@ body {
     margin-bottom: 80px;
 }
 
-.section-header {
+.sectionHeader {
     text-align: center;
     margin-bottom: 40px;
 }
 
-.section-title {
+.sectionTitle {
     font-size: 36px;
     font-weight: 700;
     color: #343a40;
     margin-bottom: 16px;
 }
 
-.section-subtitle {
+.sectionSubtitle {
     font-size: 18px;
     color: #6c757d;
     max-width: 700px;
     margin: 0 auto;
 }
 
-.map-container {
+.mapContainer {
     background-color: white;
     border-radius: 16px;
     padding: 24px;
@@ -185,26 +185,26 @@ body {
     text-align: center;
 }
 
-.map-title {
+.mapTitle {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 24px;
     color: #343a40;
 }
 
-.map-image {
+.mapImage {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
 }
 
-.event-cards {
+.eventCards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
 }
 
-.event-card {
+.eventCard {
     background-color: white;
     border-radius: 16px;
     overflow: hidden;
@@ -212,27 +212,27 @@ body {
     transition: transform 0.3s;
 }
 
-.event-card:hover {
+.eventCard:hover {
     transform: translateY(-8px);
 }
 
-.event-image {
+.eventImage {
     width: 100%;
     height: 200px;
     object-fit: cover;
 }
 
-.event-details {
+.eventDetails {
     padding: 20px;
 }
 
-.event-meta {
+.eventMeta {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
 }
 
-.event-date {
+.eventDate {
     background-color: #f8d7e5;
     color: #e83e8c;
     padding: 4px 8px;
@@ -242,26 +242,26 @@ body {
     margin-right: 8px;
 }
 
-.event-location {
+.eventLocation {
     font-size: 14px;
     color: #6c757d;
 }
 
-.event-title {
+.eventTitle {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 8px;
     color: #343a40;
 }
 
-.event-description {
+.eventDescription {
     font-size: 15px;
     color: #6c757d;
     margin-bottom: 16px;
     line-height: 1.5;
 }
 
-.event-button {
+.eventButton {
     display: inline-block;
     padding: 8px 16px;
     background-color: #f8f9fa;
@@ -274,13 +274,13 @@ body {
     transition: all 0.2s;
 }
 
-.event-button:hover {
+.eventButton:hover {
     background-color: #e83e8c;
     color: white;
     border-color: #e83e8c;
 }
 
-.view-all {
+.viewAll {
     display: block;
     text-align: center;
     margin-top: 32px;
@@ -290,13 +290,13 @@ body {
     font-size: 16px;
 }
 
-.community-cards {
+.communityCards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
 }
 
-.community-card {
+.communityCard {
     background-color: white;
     border-radius: 16px;
     padding: 24px;
@@ -305,11 +305,11 @@ body {
     transition: transform 0.3s;
 }
 
-.community-card:hover {
+.communityCard:hover {
     transform: translateY(-8px);
 }
 
-.community-icon {
+.communityIcon {
     width: 80px;
     height: 80px;
     object-fit: cover;
@@ -317,20 +317,20 @@ body {
     margin-bottom: 16px;
 }
 
-.community-title {
+.communityTitle {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 8px;
     color: #343a40;
 }
 
-.community-members {
+.communityMembers {
     font-size: 14px;
     color: #6c757d;
     margin-bottom: 16px;
 }
 
-.community-button {
+.communityButton {
     display: inline-block;
     padding: 8px 16px;
     background-color: #f8f9fa;
@@ -343,56 +343,56 @@ body {
     transition: all 0.2s;
 }
 
-.community-button:hover {
+.communityButton:hover {
     background-color: #e83e8c;
     color: white;
     border-color: #e83e8c;
 }
 
-.guidelines-container {
+.guidelinesContainer {
     background-color: white;
     border-radius: 16px;
     padding: 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.guidelines-content {
+.guidelinesContent {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
 }
 
-.guidelines-text {
+.guidelinesText {
     flex: 1;
     padding-right: 40px;
 }
 
-.guidelines-title {
+.guidelinesTitle {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 16px;
     color: #343a40;
 }
 
-.guidelines-description {
+.guidelinesDescription {
     font-size: 16px;
     color: #6c757d;
     margin-bottom: 24px;
     line-height: 1.6;
 }
 
-.guidelines-list {
+.guidelinesList {
     list-style-type: none;
     margin-bottom: 24px;
 }
 
-.guidelines-item {
+.guidelinesItem {
     display: flex;
     align-items: flex-start;
     margin-bottom: 16px;
 }
 
-.guidelines-icon {
+.guidelinesIcon {
     width: 24px;
     height: 24px;
     background-color: #fce7f0;
@@ -406,28 +406,28 @@ body {
     font-weight: bold;
 }
 
-.guidelines-item-text {
+.guidelinesItemText {
     font-size: 16px;
     color: #6c757d;
 }
 
-.guidelines-image {
+.guidelinesImage {
     flex: 1;
     max-width: 40%;
 }
 
-.guidelines-image img {
+.guidelinesImage img {
     max-width: 100%;
     border-radius: 12px;
 }
 
-.features-cards {
+.featuresCards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
 }
 
-.feature-card {
+.featureCard {
     background-color: white;
     border-radius: 16px;
     padding: 32px 24px;
@@ -435,7 +435,7 @@ body {
     text-align: center;
 }
 
-.feature-icon {
+.featureIcon {
     width: 64px;
     height: 64px;
     background-color: #fce7f0;
@@ -448,62 +448,62 @@ body {
     font-size: 24px;
 }
 
-.feature-title {
+.featureTitle {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 12px;
     color: #343a40;
 }
 
-.feature-description {
+.featureDescription {
     font-size: 15px;
     color: #6c757d;
     line-height: 1.6;
 }
 
-.app-footer {
+.appFooter {
     background-color: #343a40;
     color: white;
     padding: 60px 0 30px;
 }
 
-.app-footer-content {
+.appFooterContent {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 40px;
     margin-bottom: 40px;
 }
 
-.app-footer-logo {
+.appFooterLogo {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
 }
 
-.app-footer-logo img {
+.appFooterLogo img {
     height: 40px;
     margin-right: 12px;
 }
 
-.app-footer-logo-text {
+.appFooterLogoText {
     font-size: 22px;
     font-weight: 700;
     color: white;
 }
 
-.app-footer-description {
+.appFooterDescription {
     font-size: 15px;
     color: #adb5bd;
     margin-bottom: 20px;
     line-height: 1.6;
 }
 
-.app-footer-social-links {
+.appFooterSocialLinks {
     display: flex;
     gap: 16px;
 }
 
-.app-footer-social-link {
+.appFooterSocialLink {
     width: 36px;
     height: 36px;
     background-color: rgba(232, 62, 140, 0.2);
@@ -516,37 +516,37 @@ body {
     transition: background-color 0.2s;
 }
 
-.app-footer-social-link:hover {
+.appFooterSocialLink:hover {
     background-color: rgba(232, 62, 140, 0.5);
 }
 
-.app-footer-title {
+.appFooterTitle {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 20px;
     color: white;
 }
 
-.app-footer--links {
+.appFooterLinks {
     list-style-type: none;
 }
 
-.app-footer--link {
+.appFooterLink {
     margin-bottom: 12px;
 }
 
-.app-footer--link a {
+.appFooterLink a {
     color: #adb5bd;
     text-decoration: none;
     font-size: 15px;
     transition: color 0.2s;
 }
 
-.app-footer--link a:hover {
+.appFooterLink a:hover {
     color: white;
 }
 
-.app-footer--bottom {
+.appFooterBottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -554,23 +554,23 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.app-footer-copyright {
+.appFooterCopyright {
     font-size: 14px;
     color: #adb5bd;
 }
 
-.app-footer-bottom-links {
+.appFooterBottomLinks {
     display: flex;
     gap: 24px;
 }
 
-.app-footer-bottom-link {
+.appFooterBottomLink {
     color: #adb5bd;
     text-decoration: none;
     font-size: 14px;
     transition: color 0.2s;
 }
 
-.app-footer-bottom-link:hover {
+.appFooterBottomLink:hover {
     color: white;
 }

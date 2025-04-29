@@ -1,10 +1,14 @@
 import React from 'react';
 
-const ContactInfo: React.FC = () => {
+interface ContactInfoProps {
+  styles: any;
+}
+
+const ContactInfo: React.FC<ContactInfoProps> = ({ styles }) => {
   return (
-    <div className="contact-info">
-      <div className="contact-item">
-        <div className="contact-icon">📞</div>
+    <div className={styles.contactInfo}>
+      <div className={styles.contactItem}>
+        <div className={styles.contactIcon}>📞</div>
         <div>
           <h3>Телефон</h3>
           <p>8-800-123-45-67</p>
@@ -12,8 +16,8 @@ const ContactInfo: React.FC = () => {
         </div>
       </div>
       
-      <div className="contact-item">
-        <div className="contact-icon">✉️</div>
+      <div className={styles.contactItem}>
+        <div className={styles.contactIcon}>✉️</div>
         <div>
           <h3>Email</h3>
           <p>support@example.com</p>
@@ -21,8 +25,8 @@ const ContactInfo: React.FC = () => {
         </div>
       </div>
       
-      <div className="contact-item">
-        <div className="contact-icon">💬</div>
+      <div className={styles.contactItem}>
+        <div className={styles.contactIcon}>💬</div>
         <div>
           <h3>Чат</h3>
           <p>Онлайн-чат доступен на нашем сайте</p>
@@ -30,8 +34,8 @@ const ContactInfo: React.FC = () => {
         </div>
       </div>
       
-      <div className="contact-item">
-        <div className="contact-icon">🏢</div>
+      <div className={styles.contactItem}>
+        <div className={styles.contactIcon}>🏢</div>
         <div>
           <h3>Офис</h3>
           <p>г. Москва, ул. Примерная, д. 123</p>

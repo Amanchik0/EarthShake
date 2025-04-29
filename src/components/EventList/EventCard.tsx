@@ -1,11 +1,17 @@
 import React from 'react';
 import { Event } from '../../types/types';
+import { useNavigate } from 'react-router-dom';
 
 interface EventCardProps {
   event: Event;
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/events/${event.id}`);
+  };
   const renderStars = () => {
     const stars = [];
     const fullStars = Math.floor(event.rating ?? 0);
@@ -24,7 +30,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   };
 
   return (
-    <div className="event-card">
+    <div className="event-card" onClick={handleCardClick}>
       <div className="event-image">
         <img src={event.imageUrl || '/api/placeholder/100/100'} alt={event.title} />
       </div>

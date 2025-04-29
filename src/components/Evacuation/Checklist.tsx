@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChecklistItem } from '../../types/types';
+import styles from '../../features/Evacuation/EvacuationPage.module.css';
 
 interface ChecklistProps {
   title: string;
@@ -9,18 +10,18 @@ interface ChecklistProps {
 
 const Checklist: React.FC<ChecklistProps> = ({ title, items, onToggle }) => {
   return (
-    <div className="sidebar-card">
-      <div className="sidebar-title">{title}</div>
-      <div className="checklist">
+    <div className={styles.sidebarCard}>
+      <div className={styles.sidebarTitle}>{title}</div>
+      <div>
         {items.map(item => (
-          <div key={item.id} className="checklist-item">
+          <div key={item.id} className={styles.checklistItem}>
             <div 
-              className="checklist-checkbox" 
+              className={styles.checklistCheckbox} 
               onClick={() => onToggle(item.id)}
             >
               {item.checked ? '✓' : ''}
             </div>
-            <div className="checklist-text">{item.text}</div>
+            <div className={styles.checklistText}>{item.text}</div>
           </div>
         ))}
       </div>

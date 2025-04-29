@@ -4,16 +4,25 @@ interface ContentHeaderProps {
   title: string;
   updateDate: string;
   articlesCount: number;
+  styles: any;
 }
 
-const ContentHeader: React.FC<ContentHeaderProps> = ({ title, updateDate, articlesCount }) => {
+const ContentHeader: React.FC<ContentHeaderProps> = ({ title, updateDate, articlesCount, styles }) => {
   return (
-    <div className="content-header">
-      <h2 className="content-title">{title}</h2>
-      <div className="content-meta">
-        <div>Последнее обновление: {updateDate}</div>
-        <div>•</div>
-        <div>Статей в разделе: {articlesCount}</div>
+    <div className={styles.contentHeader}>
+      <h1 className={styles.contentTitle}>
+        {title}
+      </h1>
+      <div className={styles.contentMeta}>
+        <span>
+          Последнее обновление: {updateDate}
+        </span>
+        <span>
+          •
+        </span>
+        <span>
+          Статей в разделе: {articlesCount}
+        </span>
       </div>
     </div>
   );

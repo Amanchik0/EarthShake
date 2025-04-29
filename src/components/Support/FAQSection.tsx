@@ -5,7 +5,11 @@ interface FAQItem {
   answer: string;
 }
 
-const FAQSection: React.FC = () => {
+interface FAQSectionProps {
+  styles: any;
+}
+
+const FAQSection: React.FC<FAQSectionProps> = ({ styles }) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const faqItems: FAQItem[] = [
@@ -36,23 +40,23 @@ const FAQSection: React.FC = () => {
   };
 
   return (
-    <div className="faq" id="faq">
+    <div className={styles.faq} id="faq">
       <h2>Часто задаваемые вопросы</h2>
       
       {faqItems.map((item, index) => (
         <div 
           key={index} 
-          className={`accordion ${activeIndex === index ? 'active' : ''}`}
+          className={`${styles.accordion} ${activeIndex === index ? styles.active : ''}`}
         >
           <div 
-            className="accordion-header" 
+            className={styles.accordionHeader} 
             onClick={() => toggleAccordion(index)}
           >
             {item.question}
             <span>{activeIndex === index ? '-' : '+'}</span>
           </div>
           {activeIndex === index && (
-            <div className="accordion-body">
+            <div className={styles.accordionBody}>
               <p>{item.answer}</p>
             </div>
           )}

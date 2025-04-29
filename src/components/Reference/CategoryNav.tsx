@@ -4,21 +4,22 @@ interface CategoryNavProps {
   categories: string[];
   activeCategory: string;
   onCategoryClick: (category: string) => void;
+  styles: any;
 }
 
-const CategoryNav: React.FC<CategoryNavProps> = ({ categories, activeCategory, onCategoryClick }) => {
+const CategoryNav: React.FC<CategoryNavProps> = ({ categories, activeCategory, onCategoryClick, styles }) => {
   return (
-    <nav className="category-nav">
-      {categories.map(category => (
-        <div 
-          key={category}
-          className={`category-item ${activeCategory === category ? 'active' : ''}`}
+    <div className={styles.categoryNav}>
+      {categories.map((category, index) => (
+        <div
+          key={index}
+          className={`${styles.categoryItem} ${activeCategory === category ? styles.active : ''}`}
           onClick={() => onCategoryClick(category)}
         >
           {category}
         </div>
       ))}
-    </nav>
+    </div>
   );
 };
 

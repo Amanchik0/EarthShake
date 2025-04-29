@@ -1,22 +1,11 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-body {
-    background-color: #f5f7fa;
-    color: #333;
-}
-
+/* profile.module.css */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.profile-header {
+.profileHeader {
     display: flex;
     background-color: white;
     border-radius: 16px;
@@ -25,7 +14,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.profile-photo {
+.profilePhoto {
     width: 180px;
     height: 180px;
     border-radius: 50%;
@@ -34,24 +23,24 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.profile-info {
+.profileInfo {
     margin-left: 32px;
     flex: 1;
 }
 
-.profile-name {
+.profileName {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 4px;
 }
 
-.profile-username {
+.profileUsername {
     font-size: 18px;
     color: #666;
     margin-bottom: 16px;
 }
 
-.subscription-badge {
+.subscriptionBadge {
     display: inline-block;
     background: linear-gradient(135deg, #6366F1, #8B5CF6);
     color: white;
@@ -62,7 +51,7 @@ body {
     margin-bottom: 16px;
 }
 
-.profile-rating {
+.profileRating {
     display: flex;
     align-items: center;
     margin-bottom: 16px;
@@ -74,34 +63,34 @@ body {
     margin-right: 8px;
 }
 
-.rating-value {
+.ratingValue {
     font-weight: 600;
     font-size: 18px;
 }
 
-.profile-details {
+.profileDetails {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-top: 20px;
 }
 
-.detail-item {
+.detailItem {
     display: flex;
     flex-direction: column;
 }
 
-.detail-label {
+.detailLabel {
     font-size: 14px;
     color: #666;
 }
 
-.detail-value {
+.detailValue {
     font-size: 16px;
     font-weight: 500;
 }
 
-.edit-button {
+.editButton {
     background-color: #f5f7fa;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -114,11 +103,11 @@ body {
     margin-top: 16px;
 }
 
-.edit-button:hover {
+.editButton:hover {
     background-color: #e9ecef;
 }
 
-.profile-tabs {
+.profileTabs {
     display: flex;
     background-color: white;
     border-radius: 12px;
@@ -146,7 +135,7 @@ body {
     background-color: #f5f7fa;
 }
 
-.content-section {
+.contentSection {
     background-color: white;
     border-radius: 16px;
     padding: 24px;
@@ -154,7 +143,7 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.section-title {
+.sectionTitle {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 16px;
@@ -162,59 +151,59 @@ body {
     padding-bottom: 12px;
 }
 
-.events-grid {
+.eventsGrid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
-.event-card {
+.eventCard {
     background-color: #f8f9fa;
     border-radius: 12px;
     overflow: hidden;
     transition: transform 0.2s;
 }
 
-.event-card:hover {
+.eventCard:hover {
     transform: translateY(-4px);
 }
 
-.event-image {
+.eventImage {
     width: 100%;
     height: 160px;
     object-fit: cover;
 }
 
-.event-content {
+.eventContent {
     padding: 16px;
 }
 
-.event-title {
+.eventTitle {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 8px;
 }
 
-.event-date {
+.eventDate {
     font-size: 14px;
     color: #666;
     margin-bottom: 8px;
 }
 
-.event-participants {
+.eventParticipants {
     display: flex;
     align-items: center;
     font-size: 14px;
     color: #666;
 }
 
-.community-list {
+.communityList {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
 }
 
-.community-card {
+.communityCard {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -224,11 +213,11 @@ body {
     transition: transform 0.2s;
 }
 
-.community-card:hover {
+.communityCard:hover {
     transform: translateY(-4px);
 }
 
-.community-logo {
+.communityLogo {
     width: 64px;
     height: 64px;
     border-radius: 12px;
@@ -236,41 +225,41 @@ body {
     margin-bottom: 12px;
 }
 
-.community-name {
+.communityName {
     font-size: 16px;
     font-weight: 600;
     text-align: center;
     margin-bottom: 8px;
 }
 
-.community-members {
+.communityMembers {
     font-size: 14px;
     color: #666;
 }
 
-.subscription-section {
+.subscriptionSection {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.subscription-info {
+.subscriptionInfo {
     flex: 1;
 }
 
-.subscription-title {
+.subscriptionTitle {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 8px;
 }
 
-.subscription-details {
+.subscriptionDetails {
     font-size: 15px;
     color: #666;
     margin-bottom: 16px;
 }
 
-.manage-button {
+.manageButton {
     background-color: #6366F1;
     border: none;
     border-radius: 8px;
@@ -282,6 +271,6 @@ body {
     transition: all 0.2s;
 }
 
-.manage-button:hover {
+.manageButton:hover {
     background-color: #4f46e5;
 }

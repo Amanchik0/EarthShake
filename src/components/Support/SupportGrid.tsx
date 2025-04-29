@@ -2,18 +2,22 @@ import React from 'react';
 import SupportForm from './SupportForm';
 import ContactInfo from './ContactInfo';
 
-const SupportGrid: React.FC = () => {
+interface SupportGridProps {
+  styles: any;
+}
+
+const SupportGrid: React.FC<SupportGridProps> = ({ styles }) => {
   return (
-    <div className="support-grid">
-      <div className="support-card">
+    <div className={styles.supportGrid}>
+      <div className={styles.supportCard}>
         <h2>Напишите нам</h2>
-        <SupportForm />
+        <SupportForm styles={styles} />
       </div>
       
-      <div className="support-card">
+      <div className={styles.supportCard}>
         <h2>Контактная информация</h2>
         <p>Вы можете связаться с нами любым удобным для вас способом:</p>
-        <ContactInfo />
+        <ContactInfo styles={styles} />
       </div>
     </div>
   );

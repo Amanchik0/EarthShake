@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-const SupportForm: React.FC = () => {
+interface SupportFormProps {
+  styles: any;
+}
+
+const SupportForm: React.FC<SupportFormProps> = ({ styles }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,7 +38,7 @@ const SupportForm: React.FC = () => {
 
   return (
     <form id="support-form" onSubmit={handleSubmit}>
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="name">Ваше имя</label>
         <input 
           type="text" 
@@ -44,7 +48,7 @@ const SupportForm: React.FC = () => {
           onChange={handleChange}
         />
       </div>
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="email">Электронная почта</label>
         <input 
           type="email" 
@@ -54,7 +58,7 @@ const SupportForm: React.FC = () => {
           onChange={handleChange}
         />
       </div>
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="topic">Тема обращения</label>
         <select 
           id="topic" 
@@ -67,7 +71,7 @@ const SupportForm: React.FC = () => {
           <option value="other">Другое</option>
         </select>
       </div>
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="message">Сообщение</label>
         <textarea 
           id="message" 
@@ -76,7 +80,7 @@ const SupportForm: React.FC = () => {
           onChange={handleChange}
         ></textarea>
       </div>
-      <div className="form-group">
+      <div className={styles.formGroup}>
         <label htmlFor="file">Приложить файл (необязательно)</label>
         <input 
           type="file" 
@@ -84,7 +88,7 @@ const SupportForm: React.FC = () => {
           onChange={handleFileChange}
         />
       </div>
-      <button type="submit" className="btn">Отправить запрос</button>
+      <button type="submit" className={styles.btn}>Отправить запрос</button>
     </form>
   );
 };

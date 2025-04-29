@@ -2,14 +2,11 @@ import React from 'react';
 import EventHeader from '../../components/Event/EventHeader';
 import EventMain from '../../components/Event/EventMain';
 import CommentSection from '../../components/Event/CommentSection';
-import Recommendations from '../../components/Event/Recommendations';
+import Recommendations from '../../components/Event/Recomemdations/Recommendations';
 import { Event, Comment, RecommendedEvent } from '../../types/types';
-import './EventPage.css'
-const EventPage: React.FC = () => {
-console.log('====================================');
-console.log();
-console.log('====================================');
+import styles from './EventPage.module.css';
 
+const EventPage: React.FC = () => {
   const eventData: Event = {
     id: '1',
     title: 'Название события',
@@ -22,12 +19,12 @@ console.log('====================================');
     location: 'г. Москва, ул. Примерная, д. 123',
     rating: 4,
     reviewsCount: 28,
-    imageUrl: '/api/placeholder/800/400',
+    imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
     tag: 'regular',
     author: {
       name: 'Иван Иванов',
       role: 'Организатор',
-      avatarUrl: '/api/placeholder/40/40'
+      avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
     }
   };
 
@@ -61,28 +58,28 @@ console.log('====================================');
       title: 'Название события 1',
       date: '24 апреля 2025',
       type: 'Тип события',
-      imageUrl: '/api/placeholder/300/150'
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
     },
     {
       id: '2',
       title: 'Название события 2',
       date: '25 апреля 2025',
       type: 'Тип события',
-      imageUrl: '/api/placeholder/300/150'
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
     },
     {
       id: '3',
       title: 'Название события 3',
       date: '26 апреля 2025',
       type: 'Тип события',
-      imageUrl: '/api/placeholder/300/150'
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
     },
     {
       id: '4',
       title: 'Название события 4',
       date: '27 апреля 2025',
       type: 'Тип события',
-      imageUrl: '/api/placeholder/300/150'
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
     }
   ];
 
@@ -93,13 +90,13 @@ console.log('====================================');
   };
 
   return (
-    <div className="container">
-      <EventHeader onBack={handleBack} tag={eventData.tag} />
+    <div className={styles.container}>
+      <EventHeader onBack={handleBack} tag={eventData.tag} styles={styles} />
       
       <main>
-        <EventMain event={eventData} />
-        <CommentSection comments={comments} />
-        <Recommendations events={recommendedEvents} />
+        <EventMain event={eventData} styles={styles} />
+        <CommentSection comments={comments} styles={styles} />
+        <Recommendations events={recommendedEvents} styles={styles} />
       </main>
     </div>
   );

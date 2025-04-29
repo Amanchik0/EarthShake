@@ -1,5 +1,6 @@
 import React from 'react';
 import { Notification } from '../../types/types';
+import styles from '../../features/Evacuation/EvacuationPage.module.css';
 
 interface NotificationsProps {
   title: string;
@@ -8,16 +9,16 @@ interface NotificationsProps {
 
 const Notifications: React.FC<NotificationsProps> = ({ title, items }) => {
   return (
-    <div className="sidebar-card">
-      <div className="sidebar-title">{title}</div>
-      <div className="notifications">
+    <div className={styles.sidebarCard}>
+      <div className={styles.sidebarTitle}>{title}</div>
+      <div>
         {items.map(item => (
-          <div key={item.id} className="notification-item">
-            <div className="notification-icon">{item.icon}</div>
-            <div className="notification-content">
-              <div className="notification-title">{item.title}</div>
-              <div className="notification-text">{item.message}</div>
-              <div className="notification-time">{item.time}</div>
+          <div key={item.id} className={styles.notificationItem}>
+            <div className={styles.notificationIcon}>{item.icon}</div>
+            <div className={styles.notificationContent}>
+              <div className={styles.notificationTitle}>{item.title}</div>
+              <div className={styles.notificationText}>{item.message}</div>
+              <div className={styles.notificationTime}>{item.time}</div>
             </div>
           </div>
         ))}

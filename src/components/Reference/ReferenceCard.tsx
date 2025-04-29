@@ -3,13 +3,16 @@ import React, { ReactNode } from 'react';
 interface ReferenceCardProps {
   title: string;
   content: ReactNode;
+  styles: any;
 }
 
-const ReferenceCard: React.FC<ReferenceCardProps> = ({ title, content }) => {
+const ReferenceCard: React.FC<ReferenceCardProps> = ({ title, content, styles }) => {
   return (
-    <div className="reference-card">
-      <div className="reference-content">
-        <h3 className="reference-title">{title}</h3>
+    <div className={styles.referenceCard}>
+      <div className={styles.referenceContent}>
+        <h2 className={styles.referenceTitle}>
+          {title}
+        </h2>
         {content}
       </div>
     </div>

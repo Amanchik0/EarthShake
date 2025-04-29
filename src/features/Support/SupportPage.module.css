@@ -7,56 +7,10 @@
     --gray-dark: #424242;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: #fafafa;
-    color: var(--gray-dark);
-    line-height: 1.6;
-}
-
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-}
-
-header {
-    background-color: var(--pink-primary);
-    color: white;
-    padding: 20px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-}
-
-nav li {
-    margin-left: 20px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: opacity 0.3s;
-}
-
-nav a:hover {
-    opacity: 0.8;
 }
 
 .hero {
@@ -77,17 +31,17 @@ nav a:hover {
     margin: 0 auto;
 }
 
-main {
+.supportPage main {
     padding: 60px 0;
 }
 
-.support-grid {
+.supportGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
 }
 
-.support-card {
+.supportCard {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -95,31 +49,31 @@ main {
     transition: transform 0.3s;
 }
 
-.support-card:hover {
+.supportCard:hover {
     transform: translateY(-5px);
 }
 
-.support-card h2 {
+.supportCard h2 {
     color: var(--pink-dark);
     margin-bottom: 20px;
     border-bottom: 2px solid var(--pink-light);
     padding-bottom: 10px;
 }
 
-.form-group {
+.formGroup {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.formGroup label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
     color: var(--gray-dark);
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--gray-light);
@@ -127,7 +81,7 @@ main {
     font-size: 1rem;
 }
 
-.form-group textarea {
+.formGroup textarea {
     min-height: 120px;
 }
 
@@ -147,17 +101,17 @@ main {
     background-color: var(--pink-dark);
 }
 
-.contact-info {
+.contactInfo {
     margin-top: 30px;
 }
 
-.contact-item {
+.contactItem {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
 }
 
-.contact-icon {
+.contactIcon {
     width: 40px;
     height: 40px;
     background-color: var(--pink-light);
@@ -185,7 +139,7 @@ main {
     overflow: hidden;
 }
 
-.accordion-header {
+.accordionHeader {
     background-color: white;
     padding: 15px 20px;
     cursor: pointer;
@@ -195,7 +149,7 @@ main {
     font-weight: 500;
 }
 
-.accordion-body {
+.accordionBody {
     padding: 0 20px;
     max-height: 0;
     overflow: hidden;
@@ -203,62 +157,15 @@ main {
     background-color: var(--gray-light);
 }
 
-.accordion.active .accordion-body {
+.active .accordionBody {
     max-height: 200px;
     padding: 20px;
 }
 
-footer {
-    background-color: var(--gray-dark);
-    color: white;
-    padding: 40px 0;
-    text-align: center;
-}
-
-.footer-links {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.footer-links a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-}
-
-.social-links {
-    margin-top: 20px;
-}
-
-.social-links a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
-    margin: 0 10px;
-    transition: background-color 0.3s;
-}
-
-.social-links a:hover {
-    background-color: var(--pink-primary);
-}
-
 /* Адаптивный дизайн */
 @media (max-width: 768px) {
-    .support-grid {
+    .supportGrid {
         grid-template-columns: 1fr;
-    }
-    
-    header .container {
-        flex-direction: column;
-    }
-    
-    nav ul {
-        margin-top: 20px;
     }
     
     .hero h1 {

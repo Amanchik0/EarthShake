@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../../features/Events/EventsListPage.module.css';
 
 interface FilterDropdownProps {
   label: string;
@@ -9,10 +10,10 @@ interface FilterDropdownProps {
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({ label, options, value, onChange }) => {
   return (
-    <div className="filter-item">
-      <label className="filter-label">{label}</label>
+    <div className={styles.filterItem}>
+      <label className={styles.filterLabel}>{label}</label>
       <select 
-        className="filter-dropdown" 
+        className={styles.filterDropdown} 
         value={value} 
         onChange={(e) => onChange(e.target.value)}
       >

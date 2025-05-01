@@ -1,3 +1,4 @@
+import styles from '../../features/Events/EventsListPage.module.css';
 import React from 'react';
 
 type ViewMode = 'list' | 'split' | 'map';
@@ -9,21 +10,21 @@ interface ViewToggleProps {
 
 const ViewToggle: React.FC<ViewToggleProps> = ({ currentMode, onChange }) => {
   return (
-    <div className="view-toggle">
+    <div className={styles.viewToggle}>
       <button 
-        className={`toggle-button ${currentMode === 'list' ? 'active' : ''}`} 
+        className={`${styles.toggleButton} ${currentMode === 'list' ? styles.active : ''}`} 
         onClick={() => onChange('list')}
       >
         Список
       </button>
       <button 
-        className={`toggle-button ${currentMode === 'split' ? 'active' : ''}`} 
+        className={`${styles.toggleButton} ${currentMode === 'split' ? styles.active : ''}`} 
         onClick={() => onChange('split')}
       >
         Список + Карта
       </button>
       <button 
-        className={`toggle-button ${currentMode === 'map' ? 'active' : ''}`} 
+        className={`${styles.toggleButton} ${currentMode === 'map' ? styles.active : ''}`} 
         onClick={() => onChange('map')}
       >
         Карта

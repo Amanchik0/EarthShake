@@ -1,0 +1,251 @@
+:root {
+  --alert-red: #ff3b30;
+  --alert-red-light: #ff6b61;
+  --alert-red-dark: #d32f2f;
+  --alert-yellow: #ffcc00;
+  --alert-green: #34c759;
+  --dark-text: #1a1a1a;
+  --light-text: #ffffff;
+  --border-color: #ff6b61;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
+
+.alertContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background-color: var(--alert-red);
+  color: var(--light-text);
+  animation: pulse 2s infinite alternate;
+  overflow: hidden;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: var(--alert-red);
+  }
+  100% {
+    background-color: var(--alert-red-dark);
+  }
+}
+
+.alertHeader {
+  text-align: center;
+  margin-bottom: 20px;
+  width: 90%;
+  max-width: 800px;
+}
+
+.alertIcon {
+  width: 45px;
+  height: 45px;
+  margin: 0 auto 8px;
+  animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.alertTitle {
+  font-size: 1.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.alertSubtitle {
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+
+.alertTime {
+  font-size: 0.9rem;
+  color: var(--alert-yellow);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.alertContent {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 15px;
+  width: 90%;
+  max-width: 550px;
+}
+
+.alertMessage {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.alertMessage p {
+  margin-bottom: 8px;
+}
+
+.guidelines {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.guidelines h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: var(--alert-yellow);
+}
+
+.guidelines ul {
+  list-style-type: none;
+}
+
+.guidelines li {
+  margin-bottom: 6px;
+  padding-left: 14px;
+  position: relative;
+  font-size: 0.85rem;
+}
+
+.guidelines li:before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--alert-yellow);
+}
+
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.actionButton {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.actionButton svg {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.actionButton .arrow {
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.evacuationMapBtn {
+  background-color: var(--alert-yellow);
+  color: var(--dark-text);
+}
+
+.evacuationMapBtn:hover {
+  background-color: #ffd633;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.evacuationPointsBtn {
+  background-color: var(--alert-green);
+  color: var(--dark-text);
+}
+
+.evacuationPointsBtn:hover {
+  background-color: #40d366;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.footer {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .alertTitle {
+    font-size: 1.3rem;
+  }
+  
+  .alertSubtitle {
+    font-size: 0.9rem;
+  }
+  
+  .alertIcon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .alertContent {
+    padding: 12px;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .actionButton {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .alertMessage {
+    font-size: 0.85rem;
+  }
+  
+  .guidelines h3 {
+    font-size: 0.9rem;
+  }
+  
+  .guidelines li {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    padding-left: 12px;
+  }
+}

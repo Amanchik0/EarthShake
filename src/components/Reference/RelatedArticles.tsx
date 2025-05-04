@@ -7,18 +7,24 @@ interface Article {
 
 interface RelatedArticlesProps {
   articles: Article[];
+  styles: any;
 }
 
-const RelatedArticles: React.FC<RelatedArticlesProps> = ({ articles }) => {
+const RelatedArticles: React.FC<RelatedArticlesProps> = ({ articles, styles }) => {
   return (
-    <div className="related-articles">
-      <h3 className="related-title">Связанные материалы</h3>
-      
-      <div className="related-grid">
+    <div className={styles.relatedArticles}>
+      <h3 className={styles.relatedTitle}>
+        Связанные материалы
+      </h3>
+      <div className={styles.relatedGrid}>
         {articles.map((article, index) => (
-          <div key={index} className="related-item">
-            <div className="related-item-title">{article.title}</div>
-            <div className="related-item-meta">{article.meta}</div>
+          <div key={index} className={styles.relatedItem}>
+            <div className={styles.relatedItemTitle}>
+              {article.title}
+            </div>
+            <div className={styles.relatedItemMeta}>
+              {article.meta}
+            </div>
           </div>
         ))}
       </div>

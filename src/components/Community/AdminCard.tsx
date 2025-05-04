@@ -1,5 +1,6 @@
 import React from 'react';
 import { Admin } from '../../types/types';
+import styles from './AdminCard.module.css';
 
 interface AdminCardProps {
   admin: Admin;
@@ -7,13 +8,14 @@ interface AdminCardProps {
 
 const AdminCard: React.FC<AdminCardProps> = ({ admin }) => {
   return (
-    <div className="admin-card">
-      <div className="admin-avatar">
+    <div className={styles.adminCard}>
+      <div className={styles.avatar}>
         <img src={admin.avatarUrl} alt={admin.name} />
       </div>
-      <div className="admin-info">
+      
+      <div className={styles.info}>
         <h4>{admin.name}</h4>
-        <div className="admin-role">{admin.role}</div>
+        <div className={styles.role}>{admin.role}</div>
       </div>
     </div>
   );

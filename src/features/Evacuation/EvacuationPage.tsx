@@ -5,8 +5,9 @@ import LocationCard from '../../components/Evacuation/LocationCard';
 import InfoCard from '../../components/Evacuation/InfoCard';
 import Checklist from '../../components/Evacuation/Checklist';
 import Notifications from '../../components/Evacuation/Notifications';
+import EventHeader from '../../components/Evacuation/EventHeafer';
 import { Location, Notification, ChecklistItem, InfoItem } from '../../types/types';
-import './EvacuationPage.css';
+import styles from './EvacuationPage.module.css';
 
 const EvacuationPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
@@ -58,16 +59,21 @@ const EvacuationPage: React.FC = () => {
     ));
   };
 
+  const handleBack = () => {
+    // Функция возврата на предыдущую страницу
+    console.log('Going back...');
+  };
+
   return (
-    <div className="container">
- 
+    <div className={styles.container}>
+      <EventHeader onBack={handleBack} tag="emergency" />
       
-      <h1 className="page-title">Места для эвакуации</h1>
-      <div className="alert-status active">
-          <span>⚠️</span>
-          <span>Повышенный уровень опасности</span>
-        </div>
-      <p className="page-description">
+      <h1 className={styles.pageTitle}>Места для эвакуации</h1>
+      <div className={`${styles.alertStatus} ${styles.active}`}>
+        <span>⚠️</span>
+        <span>Повышенный уровень опасности</span>
+      </div>
+      <p className={styles.pageDescription}>
         Здесь вы найдете актуальную информацию о доступных местах для эвакуации, 
         включая убежища, медицинские пункты и центры раздачи продуктов.
       </p>
@@ -76,24 +82,24 @@ const EvacuationPage: React.FC = () => {
       
       <EvacuationMap locations={locations} />
       
-      <div className="grid-container">
-        <div className="evacuation-list">
-          <div className="evacuation-header">
-            <div className="evacuation-title">Доступные места эвакуации</div>
-            <div className="evacuation-search">
+      <div className={styles.gridContainer}>
+        <div className={styles.evacuationList}>
+          <div className={styles.evacuationHeader}>
+            <div className={styles.evacuationTitle}>Доступные места эвакуации</div>
+            <div className={styles.evacuationSearch}>
               <span>🔍</span>
               <input type="text" placeholder="Поиск по адресу или названию" />
             </div>
           </div>
           
-          <div className="location-cards">
+          <div className={styles.locationCards}>
             {locations.map(location => (
               <LocationCard key={location.id} location={location} />
             ))}
           </div>
         </div>
         
-        <div className="sidebar">
+        <div className={styles.sidebar}>
           <InfoCard title="Важная информация" items={infoItems} />
           <Checklist 
             title="Чек-лист для эвакуации" 

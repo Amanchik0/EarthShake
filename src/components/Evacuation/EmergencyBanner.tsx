@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../../features/Evacuation/EvacuationPage.module.css';
 
 const EmergencyBanner: React.FC = () => {
   const handleCall = () => {
@@ -6,17 +7,17 @@ const EmergencyBanner: React.FC = () => {
   };
 
   return (
-    <div className="emergency-banner">
-      <div className="emergency-banner-content">
+    <div className={styles.emergencyBanner}>
+      <div className={styles.emergencyBannerContent}>
         <h2>Экстренная ситуация?</h2>
         <p>Если вам требуется немедленная помощь, позвоните в службу спасения.</p>
       </div>
-      <div className="emergency-number">
+      <div className={styles.emergencyNumber}>
         <div>
-          <div className="emergency-number-label">Горячая линия</div>
-          <div className="emergency-number-value">112</div>
+          <div className={styles.emergencyNumberLabel}>Горячая линия</div>
+          <div className={styles.emergencyNumberValue}>112</div>
         </div>
-        <button className="action-btn primary" onClick={handleCall}>
+        <button className={`${styles.actionBtn} ${styles.primaryBtn}`} onClick={handleCall}>
           <span>📞</span>
           <span>Позвонить</span>
         </button>

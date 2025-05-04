@@ -1,4 +1,6 @@
 import React from 'react';
+import styles from '../../features/Events/EventEditPage.module.css';
+
 
 interface FormButtonsProps {
   onCancel: () => void;
@@ -7,18 +9,25 @@ interface FormButtonsProps {
 
 const FormButtons: React.FC<FormButtonsProps> = ({ onCancel, onDelete }) => {
   return (
-    <div className="buttons-container">
-      <div className="buttons-left">
-        <button type="button" className="cancel-btn" onClick={onCancel}>
+    <div className={styles.buttonsContainer}>
+      <div className={styles.buttonsLeft}>
+        <button 
+          type="button" 
+          className={styles.cancelBtn} 
+          onClick={onCancel}
+        >
           Отмена
         </button>
-        <button type="button" className="delete-btn" onClick={onDelete}>
+        <button 
+          type="button" 
+          className={styles.deleteBtn} 
+          onClick={onDelete}
+        >
           Удалить событие
         </button>
       </div>
-      <div className="buttons-right">
-
-        <button type="submit" className="save-btn">
+      <div className={styles.buttonsRight}>
+        <button type="submit" className={styles.saveBtn}>
           Сохранить событие
         </button>
       </div>

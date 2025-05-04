@@ -2,17 +2,18 @@ import React from 'react';
 
 interface EventHeaderProps {
   onBack: () => void;
-  tag: 'regular' | 'emergency';
+  tag: string;
+  styles: any; 
 }
 
-const EventHeader: React.FC<EventHeaderProps> = ({ onBack, tag }) => {
+const EventHeader: React.FC<EventHeaderProps> = ({ onBack, tag, styles }) => {
   return (
-    <header>
-      <button className="back-button" onClick={onBack}>
-        ← Назад к событиям
+    <header className={styles.header}>
+      <button className={styles.backButton} onClick={onBack}>
+        &larr; Назад
       </button>
-      <div className={`event-tag ${tag === 'emergency' ? 'emergency-tag' : ''}`}>
-        {tag === 'emergency' ? 'ЧС' : 'Обычное событие'}
+      <div className={`${styles.eventTag} ${tag === 'emergency' ? styles.emergencyTag : ''}`}>
+        {tag === 'emergency' ? 'Экстренное' : 'Событие'}
       </div>
     </header>
   );

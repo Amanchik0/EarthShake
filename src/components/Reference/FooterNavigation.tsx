@@ -1,9 +1,13 @@
 import React from 'react';
 
-const FooterNavigation: React.FC = () => {
+interface FooterNavigationProps {
+  styles: any;
+}
+
+const FooterNavigation: React.FC<FooterNavigationProps> = ({ styles }) => {
   return (
-    <div className="footer-navigation">
-      <button className="nav-button">
+    <div className={styles.footerNavigation}>
+      <button className={styles.navButton}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
@@ -11,7 +15,7 @@ const FooterNavigation: React.FC = () => {
         Предыдущая статья
       </button>
       
-      <button className="nav-button next">
+      <button className={`${styles.navButton} ${styles.next}`}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>

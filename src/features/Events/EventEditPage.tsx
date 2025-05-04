@@ -5,7 +5,8 @@ import FormButtons from '../../components/EventEdit/FormButtons';
 import FormRow from '../../components/EventEdit/FormRow';
 import EventPhoto from '../../components/EventEdit/EventPhoto';
 import FormGroup from '../../components/EventEdit/FormGroup';
-import './EventEditPage.css'
+import styles from './EventEditPage.module.css';
+
 const EventEditPage: React.FC = () => {
   const [formData, setFormData] = useState({
     eventName: 'Конференция по дизайну',
@@ -37,15 +38,14 @@ const EventEditPage: React.FC = () => {
   };
 
   return (
-    <div className="event-edit-page">
-      
-      <div className="main-container">
+    <div className={styles.eventEditPage}>
+      <div className={styles.mainContainer}>
         <PageHeader 
           title="Редактирование события" 
           subtitle="Заполните все поля для обновления информации о событии" 
         />
 
-        <div className="event-form-container">
+        <div className={styles.eventFormContainer}>
           <form className="event-form" onSubmit={handleSubmit}>
             <FormSection title="Основная информация">
               <FormGroup fullWidth>
@@ -58,7 +58,7 @@ const EventEditPage: React.FC = () => {
                   onChange={handleChange}
                   required 
                 />
-                <div className="hints">Укажите краткое и информативное название</div>
+                <div className={styles.hints}>Укажите краткое и информативное название</div>
               </FormGroup>
               
               <EventPhoto />
@@ -73,7 +73,7 @@ const EventEditPage: React.FC = () => {
                   onChange={handleChange}
                   required 
                 />
-                <div className="hints">Подробно опишите событие: что будет происходить, для кого оно предназначено</div>
+                <div className={styles.hints}>Подробно опишите событие: что будет происходить, для кого оно предназначено</div>
               </FormGroup>
             </FormSection>
 
@@ -165,14 +165,10 @@ const EventEditPage: React.FC = () => {
                   required 
                 />
               </FormGroup>
-              
-
             </FormSection>
             
             <FormSection title="Дополнительная информация">
               <FormRow>
-
-                
                 <FormGroup>
                   <label htmlFor="contactEmail">Контактный email</label>
                   <input 
@@ -192,7 +188,6 @@ const EventEditPage: React.FC = () => {
             />
           </form>
         </div>
-
       </div>
     </div>
   );

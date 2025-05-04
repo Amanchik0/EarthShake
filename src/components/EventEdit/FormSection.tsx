@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import styles from '../../features/Events/EventEditPage.module.css';
 
 interface FormSectionProps {
   title: string;
@@ -7,8 +8,8 @@ interface FormSectionProps {
 
 const FormSection: React.FC<FormSectionProps> = ({ title, children }) => {
   return (
-    <div className="form-section">
-      <h2 className="section-title">{title}</h2>
+    <div className={styles.formSection}>
+      <h2 className={styles.sectionTitle}>{title}</h2>
       {children}
     </div>
   );

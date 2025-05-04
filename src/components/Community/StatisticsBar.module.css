@@ -1,0 +1,35 @@
+.statisticsBar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .statItem {
+    text-align: center;
+  }
+  
+  .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff6b9d;
+  }
+  
+  .label {
+    font-size: 0.9rem;
+    color: #8a8a8a;
+  }
+  
+  @media (max-width: 768px) {
+    .statisticsBar {
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .statItem {
+      flex-basis: 45%;
+    }
+  }

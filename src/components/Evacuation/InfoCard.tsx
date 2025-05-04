@@ -1,5 +1,6 @@
 import React from 'react';
 import { InfoItem } from '../../types/types';
+import styles from '../../features/Evacuation/EvacuationPage.module.css';
 
 interface InfoCardProps {
   title: string;
@@ -8,15 +9,15 @@ interface InfoCardProps {
 
 const InfoCard: React.FC<InfoCardProps> = ({ title, items }) => {
   return (
-    <div className="sidebar-card">
-      <div className="sidebar-title">{title}</div>
-      <div className="info-list">
+    <div className={styles.sidebarCard}>
+      <div className={styles.sidebarTitle}>{title}</div>
+      <div className={styles.infoList}>
         {items.map(item => (
-          <div key={item.id} className="info-item">
-            <div className="info-icon">{item.icon}</div>
-            <div className="info-content">
-              <div className="info-title">{item.title}</div>
-              <div className="info-text">{item.text}</div>
+          <div key={item.id} className={styles.infoItem}>
+            <div className={styles.infoIcon}>{item.icon}</div>
+            <div className={styles.infoContent}>
+              <div className={styles.infoTitle}>{item.title}</div>
+              <div className={styles.infoText}>{item.text}</div>
             </div>
           </div>
         ))}

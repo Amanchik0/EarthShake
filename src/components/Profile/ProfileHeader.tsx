@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ProfileHeaderProps, ProfileFormData } from '../../types/types';
 import ProfileEditPage from '../../features/Profile/ProfileEditPage';
 import Modal from '../Modal/Modal';
+import styles from '../../features/Profile/profile.module.css';
 
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   name,
@@ -28,24 +29,24 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   };
 
   return (
-    <div className="profile-header">
-      <img src="/api/placeholder/180/180" alt="User Profile" className="profile-photo" />
-      <div className="profile-info">
-        <h1 className="profile-name">{name}</h1>
-        <p className="profile-username">@{username}</p>
-        <div className="subscription-badge">Premium подписка</div>
-        <div className="profile-rating">
-          <div className="stars">★★★★☆</div>
-          <span className="rating-value">4.8</span>
+    <div className={styles.profileHeader}>
+      <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="User Profile" className={styles.profilePhoto} />
+      <div className={styles.profileInfo}>
+        <h1 className={styles.profileName}>{name}</h1>
+        <p className={styles.profileUsername}>@{username}</p>
+        <div className={styles.subscriptionBadge}>Premium подписка</div>
+        <div className={styles.profileRating}>
+          <div className={styles.stars}>★★★★☆</div>
+          <span className={styles.ratingValue}>4.8</span>
         </div>
-        <div className="profile-details">
+        <div className={styles.profileDetails}>
           <DetailItem label="Email" value={email} />
           <DetailItem label="Телефон" value={phone} />
           <DetailItem label="Город" value={city} />
           <DetailItem label="Дата регистрации" value={registrationDate} />
         </div>
         <button 
-          className="edit-button" 
+          className={styles.editButton} 
           onClick={() => setIsEditModalOpen(true)}
         >
           Редактировать профиль
@@ -65,9 +66,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 };
 
 const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div className="detail-item">
-    <span className="detail-label">{label}</span>
-    <span className="detail-value">{value}</span>
+  <div className={styles.detailItem}>
+    <span className={styles.detailLabel}>{label}</span>
+    <span className={styles.detailValue}>{value}</span>
   </div>
 );
 

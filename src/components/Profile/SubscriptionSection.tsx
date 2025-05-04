@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
+import styles from '../../features/Profile/profile.module.css';
 import SubscriptionModal from '../Modal/SubscriptionModal';
 
 interface SubscriptionSectionProps {
-  hasSubscription?: boolean;
+  hasSubscription: boolean;
   onSubscribe: () => Promise<void> | void;
 }
 
-const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({
-  hasSubscription ,
-  onSubscribe
+const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ 
+  hasSubscription, 
+  onSubscribe 
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -21,41 +22,22 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({
   };
 
   return (
-    <div className="subscription-section">
-      {hasSubscription ? (
-        <>
-          <div className="subscription-info">
-            <h3 className="subscription-title">Premium подписка</h3>
-            <p className="subscription-details">
-              Активна до 19 июля 2025 г. <br />
-              Автопродление включено
-            </p>
-          </div>
-          <button 
-            className="manage-button"
-            onClick={handleOpenModal}
-          >
-            Управление подпиской
-          </button>
-        </>
-      ) : (
-        <>
-          <div className="subscription-info">
-            <h3 className="subscription-title">Базовый аккаунт</h3>
-            <p className="subscription-details">
-              Расширьте возможности с Premium подпиской
-            </p>
-          </div>
-          <button 
-            className="manage-button"  
-            onClick={handleOpenModal}
-          >
-            Оформить подписку
-          </button>
-        </>
-      )}
-      
-      {/* Модальное окно подписки  */}
+    <div className={styles.subscriptionSection}>
+      <div className={styles.subscriptionInfo}>
+        <h3 className={styles.subscriptionTitle}>Premium подписка</h3>
+        <p className={styles.subscriptionDetails}>
+          {hasSubscription 
+            ? "Активна до 19 июля 2025 г. \nАвтопродление включено" 
+            : "Оформите подписку, чтобы получить доступ ко всем возможностям платформы"}
+        </p>
+      </div>
+      <button 
+        className={styles.manageButton} 
+        onClick={handleOpenModal}
+      >
+        {hasSubscription ? 'Управление подпиской' : 'Оформить подписку'}
+      </button>
+
       <SubscriptionModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import styles from '../../features/Events/EventEditPage.module.css';
 
 interface FormGroupProps {
   children: ReactNode;
@@ -7,7 +8,7 @@ interface FormGroupProps {
 
 const FormGroup: React.FC<FormGroupProps> = ({ children, fullWidth = false }) => {
   return (
-    <div className={`form-group ${fullWidth ? 'full-width' : ''}`}>
+    <div className={`${styles.formGroup} ${fullWidth ? styles.fullWidth : ''}`}>
       {children}
     </div>
   );

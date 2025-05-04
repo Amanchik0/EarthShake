@@ -1,0 +1,283 @@
+/* EventCard styles */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+  background-color: #ddd;
+  border-radius: 4px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.details {
+  flex-grow: 1;
+}
+
+.title {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.info {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.stars {
+  color: #ff69b4;
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.count {
+  font-size: 12px;
+  color: #777;
+  margin-left: 5px;
+}
+
+.button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.button:hover {
+  background-color: #e54b9d;
+}
+
+/* FilterDropdown styles */
+.filterItem {
+  flex-grow: 1;
+  min-width: 150px;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+.filterDropdown {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filterDropdown:focus {
+  border-color: #ff69b4;
+}
+
+/* ViewToggle styles */
+.viewToggle {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.toggleButton {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.toggleButton:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.toggleButton:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.active {
+  background-color: #ff69b4;
+  color: #fff;
+  border-color: #ff69b4;
+}
+
+.toggleButton:hover:not(.active) {
+  background-color: #f5f5f5;
+}
+
+/* MapView styles */
+.mapView {
+  width: 60%;
+  height: 600px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  position: relative;
+}
+
+.mapControls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.mapButton {
+  padding: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-left: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
+}
+
+.mapButton:hover {
+  background-color: #f5f5f5;
+}
+
+.mapPlaceholder {
+  width: 100%;
+  height: 100%;
+  background-color: #e0e0e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.mapPlaceholder img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
+
+.areaSelection {
+  position: absolute;
+  border: 2px dashed #ff69b4;
+  background-color: rgba(255, 105, 180, 0.1);
+  width: 200px;
+  height: 200px;
+  top: 150px;
+  left: 150px;
+}
+
+/* EventsListPage styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #444;
+}
+
+.filterSection {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.listView {
+  width: 100%;
+}
+
+.splitView .listView {
+  width: 40%;
+}
+
+.splitView .mapView {
+  display: block;
+}
+
+.fullMapView .mapView {
+  display: block;
+  width: 100%;
+}
+
+.fullMapView .listView {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+  
+  .contentWrapper {
+    flex-direction: column;
+  }
+  
+  .splitView .listView,
+  .splitView .mapView {
+    width: 100%;
+  }
+}

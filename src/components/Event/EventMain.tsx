@@ -3,16 +3,17 @@ import { Event } from '../../types/types';
 
 interface EventMainProps {
   event: Event;
+  styles: any;
 }
 
-const EventMain: React.FC<EventMainProps> = ({ event }) => {
+const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   const renderStars = () => {
     const stars = [];
     // можно снаружи опционки 
     // я сам забыл что за опицонки имелл ввиду вчера
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <div key={i} className="star" style={{ color: i <= (event.rating ?? 0)  ? 'gold' : 'var(--light-gray)' }}>
+        <div key={i} className={styles.star} style={{ color: i <= (event.rating ?? 0) ? 'gold' : 'var(--light-gray)' }}>
           ★
         </div>
       );
@@ -21,16 +22,16 @@ const EventMain: React.FC<EventMainProps> = ({ event }) => {
   };
 
   return (
-    <section className="event-main">
-      <div className="event-photo">
+    <section className={styles.eventMain}>
+      <div className={styles.eventPhoto}>
         <img src={event.imageUrl} alt="Фото события" />
       </div>
       
-      <div className="event-info">
-        <h1 className="event-title">{event.title}</h1>
+      <div className={styles.eventInfo}>
+        <h1 className={styles.eventTitle}>{event.title}</h1>
         
-        <div className="event-meta">
-          <div className="event-date">
+        <div className={styles.eventMeta}>
+          <div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -40,7 +41,7 @@ const EventMain: React.FC<EventMainProps> = ({ event }) => {
             {event.date}
           </div>
           
-          <div className="event-type">
+          <div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M18 8h1a4 4 0 010 8h-1"></path>
               <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"></path>
@@ -52,24 +53,24 @@ const EventMain: React.FC<EventMainProps> = ({ event }) => {
           </div>
         </div>
         
-        <div className="event-description">
+        <div className={styles.eventDescription}>
           {event.description && event.description.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
         
-        <div className="event-location">
-          <div className="location-title">Местоположение:</div>
+        <div className={styles.eventLocation}>
+          <div className={styles.locationTitle}>Местоположение:</div>
           <div>{event.location}</div>
         </div>
         
-        <div className="event-rating">
+        <div className={styles.eventRating}>
           {renderStars()}
           <span>({event.rating && event.rating.toFixed(1)} / {event.reviewsCount} оценок)</span>
         </div>
         
-        <div className="author-info">
-          <div className="author-avatar">
+        <div className={styles.authorInfo}>
+          <div className={styles.authorAvatar}>
             <img src={event.author.avatarUrl} alt="Автор" />
           </div>
           <div>

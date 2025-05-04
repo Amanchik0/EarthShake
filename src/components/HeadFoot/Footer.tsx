@@ -8,8 +8,8 @@ const Footer: React.FC = () => {
         <div className={styles.footerContent}>
           <div>
             <div className={styles.footerLogo}>
-              <img src="/api/placeholder/40/40" alt="Logo" className={styles.footerLogoImg} />
-              <span className={styles.footerLogoText}>CityVora</span>
+                
+             <span className={styles.footerLogoText}>CityVora</span>
             </div>
             <p className={styles.footerDescription}>
               Платформа для создания и поиска интересных мероприятий, а также для объединения в сообщества по интересам в любом городе Казахстана.

@@ -1,7 +1,8 @@
 import React from 'react';
+import styles from '../../features/Events/EventEditPage.module.css';
+
 
 const EventPhoto: React.FC = () => {
-
   //TODO фотки чтоб норм загружалсиь фиг его как но сделать над 
   
   const handlePhotoUpload = () => {
@@ -9,11 +10,15 @@ const EventPhoto: React.FC = () => {
   };
 
   return (
-    <div className="event-photo">
-      <div className="photo-container">
+    <div className={styles.eventPhoto}>
+      <div className={styles.photoContainer}>
         <img src="/api/placeholder/800/300" alt="Фото события" />
-        <div className="photo-overlay">
-          <button type="button" className="upload-btn" onClick={handlePhotoUpload}>
+        <div className={styles.photoOverlay}>
+          <button 
+            type="button" 
+            className={styles.uploadBtn} 
+            onClick={handlePhotoUpload}
+          >
             Выбрать фото
           </button>
         </div>
@@ -24,3 +29,4 @@ const EventPhoto: React.FC = () => {
 };
 
 export default EventPhoto;
+

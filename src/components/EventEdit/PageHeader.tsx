@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../../features/Events/EventEditPage.module.css';
 
 interface PageHeaderProps {
   title: string;
@@ -7,7 +8,7 @@ interface PageHeaderProps {
 
 const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle }) => {
   return (
-    <div className="page-header">
+    <div className={styles.pageHeader}>
       <h1>{title}</h1>
       <p>{subtitle}</p>
     </div>

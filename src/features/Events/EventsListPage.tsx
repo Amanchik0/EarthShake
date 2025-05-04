@@ -4,7 +4,7 @@ import FilterDropdown from '../../components/EventList/FilterDropdown';
 import ViewToggle from '../../components/EventList/ViewToggle';
 import MapView from '../../components/EventList/MapView';
 import { Event, FilterConfig } from '../../types/types';
-import styles from './EventList.module.css';
+import styles from './EventsListPage.module.css';
 
 const EventsListPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');

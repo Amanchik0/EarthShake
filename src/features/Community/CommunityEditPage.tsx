@@ -1,11 +1,11 @@
 // CommunityEditPage.tsx
 import React, { useState } from 'react';
-import CommunityHeader from '../../components/ComminutyEdit/CommunityHeader';
 import CommunityTabs from '../../components/ComminutyEdit/CommunityTabs';
 import ProfileTab from '../../components/ComminutyEdit/ProfileTab';
 import EventsTab from '../../components/ComminutyEdit/EventsTab';
 import MembersTab from '../../components/ComminutyEdit/MemberTab';
-import './CommunityEditPage.css'
+import styles from './CommunityEditPage.module.css';
+
 const CommunityEditPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'profile' | 'events' | 'members' | 'statistics' | 'settings'>('profile');
   const [showNotification, setShowNotification] = useState(false);
@@ -22,22 +22,20 @@ const CommunityEditPage: React.FC = () => {
   };
 
   return (
-    <div className="community-edit-page">
-      {/* <CommunityHeader onPreview={() => showNotificationMessage('Предпросмотр сохранен!')} /> */}
+    <div className={styles.container}>
       
-      <div className="container">
+      <div className={styles.profileSection}>
         <CommunityTabs activeTab={activeTab} onTabChange={handleTabChange} />
         
-        <div className="tab-contents">
-          {activeTab === 'profile' && <ProfileTab onSave={showNotificationMessage} />}
+        <div className={styles.tabContentActive}>
+          {activeTab === 'profile' && <ProfileTab onSave={(msg) => showNotificationMessage(msg)} />}
           {activeTab === 'events' && <EventsTab />}
           {activeTab === 'members' && <MembersTab />}
-
         </div>
       </div>
 
       {showNotification && (
-        <div className="notification">
+        <div className={styles.notification}>
           {notificationMessage}
         </div>
       )}

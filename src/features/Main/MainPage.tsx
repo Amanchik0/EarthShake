@@ -20,7 +20,7 @@ const MainPage: React.FC = () => {
             </div>
         </div>
     </section>
-
+        {/* TODO доделать карту  */}
     <section className={styles.section}>
         <div className={styles.container}>
             <div className={styles.mapContainer}>

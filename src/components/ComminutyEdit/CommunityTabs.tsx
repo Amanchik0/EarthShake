@@ -1,5 +1,5 @@
-// CommunityTabs.tsx
 import React from 'react';
+import styles from '../../features/Community/CommunityEditPage.module.css';
 
 interface CommunityTabsProps {
   activeTab: 'profile' | 'events' | 'members' | 'statistics' | 'settings';
@@ -8,26 +8,27 @@ interface CommunityTabsProps {
 
 const CommunityTabs: React.FC<CommunityTabsProps> = ({ activeTab, onTabChange }) => {
   return (
-    <div className="nav-tabs">
+    <div className={styles.navTabs}>
       <div 
-        className={`tab ${activeTab === 'profile' ? 'active' : ''}`} 
+        className={`${styles.tab} ${activeTab === 'profile' ? styles.active : ''}`}
         onClick={() => onTabChange('profile')}
       >
         Профиль сообщества
       </div>
+
       <div 
-        className={`tab ${activeTab === 'events' ? 'active' : ''}`} 
+        className={`${styles.tab} ${activeTab === 'events' ? styles.active : ''}`}
         onClick={() => onTabChange('events')}
       >
         События
       </div>
+
       <div 
-        className={`tab ${activeTab === 'members' ? 'active' : ''}`} 
+        className={`${styles.tab} ${activeTab === 'members' ? styles.active : ''}`}
         onClick={() => onTabChange('members')}
       >
         Участники
       </div>
-      
     </div>
   );
 };

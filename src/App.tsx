@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
-import MainPage from './features/Main/MainPage';
+import MainPage from './features/main/MainPage';
 import EventPage from './features/Events/EventPage';
 import EventsListPage from './features/Events/EventsListPage';
 import Header from './components/HeadFoot/Header';
@@ -29,7 +29,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const data = { emergency: false };  // флажка на модалку 
+      const data = { emergency: false 
+
+       };  // флажка на модалку 
       
       setIsEmergency(data.emergency);
 

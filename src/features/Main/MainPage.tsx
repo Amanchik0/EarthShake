@@ -1,7 +1,14 @@
 import React from 'react';
 import styles from './mainStyle.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const MainPage: React.FC = () => {
+    const navigate = useNavigate()
+    const handleFirst = () => {
+        navigate('/auth');
+      };
+
+    
   return (
     <div className={styles.pageWrapper}>
       

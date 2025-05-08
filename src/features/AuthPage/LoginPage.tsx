@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import styles from './AuthPage.module.css';
 
+type FormDataState = {
+  readonly email: string;
+  readonly password: string
+}
+
 const LoginPage: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataState>({
     email: '',
     password: ''
   });

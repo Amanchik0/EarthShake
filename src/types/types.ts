@@ -1,3 +1,33 @@
+type DeepReadonly<Obj extends Record<string, unknown> | ReadonlyArray<unknown> | undefined> = {
+  +readonly [Key in keyof Obj]: Obj[Key] extends Record<string, unknown> | ReadonlyArray<unknown> | undefined 
+    ? DeepReadonly<Obj[Key]> 
+    : Obj[Key]
+} & unknown
+// todo надо будет все типы поменять и сделать так чтобы везде были читаемые 
+
+type EventTest = DeepReadonly<{
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  description?: string[];
+  location?: string;
+  rating?: number;
+  reviewsCount?: number;
+  imageUrl?: string;
+  tag: 'regular' | 'emergency';
+  author: {
+    name: string;
+    role: string;
+    avatarUrl: string;
+  };
+price?: string;
+}>
+
+// const x: EventTest = {}
+
+// x.author.name = 'sadfdsfds'
+
 export interface Event {
     id: string;
     title: string;

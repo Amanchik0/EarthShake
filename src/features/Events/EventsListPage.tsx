@@ -136,7 +136,7 @@ const EventsListPage: React.FC = () => {
 
   const filteredEvents = events.filter((event) => {
     if (filters.category && event.type !== filters.category) return false;
-    // Здесь можно добавить дополнительную фильтрацию по дате и локации
+    // надо добавить дополнительную фильтрацию по дате и локации
     return true;
   });
 

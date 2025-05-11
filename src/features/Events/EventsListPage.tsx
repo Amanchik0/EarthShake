@@ -50,10 +50,10 @@ const EventsListPage: React.FC = () => {
   const events: Event[] = [
     {
       id: '1',
-      title: 'Концерт группы "Звезды"',
-      date: '25 апреля, 19:00',
-      location: 'Концертный зал "Гармония"',
-      price: 'от 1500 руб.',
+      title: 'Парад ',
+      date: '9 мая , 19:00',
+      location: 'Площадь',
+      price: '0 тг ',
       rating: 4,
       reviewsCount: 42,
       imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
@@ -68,9 +68,9 @@ const EventsListPage: React.FC = () => {
     {
       id: '2',
       title: 'Выставка современного искусства',
-      date: '20-30 апреля',
-      location: 'Галерея "Модерн"',
-      price: '800 руб.',
+      date: '9 мая ',
+      location: 'Музей',
+      price: '800 тг.',
       rating: 5,
       reviewsCount: 78,
       imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',

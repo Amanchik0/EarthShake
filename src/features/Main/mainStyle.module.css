@@ -183,7 +183,17 @@
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     text-align: center;
+      width: 100%;
+  height: 500px; 
 }
+.mapWrapper {
+  width: 100%;
+  height: 500px; /* Фиксированная высота обязательна! */
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 
 .mapTitle {
     font-size: 24px;
@@ -572,5 +582,5 @@
 }
 
 .appFooterBottomLink:hover {
-    color: white;
+    color: B;
 }

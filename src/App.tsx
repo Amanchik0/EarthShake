@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
-import MainPage from './features/main/MainPage';
+import MainPage from './features/Main/MainPage';
 import EventPage from './features/Events/EventPage';
 import EventsListPage from './features/Events/EventsListPage';
 import Header from './components/HeadFoot/Header';
@@ -69,7 +69,7 @@ const App: React.FC = () => {
             <Route path="/" element={<MainPage />} />
             <Route path="/events" element={<EventsListPage />} />
             <Route path="/events/:id" element={<EventPage />} />
-            <Route path="/communities" element={<CommunityPage />} />
+            <Route path="/communities/:id" element={<CommunityPage />} />
             <Route path="/evacuation" element={<EvacuationPage />} />
             <Route path="/reference" element={<ReferencePage />} />
             <Route path="/support" element={<SupportPage />} />
@@ -82,7 +82,7 @@ const App: React.FC = () => {
                 <ProfilePage />
               </ProtectedRoute>
             } />
-            <Route path="/events/edit/:id" element={
+            <Route path="/  /:id" element={
               <ProtectedRoute>
                 <EventEditPage />
               </ProtectedRoute>

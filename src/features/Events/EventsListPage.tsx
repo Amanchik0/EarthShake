@@ -3,13 +3,22 @@ import EventCard from '../../components/EventList/EventCard';
 import FilterDropdown from '../../components/EventList/FilterDropdown';
 import ViewToggle from '../../components/EventList/ViewToggle';
 import MapView from '../../components/EventList/MapView';
-import { Event, FilterConfig } from '../../types/types';
 import styles from './EventsListPage.module.css';
+import { EventDetails } from '../../types/event';
 
+  export interface FilterConfig {
+    readonly label: string;
+    readonly options: FilterOption[];
+  }
+    export interface FilterOption {
+    readonly value: string;
+    readonly label: string;
+  }
+  
 const EventsListPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
   const [isFullMap, setIsFullMap] = useState(false);
-
+// todo api 
   const filterConfigs: FilterConfig[] = [
     {
       label: 'Категория',
@@ -47,9 +56,9 @@ const EventsListPage: React.FC = () => {
     location: '',
   });
 
-  const events: Event[] = [
+  const events: EventDetails[] = [
     {
-      id: '1',
+      id: "1",
       title: 'Парад ',
       date: '9 мая , 19:00',
       location: 'Площадь',

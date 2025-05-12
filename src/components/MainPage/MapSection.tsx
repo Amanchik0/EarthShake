@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../features/Main/mainStyle.module.css';
 import Map, { Emergency } from '../MapComponent'; // Импортируем ваш компонент карты
-// TODO 
+// TODO прям жирный косяк надо исправить 
 //нет сейчас без исправлении все работает там просто не отображалось 
 // теперь другой вопрос 
 // почему то радиус не показывается 

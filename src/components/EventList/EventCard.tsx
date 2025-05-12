@@ -2,9 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Event } from '../../types/types';
 import styles from '../../features/Events/EventsListPage.module.css';
+import { EventDetails } from '../../types/event';
 
 interface EventCardProps {
-  event: Event;
+  event: EventDetails;
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {

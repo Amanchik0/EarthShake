@@ -66,15 +66,8 @@ export interface Event {
   }
 
   
-  export interface FilterOption {
-    value: string;
-    label: string;
-  }
-  
-  export interface FilterConfig {
-    label: string;
-    options: FilterOption[];
-  }
+
+
   export interface Community {
   id: string;
   name: string;

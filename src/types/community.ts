@@ -1,5 +1,5 @@
  export  interface Community {
-    id: number;
+    id: String;
     name: string;
     description: string;
     imageUrl: string;

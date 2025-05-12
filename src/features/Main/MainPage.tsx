@@ -14,7 +14,7 @@ const MainPage: React.FC = () => {
 
     const mockEvents = [
         {
-            id: 1,
+            id: "1",
             title: 'IT-конференция Kazakhstan Digital 2025',
             description: 'Ежегодная конференция для профессионалов IT-индустрии со всего Казахстана.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
@@ -22,7 +22,7 @@ const MainPage: React.FC = () => {
             location: 'Алматы'
         },
         {
-            id: 2,
+            id: "2",
             title: 'Фестиваль стартапов Astana Hub',
             description: 'Презентация инновационных проектов и нетворкинг с инвесторами.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
@@ -30,7 +30,7 @@ const MainPage: React.FC = () => {
             location: 'Нур-Султан'
         },
         {
-            id: 5,
+            id: "5",
             title: 'Эко-фестиваль "Зеленый Казахстан"',
             description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
@@ -38,7 +38,7 @@ const MainPage: React.FC = () => {
             location: 'Шымкент'
         },
          {
-            id: 4,
+            id: "4",
             title: 'Эко-фестиваль "Зеленый Казахстан"',
             description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
@@ -46,7 +46,7 @@ const MainPage: React.FC = () => {
             location: 'Шымкент'
         },
          {
-            id: 3,
+            id: "3",
             title: 'Эко-фестиваль "Зеленый Казахстан"',
             description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
@@ -57,35 +57,35 @@ const MainPage: React.FC = () => {
     ];
     const mockCommunities = [
         {
-            id: 1,
+            id: '1',
             name: 'IT-специалисты Казахстана',
             description: 'Сообщество для обмена опытом и знаниями в области информационных технологий.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             numberMembers: 3245
         },
         {
-            id: 2,
+            id: "2",
             name: 'Бизнес-сообщество',
             description: 'Обсуждение актуальных тем бизнеса и предпринимательства.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             numberMembers: 1200
         },
         {
-            id: 3,
+            id: "3",
             name: 'Творческие люди',
             description: 'Сообщество для художников, музыкантов и творческих личностей.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             numberMembers: 1500
         }, 
          {
-            id: 4,
+            id: "4",
             name: 'IT-специалисты Казахстана',
             description: 'Сообщество для обмена опытом и знаниями в области информационных технологий.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             numberMembers: 3245
         },
          {
-            id: 5,
+            id: "5",
             name: 'IT-специалисты Казахстана',
             description: 'Сообщество для обмена опытом и знаниями в области информационных технологий.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',

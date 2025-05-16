@@ -21,6 +21,7 @@ import LoginPage from './features/AuthPage/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import EmergencyNotification from './features/Emergency/EmergencyNotification';
 import CommunitiesListPage from './features/Community/CommunitiesListPage/CommunitiesListPage';
+import CommunityCreatePage from './features/Community/CommunityCreatePage/CommunityCreatePage';
 
 const App: React.FC = () => {
 
@@ -94,6 +95,10 @@ const App: React.FC = () => {
               <ProtectedRoute>
                 <EventEditPage />
               </ProtectedRoute>
+            } />
+            <Route path="/communities/create" element={
+                <CommunityCreatePage />
+
             } />
             <Route path="/communities/edit/:id" element={
               <ProtectedRoute>

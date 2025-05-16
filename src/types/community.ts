@@ -18,3 +18,11 @@ export interface CommunityDetails extends Community {
   category: string;
   
 }
+export interface CommunityCreate extends Community {
+  name: string;
+  description: string | string[];
+  imageUrl: string;
+  category?: string;
+  location?: string;
+  dopDescription?: string[];
+}

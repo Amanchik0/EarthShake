@@ -44,7 +44,7 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
         <button
           className={styles.joinButton}
           onClick={(e) => {
-            e.stopPropagation(); // Останавливаем всплытие события, чтобы не срабатывал `handleNavigate`
+            e.stopPropagation(); 
             handleJoin();
           }}
         >

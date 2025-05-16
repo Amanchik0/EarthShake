@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Event } from '../../types/types';
 import styles from '../../features/Events/EventsListPage.module.css';
 import { EventDetails } from '../../types/event';
 
@@ -31,7 +30,9 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     }
     return stars;
   };
-
+console.log('====================================');
+console.log(event);
+console.log('====================================');
   return (
     <div className={styles.card} onClick={handleCardClick}>
       <div className={styles.image}>
@@ -40,7 +41,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <div className={styles.details}>
         <h3 className={styles.title}>{event.title}</h3>
         <p className={styles.info}><strong>Дата:</strong> {event.date}</p>
-        <p className={styles.info}><strong>Место:</strong> {event.location}</p>
+        <p className={styles.info}><strong>Место:</strong> {event.city}</p>
         <p className={styles.info}><strong>Цена:</strong> {event.price}</p>
         <div className={styles.footer}>
           <div className={styles.rating}>

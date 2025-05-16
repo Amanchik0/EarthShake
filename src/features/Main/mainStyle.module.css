@@ -188,7 +188,7 @@
 }
 .mapWrapper {
   width: 100%;
-  height: 500px; /* Фиксированная высота обязательна! */
+  height: 600px;
   position: relative;
   border-radius: 8px;
   overflow: hidden;

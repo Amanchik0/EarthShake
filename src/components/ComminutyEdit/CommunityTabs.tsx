@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../features/Community/CommunityEditPage.module.css';
+import styles from '../../features/Community/CommunityEditPage/CommunityEditPage.module.css';
 
 interface CommunityTabsProps {
   activeTab: 'profile' | 'events' | 'members' | 'statistics' | 'settings';

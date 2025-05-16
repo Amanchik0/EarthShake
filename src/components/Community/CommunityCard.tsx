@@ -1,18 +1,25 @@
 import React from 'react';
-import { Community } from '../../types/types';
+import { useNavigate } from 'react-router-dom';
 import styles from './CommunityCard.module.css';
+import { CommunityDetails } from '../../types/community';
 
 interface CommunityCardProps {
-  community: Community;
+  community: CommunityDetails;
 }
 
 const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
+  const navigate = useNavigate();
+
   const handleJoin = () => {
     console.log('Join community:', community.id);
   };
-  
+
+  const handleNavigate = () => {
+    navigate(`/communities/${community.id}`);
+  };
+
   return (
-    <div className={styles.communityCard}>
+    <div className={styles.communityCard} onClick={handleNavigate}>
       <div className={styles.header}>
         {community.coverUrl && (
           <img src={community.coverUrl} alt={community.name} />
@@ -27,14 +34,20 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
         
         <div className={styles.info}>
           <div>
-            {community.membersCount.toLocaleString()} участников
+            {community.numberMembers} участников
           </div>
           <div>
             {community.location}
           </div>
         </div>
         
-        <button className={styles.joinButton} onClick={handleJoin}>
+        <button
+          className={styles.joinButton}
+          onClick={(e) => {
+            e.stopPropagation(); // Останавливаем всплытие события, чтобы не срабатывал `handleNavigate`
+            handleJoin();
+          }}
+        >
           {community.isMember ? 'Вы участник' : 'Вступить'}
         </button>
       </div>

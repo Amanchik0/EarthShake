@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 
-import MainPage from './features/Main/MainPage';
+import MainPage from './features/main/MainPage';
 import EventPage from './features/Events/EventPage';
 import EventsListPage from './features/Events/EventsListPage';
 import Header from './components/HeadFoot/Header';
 import Footer from './components/HeadFoot/Footer';
-import CommunityPage from './features/Community/CommunityPage';
+import CommunityPage from './features/Community/CommunityPage/CommunityPage';
 import EvacuationPage from './features/Evacuation/EvacuationPage';
 import ProfilePage from './features/Profile/ProfilePage';
 import ProfileEditPage from './features/Profile/ProfileEditPage';
@@ -14,12 +14,13 @@ import EventEditPage from './features/Events/EventEditPage';
 import ReferencePage from './features/Reference/ReferencePage';
 import SupportPage from './features/Support/SupportPage';
 import AdminPage from './features/Admin/AdminPage';
-import CommunityEditPage from './features/Community/CommunityEditPage';
+import CommunityEditPage from './features/Community/CommunityEditPage/CommunityEditPage';
 import NotFoundPage from './features/NotFoundPage/NotFoundPage';
 import AuthPage from './features/AuthPage/AuthPage';
 import LoginPage from './features/AuthPage/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import EmergencyNotification from './features/Emergency/EmergencyNotification';
+import CommunitiesListPage from './features/Community/CommunitiesListPage/CommunitiesListPage';
 
 const App: React.FC = () => {
 
@@ -70,6 +71,8 @@ const App: React.FC = () => {
             <Route path="/events" element={<EventsListPage />} />
             <Route path="/events/:id" element={<EventPage />} />
             <Route path="/communities/:id" element={<CommunityPage />} />
+            <Route path="/communities/" element={<CommunitiesListPage />} />
+
             <Route path="/evacuation" element={<EvacuationPage />} />
             <Route path="/reference" element={<ReferencePage />} />
             <Route path="/support" element={<SupportPage />} />

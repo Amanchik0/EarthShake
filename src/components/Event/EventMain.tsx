@@ -1,8 +1,8 @@
 import React from 'react';
-import { Event } from '../../types/types';
+import { EventDetails } from '../../types/event';
 
 interface EventMainProps {
-  event: Event;
+  event: EventDetails;
   styles: any;
 }
 
@@ -10,7 +10,6 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   const renderStars = () => {
     const stars = [];
     // можно снаружи опционки 
-    // я сам забыл что за опицонки имелл ввиду вчера
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <div key={i} className={styles.star} style={{ color: i <= (event.rating ?? 0) ? 'gold' : 'var(--light-gray)' }}>
@@ -54,14 +53,16 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
         </div>
         
         <div className={styles.eventDescription}>
-          {event.description && event.description.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-        </div>
+  {Array.isArray(event.description)
+    ? event.description.map((paragraph, index) => (
+        <p key={index}>{paragraph}</p>
+      ))
+    : <p>{event.description}</p>}
+</div>
         
         <div className={styles.eventLocation}>
           <div className={styles.locationTitle}>Местоположение:</div>
-          <div>{event.location}</div>
+          <div>{event.city}</div>
         </div>
         
         <div className={styles.eventRating}>

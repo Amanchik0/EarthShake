@@ -4,24 +4,109 @@ import FilterDropdown from '../../components/EventList/FilterDropdown';
 import ViewToggle from '../../components/EventList/ViewToggle';
 import MapView from '../../components/EventList/MapView';
 import styles from './EventsListPage.module.css';
+import { parse, format, isToday, isThisWeek, isThisMonth, } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import { EventDetails } from '../../types/event';
+import { Link } from 'react-router-dom';
 
-  export interface FilterConfig {
-    readonly label: string;
-    readonly options: FilterOption[];
-  }
-    export interface FilterOption {
-    readonly value: string;
-    readonly label: string;
-  }
-  
+export interface FilterConfig {
+  readonly label: string;
+  readonly options: FilterOption[];
+}
+
+export interface FilterOption {
+  readonly value: string;
+  readonly label: string;
+}
+export const events: EventDetails[] = [
+  {
+    id: "1",
+    title: 'Парад',
+    date: '19.05.2025, 10:00',
+    description: 'Грандиозный парад в центре города.',
+    imageUrl: 'https://example.com/parade.jpg',
+    city: 'Алматы',
+    type: '1',
+    rating: 4,
+    reviewsCount: 42,
+    tag: 'emergency',
+    author: {
+      name: 'Иван Иванов',
+      role: 'Организатор',
+      avatarUrl: 'https://example.com/avatar1.jpg',
+    },
+    price: '0 тг',
+    lat: 43.2567,
+    lng: 76.9286,
+  },
+  {
+    id: '2',
+    title: 'Выставка современного искусства',
+    date: '19.05.2025, 10:00',
+    description: 'Уникальная выставка современных художников.',
+    imageUrl: 'https://example.com/art.jpg',
+    city: 'Музей (Север)',
+    type: '3',
+    rating: 5,
+    reviewsCount: 78,
+    tag: 'regular',
+    author: {
+      name: 'Иван Иванов',
+      role: 'Организатор',
+      avatarUrl: 'https://example.com/avatar2.jpg',
+    },
+    price: '800 тг',
+    lat: 43.2389,
+    lng: 76.8897,
+  },
+  {
+    id: '3',
+    title: 'Футбольный матч',
+    date: '25.05.2025, 10:00',
+    description: 'Матч между лучшими командами страны.',
+    imageUrl: 'https://example.com/football.jpg',
+    city: 'Стадион "Победа" (Юг)',
+    type: '4',
+    rating: 3,
+    reviewsCount: 126,
+    tag: 'regular',
+          author: {
+      name: 'Иван Иванов',
+      role: 'Организатор',
+      avatarUrl: 'https://example.com/avatar3.jpg',
+    },
+    price: 'от 1000 руб.',
+    lat: 43.2000,
+    lng: 76.8500,
+  },
+  {
+    id: '4',
+    title: 'Мастер-класс по кулинарии',
+    date: '30.05.2025, 10:00',
+    description: 'Научитесь готовить блюда высокой кухни.',
+    imageUrl: 'https://example.com/cooking.jpg',
+    city: 'Кулинарная студия "Вкусно" (Центр)',
+    type: '2',
+    rating: 4,
+    reviewsCount: 31,
+    tag: 'regular',
+    author: {
+      name: 'Иван Иванов',
+      role: 'Организатор',
+      avatarUrl: 'https://example.com/avatar4.jpg',
+    },
+    price: '2500 руб.',
+    lat: 43.2500,
+    lng: 76.9000,
+  },
+];
 const EventsListPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
   const [isFullMap, setIsFullMap] = useState(false);
-// todo api 
+
   const filterConfigs: FilterConfig[] = [
     {
-      label: 'Категория',
+      label: 'category',
       options: [
         { value: '', label: 'Все категории' },
         { value: '1', label: 'Концерты' },
@@ -31,7 +116,7 @@ const EventsListPage: React.FC = () => {
       ],
     },
     {
-      label: 'Дата',
+      label: 'date',
       options: [
         { value: '', label: 'Все даты' },
         { value: 'today', label: 'Сегодня' },
@@ -40,12 +125,11 @@ const EventsListPage: React.FC = () => {
       ],
     },
     {
-      label: 'Локация',
+      label: 'location',
       options: [
         { value: '', label: 'Все локации' },
-        { value: 'center', label: 'Центр' },
-        { value: 'north', label: 'Север' },
-        { value: 'south', label: 'Юг' },
+        { value: 'Almaty', label: 'Алматы' },
+        { value: 'Astana', label: 'Астана' },
       ],
     },
   ];
@@ -56,82 +140,13 @@ const EventsListPage: React.FC = () => {
     location: '',
   });
 
-  const events: EventDetails[] = [
-    {
-      id: "1",
-      title: 'Парад ',
-      date: '9 мая , 19:00',
-      location: 'Площадь',
-      price: '0 тг ',
-      rating: 4,
-      reviewsCount: 42,
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
-      type: '1',
-      tag: 'regular',
-      author: {
-        name: 'Иван Иванов',
-        role: 'Организатор',
-        avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
-      }
-    },
-    {
-      id: '2',
-      title: 'Выставка современного искусства',
-      date: '9 мая ',
-      location: 'Музей',
-      price: '800 тг.',
-      rating: 5,
-      reviewsCount: 78,
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
-      type: '3',
-      tag: 'regular',
-      author: {
-        name: 'Иван Иванов',
-        role: 'Организатор',
-        avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
-      }
-    },
-    {
-      id: '3',
-      title: 'Футбольный матч',
-      date: '27 апреля, 16:00',
-      location: 'Стадион "Победа"',
-      price: 'от 1000 руб.',
-      rating: 3,
-      reviewsCount: 126,
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
-      type: '4',
-      tag: 'regular',
-      author: {
-        name: 'Иван Иванов',
-        role: 'Организатор',
-        avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
-      }
-    },
-    {
-      id: '4',
-      title: 'Мастер-класс по кулинарии',
-      date: '22 апреля, 12:00',
-      location: 'Кулинарная студия "Вкусно"',
-      price: '2500 руб.',
-      rating: 4,
-      reviewsCount: 31,
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
-      type: '2',
-      tag: 'regular',
-      author: {
-        name: 'Иван Иванов',
-        role: 'Организатор',
-        avatarUrl: 'https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk='
-      }
-    },
-  ];
+ 
 
   const handleFilterChange = (filterName: string, value: string) => {
-    setFilters({
-      ...filters,
+    setFilters(prev => ({
+      ...prev,
       [filterName]: value,
-    });
+    }));
   };
 
   const toggleFullMap = () => {
@@ -143,9 +158,36 @@ const EventsListPage: React.FC = () => {
     }
   };
 
-  const filteredEvents = events.filter((event) => {
+  const parseEventDate = (dateString: string): Date => {
+    return parse(dateString, 'dd.MM.yyyy, HH:mm', new Date());
+  };
+
+  const filteredEvents = events.filter(event => {
+    // Фильтрация по категории
     if (filters.category && event.type !== filters.category) return false;
-    // надо добавить дополнительную фильтрацию по дате и локации
+    
+    // Фильтрация по локации
+    if (filters.location) {
+      const locationPart = event.city.split('(')[1]?.replace(')', '').trim();
+      if (locationPart !== filters.city) return false;
+    }
+    
+    // Фильтрация по дате
+    if (filters.date) {
+      const eventDate = parseEventDate(event.date);
+      
+      switch (filters.date) {
+        case 'today':
+          return isToday(eventDate);
+        case 'week':
+          return isThisWeek(eventDate, { weekStartsOn: 1 });
+        case 'month':
+          return isThisMonth(eventDate);
+        default:
+          return true;
+      }
+    }
+    
     return true;
   });
 
@@ -160,10 +202,11 @@ const EventsListPage: React.FC = () => {
           {filterConfigs.map((filter) => (
             <FilterDropdown
               key={filter.label}
-              label={filter.label}
+              label={filter.label === 'category' ? 'Категория' : 
+                    filter.label === 'date' ? 'Дата' : 'Локация'}
               options={filter.options}
-              value={filters[filter.label.toLowerCase()] || ''}
-              onChange={(value) => handleFilterChange(filter.label.toLowerCase(), value)}
+              value={filters[filter.label] || ''}
+              onChange={(value) => handleFilterChange(filter.label, value)}
             />
           ))}
         </div>
@@ -177,13 +220,33 @@ const EventsListPage: React.FC = () => {
           ${viewMode === 'map' ? styles.fullMapView : ''}`}
       >
         <div className={styles.listView}>
-          {filteredEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event) => (
+              <EventCard 
+                key={event.id} 
+                event={{
+                  ...event,
+                  date: format(parseEventDate(event.date), 'dd MMMM, EEEEEE', { locale: ru })
+                }} 
+              />
+            ))
+          ) : (
+            <div className={styles.noResults}>Событий не найдено</div>
+          )}
         </div>
         
         {(viewMode === 'split' || viewMode === 'map') && (
-          <MapView isFullMap={isFullMap} onToggleFullMap={toggleFullMap} />
+        <MapView 
+        isFullMap={isFullMap} 
+        onToggleFullMap={toggleFullMap} 
+        events={filteredEvents.map(event => ({
+          ...event,
+          lat: event.lat || 0, // Убедимся, что координаты есть
+          lng: event.lng || 0,
+          tag: event.tag as 'regular' , // Приведение типа
+          city: event.city || '', // Убедимся, что city всегда есть
+        }))}
+      />
         )}
       </div>
     </div>

@@ -68,21 +68,7 @@ export interface Event {
   
 
 
-  export interface Community {
-  id: string;
-  name: string;
-  location: string;
-  createdAt: string;
-  description: string[];
-  avatarUrl: string;
-  coverUrl?: string;
-  membersCount: number;
-  eventsCount: number;
-  rating: number;
-  postsCount: number;
-  isMember: boolean;
-}
-
+  
 export interface Community {
   id: string;
   name: string;

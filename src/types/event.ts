@@ -2,10 +2,11 @@ export interface Event {
     readonly id: string;
     readonly title: string;
     readonly date: string;
-    readonly description?: string;
+    readonly description?: string  | string[];  
     
     readonly imageUrl: string;
-    readonly location: string;
+    readonly city: string;
+
 }
 
 export interface EventDetails extends Event {
@@ -18,7 +19,7 @@ export interface EventDetails extends Event {
       readonly role: string;
       readonly avatarUrl: string;
     };
-
     readonly price?: string;
-
+    readonly lat: number;
+    readonly lng?: number;
   }

@@ -1,16 +1,16 @@
 import React from 'react';
-import CommunityHeader from '../../components/Community/CommunityHeader';
-import StatisticsBar from '../../components/Community/StatisticsBar';
-import AdminCard from '../../components/Community/AdminCard';
-import EventCard from '../../components/Community/EventCard';
-import MemberItem from '../../components/Community/MemberItem';
-import CommunityCard from '../../components/Community/CommunityCard';
+import CommunityHeader from '../../../components/Community/CommunityHeader';
+import StatisticsBar from '../../../components/Community/StatisticsBar';
+import AdminCard from '../../../components/Community/AdminCard';
+import EventCard from '../../../components/Community/EventCard';
+import MemberItem from '../../../components/Community/MemberItem';
+import CommunityCard from '../../../components/Community/CommunityCard';
 import { 
   Community, 
   Admin, 
   CommunityEvent, 
   Member 
-} from '../../types/types';
+} from '../../../types/types';
 import styles from './CommunityPage.module.css';
 
 const CommunityPage: React.FC = () => {

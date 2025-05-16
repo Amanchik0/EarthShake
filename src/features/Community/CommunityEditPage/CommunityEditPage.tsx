@@ -1,9 +1,9 @@
 // CommunityEditPage.tsx
 import React, { useState } from 'react';
-import CommunityTabs from '../../components/ComminutyEdit/CommunityTabs';
-import ProfileTab from '../../components/ComminutyEdit/ProfileTab';
-import EventsTab from '../../components/ComminutyEdit/EventsTab';
-import MembersTab from '../../components/ComminutyEdit/MemberTab';
+import CommunityTabs from '../../../components/ComminutyEdit/CommunityTabs';
+import ProfileTab from '../../../components/ComminutyEdit/ProfileTab';
+import EventsTab from '../../../components/ComminutyEdit/EventsTab';
+import MembersTab from '../../../components/ComminutyEdit/MemberTab';
 import styles from './CommunityEditPage.module.css';
 
 const CommunityEditPage: React.FC = () => {

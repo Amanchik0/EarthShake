@@ -19,7 +19,7 @@ const MainPage: React.FC = () => {
             description: 'Ежегодная конференция для профессионалов IT-индустрии со всего Казахстана.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             date: '27 апреля',
-            location: 'Алматы'
+            city: 'Алматы'
         },
         {
             id: "2",
@@ -27,7 +27,7 @@ const MainPage: React.FC = () => {
             description: 'Презентация инновационных проектов и нетворкинг с инвесторами.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             date: '15 мая',
-            location: 'Нур-Султан'
+            city: 'Нур-Султан'
         },
         {
             id: "5",
@@ -35,7 +35,7 @@ const MainPage: React.FC = () => {
             description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             date: '5 июня',
-            location: 'Шымкент'
+            city: 'Шымкент'
         },
          {
             id: "4",
@@ -43,7 +43,7 @@ const MainPage: React.FC = () => {
             description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             date: '5 июня',
-            location: 'Шымкент'
+            city: 'Шымкент'
         },
          {
             id: "3",
@@ -51,7 +51,7 @@ const MainPage: React.FC = () => {
             description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
             imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
             date: '5 июня',
-            location: 'Шымкент'
+            city: 'Шымкент'
         }
 
     ];
@@ -133,22 +133,8 @@ const MainPage: React.FC = () => {
     <div className={styles.pageWrapper}>
       
       <main>
-      {/* <section className={styles.heroSection}>
-        <div className={styles.container}>
-            <div className={styles.heroContent}>
-                <div className={styles.heroText}>
-                    <h1 className={styles.heroTitle}>Объединяем людей через <span>события</span> по всему Казахстану</h1>
-                    <p className={styles.heroDescription}>Cityvora — платформа для создания и поиска интересных мероприятий, а также для объединения в сообщества по интересам в любом городе Казахстана.</p>
-                    <a href="#" className={styles.ctaButton}>Начать участвовать</a>
-                </div>
-                <div className={styles.heroImage}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Hero Image"/>
-                </div>
-            </div>
-        </div>
-    </section> */}
+
     <HeroSection />
-            {/* TODO доделать карту  */}
     <MapSection />
     <EventSection events={events}  onEventClick={handleEventClick}/>
     <CommunitySection communities={communities} onCommunityClick={handleCommunityClick}/>

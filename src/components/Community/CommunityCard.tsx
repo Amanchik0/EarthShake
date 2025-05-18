@@ -17,7 +17,6 @@ const CommunityCard: React.FC<CommunityCardProps> = ({ community }) => {
   const handleNavigate = () => {
     navigate(`/communities/${community.id}`);
   };
-
   return (
     <div className={styles.communityCard} onClick={handleNavigate}>
       <div className={styles.header}>

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import styles from '../../features/Events/EventEditPage.module.css';
+import styles from '../../features/Events/EventEditPage/EventEditPage.module.css';
 
 interface FormRowProps {
   children: ReactNode;

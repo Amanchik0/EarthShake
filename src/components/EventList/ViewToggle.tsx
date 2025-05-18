@@ -1,4 +1,4 @@
-import styles from '../../features/Events/EventsListPage.module.css';
+import styles from '../../features/Events/EventsListPage/EventsListPage.module.css';
 import React from 'react';
 
 type ViewMode = 'list' | 'split' | 'map';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../../features/Events/EventsListPage.module.css';
+import styles from '../../features/Events/EventsListPage/EventsListPage.module.css';
 import Map from '../MapComponent'; // Импортируем компонент карты
 import { EventDetails } from '../../types/event';
 import type { Feature, Polygon } from 'geojson';

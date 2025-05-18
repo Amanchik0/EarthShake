@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import PageHeader from '../../components/EventEdit/PageHeader';
-import FormSection from '../../components/EventEdit/FormSection';
-import FormButtons from '../../components/EventEdit/FormButtons';
-import FormRow from '../../components/EventEdit/FormRow';
-import EventPhoto from '../../components/EventEdit/EventPhoto';
-import FormGroup from '../../components/EventEdit/FormGroup';
+import PageHeader from '../../../components/EventEdit/PageHeader';
+import FormSection from '../../../components/EventEdit/FormSection';
+import FormButtons from '../../../components/EventEdit/FormButtons';
+import FormRow from '../../../components/EventEdit/FormRow';
+import EventPhoto from '../../../components/EventEdit/EventPhoto';
+import FormGroup from '../../../components/EventEdit/FormGroup';
 import styles from './EventEditPage.module.css';
 
 const EventEditPage: React.FC = () => {

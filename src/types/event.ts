@@ -22,4 +22,11 @@ export interface EventDetails extends Event {
     readonly price?: string;
     readonly lat: number;
     readonly lng?: number;
+    readonly score?: number;
+    readonly mediaUrl?: string;
+    readonly dateTime: string;
+    readonly content?: string;
+    readonly location?: {
+      readonly coordinates: [number, number];
+    };
   }

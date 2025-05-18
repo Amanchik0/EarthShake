@@ -7,12 +7,25 @@ interface EventMainProps {
 }
 
 const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
+  // Функция для форматирования даты
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString('ru-RU', options);
+  };
+
   const renderStars = () => {
     const stars = [];
-    // можно снаружи опционки 
+    const rating = event.score || 0; // Используем score вместо rating
+    
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <div key={i} className={styles.star} style={{ color: i <= (event.rating ?? 0) ? 'gold' : 'var(--light-gray)' }}>
+        <div key={i} className={styles.star} style={{ color: i <= rating ? 'gold' : 'var(--light-gray)' }}>
           ★
         </div>
       );
@@ -22,9 +35,11 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
 
   return (
     <section className={styles.eventMain}>
-      <div className={styles.eventPhoto}>
-        <img src={event.imageUrl} alt="Фото события" />
-      </div>
+      {event.mediaUrl && (
+        <div className={styles.eventPhoto}>
+          <img src={event.mediaUrl} alt="Фото события" />
+        </div>
+      )}
       
       <div className={styles.eventInfo}>
         <h1 className={styles.eventTitle}>{event.title}</h1>
@@ -37,7 +52,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
               <line x1="8" y1="2" x2="8" y2="6"></line>
               <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            {event.date}
+            {formatDate(event.dateTime)}
           </div>
           
           <div>
@@ -53,32 +68,39 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
         </div>
         
         <div className={styles.eventDescription}>
-  {Array.isArray(event.description)
-    ? event.description.map((paragraph, index) => (
-        <p key={index}>{paragraph}</p>
-      ))
-    : <p>{event.description}</p>}
-</div>
+          {event.description && <p>{event.description}</p>}
+          {event.content && <p>{event.content}</p>}
+        </div>
         
         <div className={styles.eventLocation}>
           <div className={styles.locationTitle}>Местоположение:</div>
-          <div>{event.city}</div>
+          <div>
+            {event.city}
+            {event.location && (
+              <span>, координаты: {event.location.coordinates.join(', ')}</span>
+            )}
+          </div>
         </div>
         
         <div className={styles.eventRating}>
           {renderStars()}
-          <span>({event.rating && event.rating.toFixed(1)} / {event.reviewsCount} оценок)</span>
+          <span>({event.score ? event.score.toFixed(1) : '0.0'} / {event.usersIds?.length || 0} участников)</span>
         </div>
         
-        <div className={styles.authorInfo}>
-          <div className={styles.authorAvatar}>
-            <img src={event.author.avatarUrl} alt="Автор" />
+        {event.author && (
+          <div className={styles.authorInfo}>
+            <div className={styles.authorAvatar}>
+              {/* Заглушка для аватара, если нет URL */}
+              <div className={styles.avatarPlaceholder}>
+                {event.author.charAt(0).toUpperCase()}
+              </div>
+            </div>
+            <div>
+              <div><strong>{event.author}</strong></div>
+              <div style={{ fontSize: '0.8rem' }}>Организатор события</div>
+            </div>
           </div>
-          <div>
-            <div><strong>{event.author.name}</strong></div>
-            <div style={{ fontSize: '0.8rem' }}>{event.author.role}</div>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

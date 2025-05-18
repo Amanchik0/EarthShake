@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import styles from '../../features/Events/EventsListPage.module.css';
+import styles from '../../features/Events/EventsListPage/EventsListPage.module.css';
 import { EventDetails } from '../../types/event';
 
 interface EventCardProps {

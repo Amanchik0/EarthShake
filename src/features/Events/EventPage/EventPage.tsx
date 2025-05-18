@@ -1,16 +1,48 @@
-import React from 'react';
-import EventHeader from '../../components/Event/EventHeader';
-import EventMain from '../../components/Event/EventMain';
-import CommentSection from '../../components/Event/CommentSection';
-import Recommendations from '../../components/Event/Recomemdations/Recommendations';
-import { Event, Comment, RecommendedEvent } from '../../types/types';
+import React, { useEffect, useState } from 'react';
+import EventHeader from '../../../components/Event/EventHeader';
+import EventMain from '../../../components/Event/EventMain';
+import CommentSection from '../../../components/Event/CommentSection';
+import Recommendations from '../../../components/Event/Recomemdations/Recommendations';
+import { Event, Comment, RecommendedEvent } from '../../../types/types';
 import styles from './EventPage.module.css';
-import {events} from './EventsListPage'
-import { useParams } from 'react-router-dom';
+import {events} from '../EventsListPage/EventsListPage'
+import { useNavigate, useParams } from 'react-router-dom';
+import { EventDetails } from '../../../types/event';
+// TODO кэширование данных, можеь быть lazy loading тоже для фоток , может анимации загрузки ??? , красиво данные добавить 
 const EventPage: React.FC = () => {
   const { id } = useParams(); 
+  const navigate = useNavigate();
+  const [event, setEvent] = useState<EventDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<EventDetails | null>(null);
 
-  const event = events.find((event) => event.id === id); 
+ useEffect(() => { 
+    const fetchData = async () => { 
+      try { 
+        const response = await fetch(`http://localhost:8090/api/events/${id}`);
+          
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        } 
+        const data = await response.json(); 
+        
+        // Формируем полный URL для изображения
+        if (data.mediaUrl) {
+          data.mediaUrl = `http://localhost:8090${data.mediaUrl}`;
+        }
+        
+        setEvent(data);
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      } finally {
+        setLoading(false);
+      } 
+    }
+    fetchData();
+  }, [id]);
+
+
+
   if (!event) {
     return <div>Событие не найдено</div>; 
   }
@@ -71,8 +103,8 @@ const EventPage: React.FC = () => {
   ];
 
   const handleBack = () => {
-    // todo 
-    // Логика возврата назад 
+    
+    navigate(-1);
     console.log('Нажата кнопка "Назад"');
   };
 

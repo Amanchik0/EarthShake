@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../features/Events/EventEditPage.module.css';
+import styles from '../../features/Events/EventEditPage/EventEditPage.module.css';
 
 interface PageHeaderProps {
   title: string;

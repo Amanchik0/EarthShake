@@ -1,28 +1,40 @@
  export  interface Community {
-    id: string;
-    name: string;
-    description: string | string[];
-    imageUrl: string;
-    numberMembers: number;
+    readonly id: string;
+    readonly name: string;
+    readonly description: string | string[];
+    readonly imageUrl: string[];
+    readonly numberMembers: number;
+    // type: string; //category
+    // cratedAt: string;
+    // rating: number;
+    // reviewsCount: number;
+    // content?: string[]; // Дополнительная 
+    // city: string;
+    // eventsCount: number;
+    // postsCount: number;
+    // //автора и пользаков сам достану 
+    // users: string[]; //id пользователей
+    // author: string; //id автора
+    // listEvents: string[]; //id событий
  }
+ 
 export interface CommunityDetails extends Community {
-  avatarUrl: string;
-  coverUrl?: string;
-  location: string;
-  dopDescription?: string[]; 
-  createdAt: string;
-  eventsCount: number;
-  rating: number;
-  postsCount: number;
-  isMember: boolean;
-  category: string;
+  readonly avatarUrl: string;
+  readonly coverUrl?: string;
+  readonly location: string;
+  readonly dopDescription?: string[]; 
+  readonly createdAt: string;
+  readonly eventsCount: number;
+  readonly rating: number;
+  readonly postsCount: number;
+  readonly isMember: boolean;
+  readonly category: string;
   
 }
 export interface CommunityCreate extends Community {
-  name: string;
-  description: string | string[];
-  imageUrl: string;
-  category?: string;
-  location?: string;
-  dopDescription?: string[];
+  readonly name: string;
+  readonly description: string | string[];
+  readonly category?: string;
+  readonly location?: string;
+  readonly dopDescription?: string[];
 }

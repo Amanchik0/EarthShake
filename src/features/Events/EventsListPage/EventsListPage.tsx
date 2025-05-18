@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import EventCard from '../../components/EventList/EventCard';
-import FilterDropdown from '../../components/EventList/FilterDropdown';
-import ViewToggle from '../../components/EventList/ViewToggle';
-import MapView from '../../components/EventList/MapView';
+import EventCard from '../../../components/EventList/EventCard';
+import FilterDropdown from '../../../components/EventList/FilterDropdown';
+import ViewToggle from '../../../components/EventList/ViewToggle';
+import MapView from '../../../components/EventList/MapView';
 import styles from './EventsListPage.module.css';
 import { parse, format, isToday, isThisWeek, isThisMonth, } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { EventDetails } from '../../types/event';
+import { EventDetails } from '../../../types/event';
 import { Link } from 'react-router-dom';
-
+// TODO исправить формат фильтра по дате, также еще какие то фильтры добавить 
 export interface FilterConfig {
   readonly label: string;
   readonly options: FilterOption[];

@@ -4,10 +4,11 @@ import styles from './EventCreatePage.module.css';
 import { useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+// todo при создании добавить id автора а не самому вводить также по кординатам вычеслить адрес или же на фронте пусть вводит 
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiYW56b24iLCJhIjoiY202cWFhNW5qMGViaDJtc2J2eXhtZTdraCJ9.V7DT16ZhFkjt88aEWYRNiw';
 mapboxgl.accessToken = MAPBOX_TOKEN;
-const DEFAULT_CENTER: [number, number] = [73.3673, 48.0196];
+const DEFAULT_CENTER: [number, number] = [76.886, 43.238]; 
 
 const EventCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -256,6 +257,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         eventStatus: 'RESOLVED',
         tags: [formData.type, formData.tag].filter(Boolean),
       };
+console.log(eventPayload);
 
       // 3. Отправляем событие
       const response = await fetch('http://localhost:8090/api/events/create', {
@@ -436,7 +438,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 Кликните по карте или перетащите маркер для выбора места события. Для показа своего положения используйте кнопку на карте.
               </div>
             </div>
-
+{/* 
             <div className={styles.authorSection}>
               <div className={styles.subsectionTitle}>Event Organizer Information</div>
 
@@ -493,7 +495,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className={styles.checkboxGroup}>
               <input type="checkbox" id="terms" name="terms" />

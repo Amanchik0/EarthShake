@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './AuthPage.module.css';
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const AuthPage: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     username: '',
@@ -12,61 +25,74 @@ const AuthPage: React.FC = () => {
     password: '',
     confirmPassword: ''
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
     if (!formData.firstName) newErrors.firstName = 'Имя обязательно';
     if (!formData.lastName) newErrors.lastName = 'Фамилия обязательна';
     if (!formData.username) newErrors.username = 'Имя пользователя обязательно';
-    if (!formData.email) {
-      newErrors.email = 'Email обязателен';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = 'Введите корректный email';
-    }
+    if (!formData.email) newErrors.email = 'Email обязателен';
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Введите корректный email';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Телефон обязателен';
     if (!formData.city) newErrors.city = 'Город обязателен';
-    if (!formData.password) {
-      newErrors.password = 'Пароль обязателен';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Пароль должен содержать минимум 8 символов';
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Пароли не совпадают';
-    }
-
+    if (!formData.password) newErrors.password = 'Пароль обязателен';
+    else if (formData.password.length < 8) newErrors.password = 'Минимум 8 символов';
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Пароли не совпадают';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Отправка формы
-      console.log('Форма отправлена:', formData);
+    if (!validateForm()) return;
+
+    const payload = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      city: formData.city,
+      role: 'USER',
+      phoneNumber: formData.phoneNumber,
+      fistName: formData.firstName,   // backend field spelled "fistName"
+      lastName: formData.lastName
+    };
+
+    try {
+      const response = await fetch('http://localhost:8090/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        // Пример обработки ошибок из ответа сервера
+        alert(errorData.message || 'Ошибка при регистрации');
+        return;
+      }
+
+      // При успешной регистрации переходим на страницу входа
+      navigate('/login');
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Сетевая ошибка. Попробуйте позже.');
     }
   };
-
-  const togglePasswordVisibility = () => {
+    const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
   return (
     <div className={styles.registrationPage}>
       <div className={styles.container}>

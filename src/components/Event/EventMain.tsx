@@ -92,11 +92,11 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
             <div className={styles.authorAvatar}>
               {/* Заглушка для аватара, если нет URL */}
               <div className={styles.avatarPlaceholder}>
-                {event.author.charAt(0).toUpperCase()}
+                {event.author.name.charAt(0).toUpperCase()}
               </div>
             </div>
             <div>
-              <div><strong>{event.author}</strong></div>
+              <div><strong>{event.author.name}</strong></div>
               <div style={{ fontSize: '0.8rem' }}>Организатор события</div>
             </div>
           </div>

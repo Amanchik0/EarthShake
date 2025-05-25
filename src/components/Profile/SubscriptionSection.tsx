@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import styles from '../../features/Profile/profile.module.css';
 import SubscriptionModal from '../Modal/SubscriptionModal';
+import { SubscriptionSectionProps } from '../../types/profile'
 
-interface SubscriptionSectionProps {
-  hasSubscription: boolean;
-  onSubscribe: () => Promise<void> | void;
-}
+
 
 const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ 
   hasSubscription, 

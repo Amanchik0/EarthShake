@@ -48,15 +48,7 @@ export interface Event {
   price?: string;
 
   }
-  
-  export interface Comment {
-    id: string;
-    author: string;
-    avatarUrl: string;
-    date: string;
-    text: string;
-  }
-  
+
   export interface RecommendedEvent {
     id: string;
     title: string;
@@ -182,15 +174,7 @@ export interface InfoItem {
 
 // profile
 
-export interface ProfileHeaderProps {
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  city: string;
-  registrationDate: string;
-  subscription?: boolean;
-}
+
 
 export interface EventCardProps {
   title: string;
@@ -217,14 +201,7 @@ export interface ProfilePhotoUploadProps {
   onPhotoChange: () => void;
 }
 
-export interface ProfileFormData {
 
-    firstName: string;
-    lastName: string;
-    email: string;
-    bio: string;
-  
-}
 
 //event edit 
 export interface EventPhotoUploadProps {

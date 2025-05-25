@@ -1,8 +1,8 @@
 import React from 'react';
-import { Comment } from '../../types/types';
+import { EventComment } from '../../types/event';
 
 interface CommentsSectionProps {
-  comments: Comment[];
+  comments: EventComment[];
   styles: any;
 }
 

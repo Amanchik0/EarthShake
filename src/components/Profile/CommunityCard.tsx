@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommunityCardProps } from '../../types/types';
+import { CommunityCardProps } from '../../types/profile';
 import styles from '../../features/Profile/profile.module.css';
 
 const CommunityCard: React.FC<CommunityCardProps> = ({ name, members, logoUrl }) => {

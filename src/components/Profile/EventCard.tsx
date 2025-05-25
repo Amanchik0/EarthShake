@@ -1,5 +1,5 @@
 import React from 'react';
-import { EventCardProps } from '../../types/types';
+import { EventCardProps } from '../../types/profile';
 import styles from '../../features/Profile/profile.module.css';
 
 const EventCard: React.FC<EventCardProps> = ({ title, date, participants, imageUrl }) => {

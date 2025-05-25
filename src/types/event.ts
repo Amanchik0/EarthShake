@@ -12,7 +12,7 @@ export interface Event {
 export interface EventDetails extends Event {
     readonly type: string;
     readonly rating?: number;
-    readonly reviewsCount?: number;
+    readonly usersIds?: string[] | string; 
     readonly tag: 'regular' | 'emergency';
     readonly author: {
       readonly name: string;
@@ -29,4 +29,16 @@ export interface EventDetails extends Event {
     readonly location?: {
       readonly coordinates: [number, number];
     };
+    readonly  comments: Record<string, EventComment>; // обновили сюда
+    readonly commentsCount?: number;
   }
+
+
+
+export interface EventComment {
+  readonly id: string;
+  readonly author: string;
+  readonly avatarUrl: string;
+  readonly date: string;
+  readonly text: string;
+}

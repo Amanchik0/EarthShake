@@ -3,11 +3,11 @@ import EventHeader from '../../../components/Event/EventHeader';
 import EventMain from '../../../components/Event/EventMain';
 import CommentSection from '../../../components/Event/CommentSection';
 import Recommendations from '../../../components/Event/Recomemdations/Recommendations';
-import { Event, Comment, RecommendedEvent } from '../../../types/types';
+import { RecommendedEvent } from '../../../types/types';
 import styles from './EventPage.module.css';
 import {events} from '../EventsListPage/EventsListPage'
 import { useNavigate, useParams } from 'react-router-dom';
-import { EventDetails } from '../../../types/event';
+import { EventComment, EventDetails } from '../../../types/event';
 // TODO кэширование данных, можеь быть lazy loading тоже для фоток , может анимации загрузки ??? , красиво данные добавить 
 const EventPage: React.FC = () => {
   const { id } = useParams(); 
@@ -47,29 +47,10 @@ const EventPage: React.FC = () => {
     return <div>Событие не найдено</div>; 
   }
 
-  const comments: Comment[] = [
-    {
-      id: '1',
-      author: 'Алексей П.',
-      avatarUrl: '/api/placeholder/40/40',
-      date: '19 апреля 2025, 12:34',
-      text: 'Отличное мероприятие! Обязательно посещу. Очень заинтересовало описание и программа.'
-    },
-    {
-      id: '2',
-      author: 'Елена С.',
-      avatarUrl: '/api/placeholder/40/40',
-      date: '18 апреля 2025, 23:15',
-      text: 'А будет ли возможность задать вопросы организаторам непосредственно на мероприятии?'
-    },
-    {
-      id: '3',
-      author: 'Дмитрий К.',
-      avatarUrl: '/api/placeholder/40/40',
-      date: '17 апреля 2025, 16:20',
-      text: 'Был на похожем мероприятии в прошлом месяце, очень понравилось. Рекомендую!'
-    }
-  ];
+const comments: EventComment[] = event.comments
+  ? Object.values(event.comments as Record<string, EventComment>)
+  : [];
+
 
   const recommendedEvents: RecommendedEvent[] = [
     {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProfileTabsProps } from '../../types/types';
+import { ProfileTabsProps } from '../../types/profile';
 import styles from '../../features/Profile/profile.module.css';
 
 const tabs = ['События', 'Сообщества', 'Подписка'];

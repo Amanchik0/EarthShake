@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ProfileHeaderProps, ProfileFormData, ProfileInfo } from '../../types/profile';
+import { ProfileHeaderProps, ProfileFormData, FullProfile } from '../../types/profile';
 import Modal from '../Modal/Modal';
 import ProfileEditPage from '../../features/Profile/ProfileEditPage';
 import styles from '../../features/Profile/profile.module.css';
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+// Расширяем интерфейс ProfileHeaderProps, чтобы он принимал FullProfile
+interface ExtendedProfileHeaderProps extends Omit<ProfileHeaderProps, 'onProfileUpdate'> {
+  currentProfile: FullProfile; // Добавляем полный профиль
+  onProfileUpdate: (updatedProfile: FullProfile) => Promise<void>; // Изменяем тип callback
+}
+
+const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
   name,
   username,
   email,
@@ -16,40 +22,27 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   communities,
   hasSubscription,
   onProfileUpdate,
-  photoUrl, // Добавлено: URL фото профиля
+  photoUrl,
+  currentProfile, // Получаем полный профиль
 }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Разбиваем полное имя на firstName и lastName для формы
-  const [firstName, ...rest] = name.split(' ');
-  const lastName = rest.join(' ');
-
+  // Подготавливаем данные для формы редактирования (теперь с username)
   const initialForm: ProfileFormData = {
-    firstName: firstName || '',
-    lastName: lastName || '',
-    email,
-    phoneNumber,
-    city,
+    username: currentProfile.username, // Добавили username
+    firstName: currentProfile.firstName || '',
+    lastName: currentProfile.lastName || '',
+    email: currentProfile.email,
+    phoneNumber: currentProfile.phoneNumber || '',
+    city: currentProfile.city || '',
     currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
-    imageUrl: photoUrl || undefined, // Исправлено: передаем undefined если нет URL
+    imageUrl: currentProfile.imageUrl || '',
   };
 
-  const handleSave = (data: ProfileFormData) => {
-    const updated: ProfileInfo = {
-      name: `${data.firstName} ${data.lastName}`.trim(),
-      username,
-      email: data.email,
-      phoneNumber: data.phoneNumber,
-      city: data.city,
-      registrationDate,
-      events,
-      communities,
-      hasSubscription,
-      photoUrl: data.imageUrl, // Добавлено: обновляем URL фото
-    };
-    onProfileUpdate(updated);
+  const handleSave = async (updatedProfile: FullProfile) => {
+    await onProfileUpdate(updatedProfile);
     setIsEditOpen(false);
   };
 
@@ -82,6 +75,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
         <ProfileEditPage
           initialData={initialForm}
+          currentProfile={currentProfile}
           onClose={() => setIsEditOpen(false)}
           onSubmit={handleSave}
         />

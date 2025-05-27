@@ -18,67 +18,69 @@ export interface FullProfile {
   communities?: CommunityData[];
 }
 
-    // данные формы редактирования профиля
-    export interface ProfileFormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-    city: string;
-    currentPassword: string;
-    newPassword: string;
-    confirmNewPassword: string;
-    imageUrl?: string | undefined;
-    }
+export interface ProfileFormData {
+  username: string; // Добавили username
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+  imageUrl?: string | undefined;
+}
+
 export interface ProfileFormInitialData extends ProfileFormData {
   id: string;
-  username: string;
   role: string;
   registrationDate: string;
   metadata: any;
   subscriber: boolean;
 }
-    // данные для отображения профиля
-    export interface ProfileInfo {
-    name: string;
-    username: string;
-    email: string;
-    phoneNumber: string;
-    city: string;
-    registrationDate: string;
-    events: EventData[];
-    communities: CommunityData[];
-    hasSubscription: boolean;
-      photoUrl?: string | undefined; 
-    }
+export interface ProfileInfo {
+  name: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  registrationDate: string;
+  events: EventData[];
+  communities: CommunityData[];
+  hasSubscription: boolean;
+  photoUrl?: string | undefined; 
+}
+
 
     // карточка события
     export interface EventData {
-    id: string;
-    title: string;
-    date: string;
-    participantsCount: number;
-    imageUrl: string;
-    }
-    export interface EventCardProps {
-    title: string;
-    date: string;
-    participants: string;
-    imageUrl: string;
-    }
+  id: string;
+  title: string;
+  date: string;
+  participantsCount: number;
+  imageUrl: string;
+}
 
-    // карточка сообщества
-    export interface CommunityData {
-    id: string;
-    name: string;
-    membersCount: number;
-    logoUrl: string;
-    }
-    export interface CommunityCardProps {
-    name: string;
-    members: string;
-    logoUrl: string;
-    }
+export interface EventCardProps {
+  title: string;
+  date: string;
+  participants: string;
+  imageUrl: string;
+}
+
+export interface CommunityData {
+  id: string;
+  name: string;
+  membersCount: number;
+  logoUrl: string;
+}
+
+export interface CommunityCardProps {
+  name: string;
+  members: string;
+  logoUrl: string;
+}
+
 
     // табы профиля
     export interface ProfileTabsProps {
@@ -106,6 +108,8 @@ export interface ProfileHeaderProps {
     hasSubscription: boolean;
     onSubscribe: () => void | Promise<void>;
     }
+
+    
 export interface ProfileView {
   name: string;
   username: string;

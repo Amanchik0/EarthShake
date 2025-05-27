@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CitySelect from '../../components/CitySelect/CitySelect';
 import styles from './AuthPage.module.css';
 
 interface FormData {
@@ -34,6 +35,13 @@ const AuthPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleCityChange = (cityName: string) => {
+    setFormData(prev => ({ ...prev, city: cityName }));
+    if (errors.city) {
+      setErrors(prev => ({ ...prev, city: '' }));
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.firstName) newErrors.firstName = 'Имя обязательно';
@@ -42,7 +50,7 @@ const AuthPage: React.FC = () => {
     if (!formData.email) newErrors.email = 'Email обязателен';
     else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Введите корректный email';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Телефон обязателен';
-    if (!formData.city) newErrors.city = 'Город обязателен';
+    if (!formData.city) newErrors.city = 'Город обязателен'; 
     if (!formData.password) newErrors.password = 'Пароль обязателен';
     else if (formData.password.length < 8) newErrors.password = 'Минимум 8 символов';
     if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Пароли не совпадают';
@@ -61,7 +69,7 @@ const AuthPage: React.FC = () => {
       city: formData.city,
       role: 'USER',
       phoneNumber: formData.phoneNumber,
-      fistName: formData.firstName,   // backend field spelled "fistName"
+      firstName: formData.firstName,  
       lastName: formData.lastName
     };
 
@@ -74,25 +82,25 @@ const AuthPage: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        // Пример обработки ошибок из ответа сервера
         alert(errorData.message || 'Ошибка при регистрации');
         return;
       }
 
-      // При успешной регистрации переходим на страницу входа
       navigate('/login');
     } catch (error) {
       console.error('Registration error:', error);
       alert('Сетевая ошибка. Попробуйте позже.');
     }
   };
-    const togglePasswordVisibility = () => {
+
+  const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+
   return (
     <div className={styles.registrationPage}>
       <div className={styles.container}>
@@ -205,23 +213,13 @@ const AuthPage: React.FC = () => {
             
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="city">Город</label>
-              <div className={styles.inputWithIcon}>
-                <svg className={styles.inputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A7A7A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <input
-                  className={styles.input}
-                  type="text"
-                  id="city"
-                  name="city"
-                  placeholder="Введите город"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              {errors.city && <div className={styles.errorMessage}>{errors.city}</div>}
+              <CitySelect
+                value={formData.city}
+                onChange={handleCityChange}
+                placeholder="Выберите город"
+                error={errors.city}
+                required
+              />
             </div>
             
             <div className={styles.formGroup}>
@@ -293,9 +291,8 @@ const AuthPage: React.FC = () => {
               <span>или</span>
             </div>
             
-
             <div className={styles.loginLink}>
-              Уже есть аккаунт? <a href="#">Войти</a>
+              Уже есть аккаунт? <a href="/login">Войти</a>
             </div>
           </form>
         </div>

@@ -17,6 +17,7 @@ interface AuthContextValue {
     city: string;
   }) => void;
   logout: () => void;
+  updateUser: (userData: Partial<AuthUser>) => void; // Добавляем функцию обновления
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -51,8 +52,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
+  // Новая функция для обновления данных пользователя
+  const updateUser = (userData: Partial<AuthUser>) => {
+    if (!user) return;
+
+    const updatedUser = { ...user, ...userData };
+    
+    // Обновляем localStorage
+    if (userData.username !== undefined) {
+      localStorage.setItem('username', userData.username);
+    }
+    if (userData.role !== undefined) {
+      localStorage.setItem('role', userData.role);
+    }
+    if (userData.city !== undefined) {
+      localStorage.setItem('city', userData.city);
+    }
+    
+    // Обновляем состояние
+    setUser(updatedUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

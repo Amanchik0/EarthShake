@@ -1,56 +1,79 @@
+/* ProfilePhotoUpload.module.css */
+
 .profilePhoto {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
 .photoContainer {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 5px solid var(--pink-light);
-    margin-bottom: 15px;
-    position: relative;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.photoContainer:hover {
+  transform: scale(1.05);
 }
 
 .photoContainer img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .photoOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-    cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .photoContainer:hover .photoOverlay {
-    opacity: 1;
+  opacity: 1;
+}
+
+.photoOverlay.uploading {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.7);
 }
 
 .uploadBtn {
-    background-color: var(--pink-primary);
-    color: white;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s;
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.uploadBtn:hover {
-    background-color: #e55b8a;
+.uploadBtn:hover:not(:disabled) {
+  background: white;
+  color: #333;
+}
+
+.uploadBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.uploadingIndicator {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
 }

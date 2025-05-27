@@ -1,253 +1,221 @@
+/* Header.module.css */
+
 .headerRoot {
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background: white;
+  border-bottom: 1px solid #E0E0E0;
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .headerContainer {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 16px;
 }
 
 .headerContent {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
-  gap: 20px;
+  justify-content: space-between;
+  height: 64px;
 }
 
 .headerLogo {
   display: flex;
   align-items: center;
   text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.headerLogo:hover {
-  opacity: 0.8;
+  color: inherit;
+  gap: 12px;
 }
 
 .logo {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: 0px 10px;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #e83e8c, #ff6b9d);
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
+  justify-content: center;
 }
 
 .headerLogoText {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  color: #e83e8c;
-  background: linear-gradient(135deg, #e83e8c, #ff6b9d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #333;
 }
 
 .headerNavMenu {
   display: flex;
-  list-style-type: none;
+  list-style: none;
   margin: 0;
   padding: 0;
-  gap: 8px;
+  gap: 32px;
 }
 
 .headerNavItem {
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .headerNavLink {
   text-decoration: none;
-  color: #555;
-  font-weight: 600;
-  font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 8px;
+  color: #666;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
   transition: all 0.2s ease;
-  position: relative;
-  display: block;
 }
 
 .headerNavLink:hover {
-  color: #e83e8c;
-  background-color: #fef7f9;
-  transform: translateY(-1px);
+  color: #FF6B98;
+  background-color: #f8f9fa;
 }
 
 .headerNavLinkActive {
-  color: #e83e8c;
-  background-color: #fef7f9;
-  box-shadow: 0 2px 8px rgba(232, 62, 140, 0.15);
+  color: #FF6B98;
+  background-color: rgba(255, 107, 152, 0.1);
 }
 
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 16px;
 }
 
 .headerProfileBlock {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 16px;
-  border-radius: 12px;
-  background-color: #fef7f9;
-  border: 1px solid #f0e6ec;
-  transition: all 0.2s ease;
 }
 
-.headerProfileBlock:hover {
-  box-shadow: 0 4px 12px rgba(232, 62, 140, 0.1);
-  transform: translateY(-1px);
+.headerProfileLink {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
 }
 
-.headerProfileAvatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #e83e8c;
-  box-shadow: 0 2px 8px rgba(232, 62, 140, 0.2);
+.headerProfileLink:hover {
+  background-color: #f8f9fa;
 }
 
-.headerUsername {
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.headerLogoutButton {
-  background: linear-gradient(135deg, #e83e8c, #ff6b9d);
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(232, 62, 140, 0.2);
-}
-
-.headerLogoutButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(232, 62, 140, 0.3);
-  background: linear-gradient(135deg, #d63384, #e83e8c);
-}
-
-.headerLogoutButton:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(232, 62, 140, 0.2);
-}
-
-.headerAuthLinks {
+.headerProfileInfo {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.headerAuthLinks .headerNavLink {
-  padding: 8px 16px;
-  border-radius: 8px;
+.headerProfileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E0E0E0;
+  transition: border-color 0.2s ease;
+}
+
+.headerProfileAvatar:hover {
+  border-color: #FF6B98;
+}
+
+.headerAvatarSkeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.headerUserInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.headerUsername {
   font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  line-height: 1;
+}
+
+.headerPremiumBadge {
+  background: linear-gradient(135deg, #FF6B98, #FF8A65);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headerLogoutButton {
+  background: none;
+  border: 1px solid #E0E0E0;
+  color: #666;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
 }
 
-.headerAuthLinks .headerNavLink:first-child {
-  color: #e83e8c;
-  border: 1px solid #e83e8c;
-  background-color: transparent;
+.headerLogoutButton:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+  color: #333;
 }
 
-.headerAuthLinks .headerNavLink:first-child:hover {
-  background-color: #e83e8c;
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(232, 62, 140, 0.3);
-}
-
-.headerAuthLinks .headerNavLink:last-child {
-  background: linear-gradient(135deg, #e83e8c, #ff6b9d);
-  color: white;
-  border: 1px solid transparent;
-  box-shadow: 0 2px 8px rgba(232, 62, 140, 0.2);
-}
-
-.headerAuthLinks .headerNavLink:last-child:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(232, 62, 140, 0.3);
-  background: linear-gradient(135deg, #d63384, #e83e8c);
+.headerAuthLinks {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .headerContainer {
-    padding: 0 16px;
-  }
-  
-  .headerContent {
-    padding: 12px 0;
-    gap: 12px;
-  }
-  
   .headerNavMenu {
     display: none;
   }
   
-  .headerLogoText {
-    font-size: 18px;
-  }
-  
-  .headerProfileBlock {
-    padding: 6px 12px;
-    gap: 8px;
-  }
-  
-  .headerUsername {
+  .headerUserInfo {
     display: none;
   }
   
-  .headerAuthLinks {
-    gap: 8px;
+  .headerLogoutButton {
+    padding: 6px 8px;
+    font-size: 12px;
   }
   
-  .headerAuthLinks .headerNavLink {
-    padding: 6px 12px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .headerContainer {
-    padding: 0 12px;
+  .headerLogoutButton span {
+    display: none;
   }
   
-  .headerContent {
-    padding: 10px 0;
+  .headerProfileAvatar {
+    width: 32px;
+    height: 32px;
   }
   
-  .logo {
-    width: 28px;
-    height: 28px;
-    margin: 0px 8px;
-    font-size: 16px;
-  }
-  
-  .headerLogoText {
-    font-size: 16px;
+  .headerAvatarSkeleton {
+    width: 32px;
+    height: 32px;
   }
 }

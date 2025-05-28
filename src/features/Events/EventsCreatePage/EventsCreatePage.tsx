@@ -195,6 +195,7 @@ const EventCreatePage: React.FC = () => {
         const item = data.result.items[0];
         console.log('📍 Найденная локация через 2GIS:', item);
         
+        // Пробуем получить наиболее подходящий адрес
         let address = '';
         if (item.address_name) {
           address = item.address_name;
@@ -520,8 +521,7 @@ const EventCreatePage: React.FC = () => {
         tags: formData.tags.length > 0 ? formData.tags : ['event'],
         metadata: {
           address: formData.location.address,
-          scheduledDate: formData.dateTime,
-          createdAt: new Date().toISOString()
+          scheduledDate: formData.dateTime
         }
       };
 

@@ -1,3 +1,5 @@
+/* EventPage.module.css */
+
 :root {
   --primary-pink: #ff6b9d;
   --light-pink: #ffcee0;
@@ -22,6 +24,8 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  min-height: 100vh;
+  background-color: #f8f8f8;
 }
 
 .header {
@@ -89,10 +93,37 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
+/* Стили для заголовка с кнопкой редактирования */
+.titleSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  gap: 15px;
+}
+
 .eventTitle {
   font-size: 1.8rem;
-  margin-bottom: 15px;
   color: var(--primary-pink);
+  flex: 1;
+}
+
+.editButton {
+  background-color: var(--primary-pink);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.editButton:hover {
+  background-color: #e55a87;
+  transform: translateY(-2px);
 }
 
 .eventMeta {
@@ -126,6 +157,47 @@ body {
   margin-bottom: 5px;
 }
 
+/* Стили для тегов */
+.eventTags {
+  margin-bottom: 20px;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag {
+  background-color: var(--light-pink);
+  color: var(--primary-pink);
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Стили для кнопки маршрута */
+.routeButton {
+  background-color: var(--primary-pink);
+  color: white;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s;
+}
+
+.routeButton:hover {
+  background-color: #e55a87;
+  transform: translateY(-2px);
+}
+
 .authorInfo {
   display: flex;
   align-items: center;
@@ -141,6 +213,7 @@ body {
   border-radius: 50%;
   background-color: var(--light-gray);
   overflow: hidden;
+  position: relative;
 }
 
 .authorAvatar img {
@@ -214,6 +287,7 @@ body {
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s;
+  cursor: pointer;
 }
 
 .recommendationCard:hover {
@@ -246,9 +320,24 @@ body {
   color: var(--dark-gray);
 }
 
+/* Анимация для загрузки */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media (max-width: 768px) {
   .eventMain {
     grid-template-columns: 1fr;
+  }
+  
+  .titleSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .editButton {
+    align-self: flex-start;
   }
   
   .recommendationCards {

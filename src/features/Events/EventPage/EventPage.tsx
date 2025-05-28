@@ -1,105 +1,143 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import EventHeader from '../../../components/Event/EventHeader';
 import EventMain from '../../../components/Event/EventMain';
 import CommentSection from '../../../components/Event/CommentSection';
 import Recommendations from '../../../components/Event/Recomemdations/Recommendations';
-import { RecommendedEvent } from '../../../types/types';
+import { BackendEventData, RecommendedEvent } from '../../../types/event';
 import styles from './EventPage.module.css';
-import {events} from '../EventsListPage/EventsListPage'
-import { useNavigate, useParams } from 'react-router-dom';
-import { EventComment, EventDetails } from '../../../types/event';
-// TODO кэширование данных, можеь быть lazy loading тоже для фоток , может анимации загрузки ??? , красиво данные добавить 
-const EventPage: React.FC = () => {
-  const { id } = useParams(); 
-  const navigate = useNavigate();
-  const [event, setEvent] = useState<EventDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<EventDetails | null>(null);
 
- useEffect(() => { 
-    const fetchData = async () => { 
-      try { 
-        const response = await fetch(`http://localhost:8090/api/events/${id}`);
-          
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        } 
-        const data = await response.json(); 
+const EventPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  
+  const [event, setEvent] = useState<BackendEventData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<RecommendedEvent[]>([]);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (!id) {
+        setError('ID события не указан');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        console.log(`Загружаем событие с ID: ${id}`);
         
-        // Формируем полный URL для изображения
-        if (data.mediaUrl) {
-          data.mediaUrl = `http://localhost:8090${data.mediaUrl}`;
+        const response = await fetch(`http://localhost:8090/api/events/${id}`);
+        
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('Событие не найдено');
+          }
+          throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
         }
         
+        const data: BackendEventData = await response.json();
+        console.log('Получены данные события:', data);
+        
         setEvent(data);
-      } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+        setError(null);
+      } catch (err) {
+        console.error('Ошибка загрузки события:', err);
+        setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
       } finally {
         setLoading(false);
-      } 
-    }
-    fetchData();
+      }
+    };
+
+    fetchEvent();
   }, [id]);
 
+  // Функция для загрузки рекомендаций
+  useEffect(() => {
+    const loadRecommendations = async () => {
+      // TODO: Реальный запрос к API для получения рекомендаций
+      // const response = await fetch(`http://localhost:8090/api/events/recommendations/${id}`);
+      // const data = await response.json();
+      // return data;
+      
+      // Моковые данные пока что
+      const mockRecommendations: RecommendedEvent[] = [
+        {
+          id: '1',
+          title: 'Концерт в парке',
+          date: '30 мая 2025',
+          type: 'Музыка',
+          imageUrl: '/api/placeholder/200/150'
+        },
+        {
+          id: '2', 
+          title: 'Спортивное мероприятие',
+          date: '1 июня 2025',
+          type: 'Спорт',
+          imageUrl: '/api/placeholder/200/150'
+        },
+        {
+          id: '3',
+          title: 'Образовательный семинар',
+          date: '3 июня 2025', 
+          type: 'Образование',
+          imageUrl: '/api/placeholder/200/150'
+        }
+      ];
+      
+      setRecommendations(mockRecommendations);
+    };
 
-
-  if (!event) {
-    return <div>Событие не найдено</div>; 
-  }
-
-const comments: EventComment[] = event.comments
-  ? Object.values(event.comments as Record<string, EventComment>)
-  : [];
-
-
-  const recommendedEvents: RecommendedEvent[] = [
-    {
-      id: '1',
-      title: 'Название события 1',
-      date: '24 апреля 2025',
-      type: 'Тип события',
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
-    },
-    {
-      id: '2',
-      title: 'Название события 2',
-      date: '25 апреля 2025',
-      type: 'Тип события',
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
-    },
-    {
-      id: '3',
-      title: 'Название события 3',
-      date: '26 апреля 2025',
-      type: 'Тип события',
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
-    },
-    {
-      id: '4',
-      title: 'Название события 4',
-      date: '27 апреля 2025',
-      type: 'Тип события',
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1'
-    }
-  ];
+    loadRecommendations();
+  }, [id]);
 
   const handleBack = () => {
-    
     navigate(-1);
-    console.log('Нажата кнопка "Назад"');
   };
+
+  // Состояние загрузки
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
+          <p>Загрузка события...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Состояние ошибки
+  if (error || !event) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          <h2>😞 Ошибка</h2>
+          <p>{error || 'Событие не найдено'}</p>
+          <button onClick={handleBack} className={styles.backButton}>
+            ← Вернуться назад
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
-      <EventHeader onBack={handleBack} tag={event.tag} styles={styles} />
+      <EventHeader 
+        onBack={handleBack} 
+        eventType={event.eventType}
+        styles={styles}
+      />
       
-      <main>
-        <EventMain event={event} styles={styles} />
-        <CommentSection comments={comments} styles={styles} />
-        <Recommendations events={recommendedEvents} styles={styles} />
+      <main className={styles.main}>
+        <EventMain event={event}      styles={styles}/>
+        <CommentSection comments={event.comments}      styles={styles}/>
+        <Recommendations events={recommendations}     styles={styles} />
       </main>
     </div>
   );
 };
 
-export default EventPage;
+export default EventPage; 
+

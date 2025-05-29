@@ -13,16 +13,18 @@ export interface EventDetails extends Event {
   readonly type: string;
   readonly rating?: number;
   readonly usersIds?: string[] | string;
+    readonly reviewsCount?: number; // Добавляем reviewsCount
+
   readonly tag: 'regular' | 'emergency';
   readonly author: {
     readonly name: string;
     readonly role: string;
     readonly avatarUrl: string;
-  };
+  } | string; // Может быть строкой или объектом
   readonly price?: string;
   readonly lat: number;
   readonly lng?: number;
-  readonly score?: number;
+  readonly score: number | null;
   readonly mediaUrl?: string;
   readonly dateTime: string;
   readonly content?: string;
@@ -31,6 +33,12 @@ export interface EventDetails extends Event {
   };
   readonly comments: Record<string, EventComment>;
   readonly commentsCount?: number;
+  readonly tags?: string[]; // Добавляем массив тегов
+  readonly metadata?: {
+    readonly address?: string;
+    readonly scheduledDate?: string;
+    readonly createdAt?: string;
+  }; // Добавляем metadata
 }
 
 export interface EventComment {

@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+// features/Events/EventsListPage/EventsListPage.tsx
+import React, { useState, useEffect } from 'react';
 import EventCard from '../../../components/EventList/EventCard';
 import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import ViewToggle from '../../../components/EventList/ViewToggle';
 import MapView from '../../../components/EventList/MapView';
 import styles from './EventsListPage.module.css';
-import { parse, format, isToday, isThisWeek, isThisMonth, } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import { EventDetails } from '../../../types/event';
-import { Link } from 'react-router-dom';
-// TODO исправить формат фильтра по дате, также еще какие то фильтры добавить 
+import { EventDetails, BackendEventData } from '../../../types/event';
+
 export interface FilterConfig {
   readonly label: string;
   readonly options: FilterOption[];
@@ -18,101 +16,65 @@ export interface FilterOption {
   readonly value: string;
   readonly label: string;
 }
-export const events: EventDetails[] = [
-  {
-    id: "1",
-    title: 'Парад',
-    date: '19.05.2025, 10:00',
-    description: 'Грандиозный парад в центре города.',
-    imageUrl: 'https://example.com/parade.jpg',
-    city: 'Алматы',
-    type: '1',
-    rating: 4,
-    reviewsCount: 42,
-    tag: 'emergency',
-    author: {
-      name: 'Иван Иванов',
-      role: 'Организатор',
-      avatarUrl: 'https://example.com/avatar1.jpg',
-    },
-    price: '0 тг',
-    lat: 43.2567,
-    lng: 76.9286,
-  },
-  {
-    id: '2',
-    title: 'Выставка современного искусства',
-    date: '19.05.2025, 10:00',
-    description: 'Уникальная выставка современных художников.',
-    imageUrl: 'https://example.com/art.jpg',
-    city: 'Музей (Север)',
-    type: '3',
-    rating: 5,
-    reviewsCount: 78,
-    tag: 'regular',
-    author: {
-      name: 'Иван Иванов',
-      role: 'Организатор',
-      avatarUrl: 'https://example.com/avatar2.jpg',
-    },
-    price: '800 тг',
-    lat: 43.2389,
-    lng: 76.8897,
-  },
-  {
-    id: '3',
-    title: 'Футбольный матч',
-    date: '25.05.2025, 10:00',
-    description: 'Матч между лучшими командами страны.',
-    imageUrl: 'https://example.com/football.jpg',
-    city: 'Стадион "Победа" (Юг)',
-    type: '4',
-    rating: 3,
-    reviewsCount: 126,
-    tag: 'regular',
-          author: {
-      name: 'Иван Иванов',
-      role: 'Организатор',
-      avatarUrl: 'https://example.com/avatar3.jpg',
-    },
-    price: 'от 1000 руб.',
-    lat: 43.2000,
-    lng: 76.8500,
-  },
-  {
-    id: '4',
-    title: 'Мастер-класс по кулинарии',
-    date: '30.05.2025, 10:00',
-    description: 'Научитесь готовить блюда высокой кухни.',
-    imageUrl: 'https://example.com/cooking.jpg',
-    city: 'Кулинарная студия "Вкусно" (Центр)',
-    type: '2',
-    rating: 4,
-    reviewsCount: 31,
-    tag: 'regular',
-    author: {
-      name: 'Иван Иванов',
-      role: 'Организатор',
-      avatarUrl: 'https://example.com/avatar4.jpg',
-    },
-    price: '2500 руб.',
-    lat: 43.2500,
-    lng: 76.9000,
-  },
-];
+
+// Helper functions for date formatting
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+  const monthNames = [
+    'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+    'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+  ];
+  
+  return `${day} ${monthNames[date.getMonth()]} ${year}, ${hours}:${minutes}`;
+};
+
+const isToday = (date: Date): boolean => {
+  const today = new Date();
+  return date.toDateString() === today.toDateString();
+};
+
+const isThisWeek = (date: Date): boolean => {
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+  startOfWeek.setHours(0, 0, 0, 0);
+  
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+  
+  return date >= startOfWeek && date <= endOfWeek;
+};
+
+const isThisMonth = (date: Date): boolean => {
+  const today = new Date();
+  return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+};
+
 const EventsListPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
   const [isFullMap, setIsFullMap] = useState(false);
+  const [events, setEvents] = useState<EventDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const filterConfigs: FilterConfig[] = [
     {
       label: 'category',
       options: [
         { value: '', label: 'Все категории' },
-        { value: '1', label: 'Концерты' },
-        { value: '2', label: 'Фестивали' },
-        { value: '3', label: 'Выставки' },
-        { value: '4', label: 'Спорт' },
+        { value: 'sport', label: 'Спорт' },
+        { value: 'soccer', label: 'Футбол' },
+        { value: 'музыка', label: 'Музыка' },
+        { value: 'образование', label: 'Образование' },
+        { value: 'развлечения', label: 'Развлечения' },
+        { value: 'искусство', label: 'Искусство' },
       ],
     },
     {
@@ -129,6 +91,7 @@ const EventsListPage: React.FC = () => {
       options: [
         { value: '', label: 'Все локации' },
         { value: 'Almaty', label: 'Алматы' },
+        { value: 'Алматы', label: 'Алматы' },
         { value: 'Astana', label: 'Астана' },
       ],
     },
@@ -140,7 +103,84 @@ const EventsListPage: React.FC = () => {
     location: '',
   });
 
- 
+  // Transform backend event data to frontend format
+  const transformEvent = (backendEvent: BackendEventData): EventDetails => {
+    const eventDate = new Date(backendEvent.dateTime);
+    const formattedDate = formatDate(backendEvent.dateTime);
+    
+    // Get coordinates
+    let lat = 0, lng = 0;
+    if (backendEvent.location?.coordinates && backendEvent.location.coordinates.length >= 2) {
+      lng = backendEvent.location.coordinates[0];
+      lat = backendEvent.location.coordinates[1];
+    } else if (backendEvent.location?.x && backendEvent.location?.y) {
+      lng = backendEvent.location.x;
+      lat = backendEvent.location.y;
+    }
+
+    // Calculate rating from score (0-1 to 1-5 scale)
+    const rating = backendEvent.score ? Math.min(5, Math.max(1, backendEvent.score * 5)) : 0;
+    
+    return {
+      id: backendEvent.id,
+      title: backendEvent.title,
+      date: formattedDate,
+      description: backendEvent.description,
+      imageUrl: backendEvent.mediaUrl,
+      city: backendEvent.city,
+      type: backendEvent.tags?.[0] || 'general',
+      rating: rating,
+      reviewsCount: Object.keys(backendEvent.comments || {}).length,
+      usersIds: backendEvent.usersIds || [],
+      tag: backendEvent.eventType === 'EMERGENCY' ? 'emergency' : 'regular',
+      author: {
+        name: backendEvent.author,
+        role: 'Организатор',
+        avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(backendEvent.author)}&background=random`
+      },
+      price: '0 тг',
+      lat: lat,
+      lng: lng,
+      score: backendEvent.score,
+      dateTime: backendEvent.dateTime,
+      content: backendEvent.content,
+      location: backendEvent.location,
+      comments: backendEvent.comments,
+      commentsCount: Object.keys(backendEvent.comments || {}).length,
+      metadata: backendEvent.metadata,
+      tags: backendEvent.tags // Добавляем теги
+    };
+  };
+
+  // Fetch events from API
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch('http://localhost:8090/api/events/get-all');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Transform backend data to frontend format
+      const transformedEvents = data.content.map(transformEvent);
+      setEvents(transformedEvents);
+      
+    } catch (err) {
+      console.error('Error fetching events:', err);
+      setError('Не удалось загрузить события');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters(prev => ({
@@ -158,43 +198,75 @@ const EventsListPage: React.FC = () => {
     }
   };
 
-  const parseEventDate = (dateString: string): Date => {
-    return parse(dateString, 'dd.MM.yyyy, HH:mm', new Date());
-  };
-
+  // Apply filters
   const filteredEvents = events.filter(event => {
-    // Фильтрация по категории
-    if (filters.category && event.type !== filters.category) return false;
-    
-    // Фильтрация по локации
-    if (filters.location) {
-      const locationPart = event.city.split('(')[1]?.replace(')', '').trim();
-      if (locationPart !== filters.city) return false;
+    // Category filter
+    if (filters.category) {
+      const hasCategory = event.type === filters.category || 
+                         (event.tags && event.tags.includes(filters.category));
+      if (!hasCategory) return false;
     }
     
-    // Фильтрация по дате
+    // Location filter
+    if (filters.location && event.city !== filters.location) return false;
+    
+    // Date filter
     if (filters.date) {
-      const eventDate = parseEventDate(event.date);
+      const eventDate = new Date(event.dateTime);
       
       switch (filters.date) {
         case 'today':
-          return isToday(eventDate);
+          if (!isToday(eventDate)) return false;
+          break;
         case 'week':
-          return isThisWeek(eventDate, { weekStartsOn: 1 });
+          if (!isThisWeek(eventDate)) return false;
+          break;
         case 'month':
-          return isThisMonth(eventDate);
-        default:
-          return true;
+          if (!isThisMonth(eventDate)) return false;
+          break;
       }
     }
     
     return true;
   });
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
+          <p>Загрузка событий...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          <h2>Ошибка</h2>
+          <p>{error}</p>
+          <button 
+            onClick={fetchEvents} 
+            className={styles.retryButton}
+          >
+            Попробовать снова
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>События</h1>
+        <p className={styles.subtitle}>
+          Найдено {filteredEvents.length} из {events.length} событий
+        </p>
       </div>
       
       <div className={styles.filterSection}>
@@ -210,6 +282,16 @@ const EventsListPage: React.FC = () => {
             />
           ))}
         </div>
+        
+        {/* Clear filters button */}
+        {Object.values(filters).some(filter => filter !== '') && (
+          <button 
+            className={styles.clearFilters}
+            onClick={() => setFilters({ category: '', date: '', location: '' })}
+          >
+            Очистить фильтры
+          </button>
+        )}
       </div>
       
       <ViewToggle currentMode={viewMode} onChange={setViewMode} />
@@ -224,29 +306,29 @@ const EventsListPage: React.FC = () => {
             filteredEvents.map((event) => (
               <EventCard 
                 key={event.id} 
-                event={{
-                  ...event,
-                  date: format(parseEventDate(event.date), 'dd MMMM, EEEEEE', { locale: ru })
-                }} 
+                event={event} 
               />
             ))
           ) : (
-            <div className={styles.noResults}>Событий не найдено</div>
+            <div className={styles.noResults}>
+              <h3>Событий не найдено</h3>
+              <p>Попробуйте изменить параметры фильтра или очистить все фильтры</p>
+            </div>
           )}
         </div>
         
         {(viewMode === 'split' || viewMode === 'map') && (
-        <MapView 
-        isFullMap={isFullMap} 
-        onToggleFullMap={toggleFullMap} 
-        events={filteredEvents.map(event => ({
-          ...event,
-          lat: event.lat || 0, // Убедимся, что координаты есть
-          lng: event.lng || 0,
-          tag: event.tag as 'regular' , // Приведение типа
-          city: event.city || '', // Убедимся, что city всегда есть
-        }))}
-      />
+          <MapView 
+            isFullMap={isFullMap} 
+            onToggleFullMap={toggleFullMap} 
+            events={filteredEvents.map(event => ({
+              ...event,
+              lat: event.lat || 0,
+              lng: event.lng || 0,
+              tag: event.tag as 'regular' | 'emergency',
+              city: event.city || '',
+            }))}
+          />
         )}
       </div>
     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EventHeader from '../../../components/Event/EventHeader';
 import EventMain from '../../../components/Event/EventMain';
+import EventInteractions from '../../../components/Event/EventInteractions';
 import CommentSection from '../../../components/Event/CommentSection';
 import Recommendations from '../../../components/Event/Recomemdations/Recommendations';
 import { BackendEventData, RecommendedEvent } from '../../../types/event';
@@ -58,7 +59,6 @@ const EventPage: React.FC = () => {
       // TODO: Реальный запрос к API для получения рекомендаций
       // const response = await fetch(`http://localhost:8090/api/events/recommendations/${id}`);
       // const data = await response.json();
-      // return data;
       
       // Моковые данные пока что
       const mockRecommendations: RecommendedEvent[] = [
@@ -91,6 +91,11 @@ const EventPage: React.FC = () => {
     loadRecommendations();
   }, [id]);
 
+  // Обработчик обновления события
+  const handleEventUpdate = (updatedEvent: BackendEventData) => {
+    setEvent(updatedEvent);
+  };
+
   const handleBack = () => {
     navigate(-1);
   };
@@ -99,8 +104,24 @@ const EventPage: React.FC = () => {
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>
-          <div className={styles.spinner}></div>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          minHeight: '50vh', 
+          textAlign: 'center', 
+          padding: '2rem' 
+        }}>
+          <div style={{ 
+            width: '40px', 
+            height: '40px', 
+            border: '4px solid #f3f3f3', 
+            borderTop: '4px solid var(--primary-pink)', 
+            borderRadius: '50%', 
+            animation: 'spin 1s linear infinite', 
+            marginBottom: '1rem' 
+          }}></div>
           <p>Загрузка события...</p>
         </div>
       </div>
@@ -111,9 +132,19 @@ const EventPage: React.FC = () => {
   if (error || !event) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>
-          <h2>😞 Ошибка</h2>
-          <p>{error || 'Событие не найдено'}</p>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          minHeight: '50vh', 
+          textAlign: 'center', 
+          padding: '2rem' 
+        }}>
+          <h2 style={{ color: '#dc3545', marginBottom: '1rem' }}>😞 Ошибка</h2>
+          <p style={{ color: 'var(--dark-gray)', marginBottom: '1.5rem' }}>
+            {error || 'Событие не найдено'}
+          </p>
           <button onClick={handleBack} className={styles.backButton}>
             ← Вернуться назад
           </button>
@@ -130,14 +161,18 @@ const EventPage: React.FC = () => {
         styles={styles}
       />
       
-      <main className={styles.main}>
-        <EventMain event={event}      styles={styles}/>
-        <CommentSection comments={event.comments}      styles={styles}/>
-        <Recommendations events={recommendations}     styles={styles} />
+      <main>
+        <EventMain event={event} styles={styles} />
+        <EventInteractions 
+          event={event} 
+          styles={styles} 
+          onEventUpdate={handleEventUpdate}
+        />
+        <CommentSection comments={event.comments} styles={styles} />
+        <Recommendations events={recommendations} styles={styles} />
       </main>
     </div>
   );
 };
 
-export default EventPage; 
-
+export default EventPage;

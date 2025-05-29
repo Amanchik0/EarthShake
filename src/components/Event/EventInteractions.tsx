@@ -19,26 +19,69 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
   // Проверяем, участвует ли пользователь в событии
   const isParticipant = user ? event.usersIds.includes(user.username) : false;
 
-  // Функция для обновления события через API
   const updateEvent = async (updates: Partial<BackendEventData>) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const updatedEventData = { ...event, ...updates };
+      
+      // Создаем структуру данных точно как в примере API
+      const updatedEventData = {
+        id: event.id,
+        eventType: event.eventType,
+        emergencyType: event.emergencyType,
+        title: event.title,
+        description: event.description,
+        content: event.content,
+        author: event.author,
+        city: event.city,
+        location: {
+          x: event.location.x,
+          y: event.location.y
+          // Убираем coordinates и type, оставляем только x и y как в примере
+        },
+        mediaUrl: event.mediaUrl,
+        score: event.score,
+        dateTime: event.dateTime,
+        eventStatus: event.eventStatus,
+        tags: [...event.tags],
+        usersIds: [...event.usersIds],
+        metadata: {
+          address: event.metadata.address,
+          scheduledDate: event.metadata.scheduledDate,
+          createdAt: event.metadata.createdAt
+        },
+        comments: { ...event.comments },
+        archived: event.archived,
+        // Применяем обновления
+        ...updates
+      };
+
+      console.log('Отправляем данные для обновления:', JSON.stringify(updatedEventData, null, 2));
 
       const response = await fetch('http://localhost:8090/api/events/update', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          ...(token && { Authorization: `Bearer ${token}` })
         },
         body: JSON.stringify(updatedEventData)
       });
 
+      const responseText = await response.text();
+      console.log('Ответ сервера:', responseText);
+
       if (!response.ok) {
+        console.error('Ошибка сервера:', responseText);
         throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
       }
 
-      const result = await response.json();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Не удалось парсить ответ как JSON:', responseText);
+        throw new Error('Некорректный ответ сервера');
+      }
+
       console.log('Событие обновлено:', result);
       onEventUpdate(result);
       return result;
@@ -50,18 +93,22 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
 
   // Добавление комментария
   const handleAddComment = async () => {
-    if (!user || !commentText.trim()) return;
+    if (!user || !commentText.trim()) {
+      console.log('Нет пользователя или пустой комментарий');
+      return;
+    }
 
     setIsSubmittingComment(true);
     try {
-      const newCommentId = `comment_${Date.now()}`;
+      const newCommentId = `comment_${Date.now()}_${user.username}`;
       const newComment = {
-        id: newCommentId,
         author: user.username,
         text: commentText.trim(),
         date: new Date().toISOString(),
         avatarUrl: ''
       };
+
+      console.log('Добавляем комментарий:', newComment);
 
       const updatedComments = {
         ...event.comments,
@@ -71,6 +118,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
       await updateEvent({ comments: updatedComments });
       setCommentText('');
     } catch (error) {
+      console.error('Ошибка добавления комментария:', error);
       alert('Не удалось добавить комментарий');
     } finally {
       setIsSubmittingComment(false);
@@ -79,15 +127,18 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
 
   // Добавление/изменение оценки
   const handleRateEvent = async (rating: number) => {
-    if (!user) return;
+    if (!user) {
+      console.log('Нет пользователя для оценки');
+      return;
+    }
 
+    console.log('Оцениваем событие:', rating);
     setIsSubmittingRating(true);
     try {
-      // Просто обновляем общий score события
-      // В реальном приложении здесь была бы более сложная логика расчета среднего рейтинга
       await updateEvent({ score: rating });
       setUserRating(rating);
     } catch (error) {
+      console.error('Ошибка оценки события:', error);
       alert('Не удалось оценить событие');
     } finally {
       setIsSubmittingRating(false);
@@ -96,7 +147,13 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
 
   // Присоединение к событию / покинуть событие
   const handleToggleParticipation = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('Нет пользователя для участия');
+      return;
+    }
+
+    console.log('Текущий статус участия:', isParticipant);
+    console.log('Текущие участники:', event.usersIds);
 
     setIsJoiningEvent(true);
     try {
@@ -104,13 +161,16 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
       if (isParticipant) {
         // Покинуть событие
         updatedUsersIds = event.usersIds.filter(id => id !== user.username);
+        console.log('Покидаем событие, новый список:', updatedUsersIds);
       } else {
         // Присоединиться к событию
         updatedUsersIds = [...event.usersIds, user.username];
+        console.log('Присоединяемся к событию, новый список:', updatedUsersIds);
       }
 
       await updateEvent({ usersIds: updatedUsersIds });
     } catch (error) {
+      console.error('Ошибка изменения участия:', error);
       alert('Не удалось изменить участие в событии');
     } finally {
       setIsJoiningEvent(false);

@@ -5,7 +5,7 @@ import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import ViewToggle from '../../../components/EventList/ViewToggle';
 import MapView from '../../../components/EventList/MapView';
 import styles from './EventsListPage.module.css';
-import { EventDetails, BackendEventData } from '../../../types/event';
+import { EventDetails, BackendEventData, EventComment } from '../../../types/event';
 
 export interface FilterConfig {
   readonly label: string;
@@ -109,17 +109,25 @@ const EventsListPage: React.FC = () => {
     const formattedDate = formatDate(backendEvent.dateTime);
     
     // Get coordinates
-    let lat = 0, lng = 0;
-    if (backendEvent.location?.coordinates && backendEvent.location.coordinates.length >= 2) {
-      lng = backendEvent.location.coordinates[0];
-      lat = backendEvent.location.coordinates[1];
-    } else if (backendEvent.location?.x && backendEvent.location?.y) {
-      lng = backendEvent.location.x;
-      lat = backendEvent.location.y;
-    }
+    const lng = backendEvent.location.coordinates[0];
+    const lat = backendEvent.location.coordinates[1];
 
     // Calculate rating from score (0-1 to 1-5 scale)
-    const rating = backendEvent.score ? Math.min(5, Math.max(1, backendEvent.score * 5)) : 0;
+    const rating = backendEvent.score && backendEvent.score > 0 
+      ? Math.min(5, Math.max(1, backendEvent.score * 5)) 
+      : 0;
+    
+    // Transform comments from array to object format for frontend
+    const transformedComments: Record<string, EventComment> = {};
+    backendEvent.comments.forEach((comment) => {
+      transformedComments[comment.id] = {
+        id: comment.id,
+        author: comment.author,
+        text: comment.text,
+        date: comment.date,
+        avatarUrl: comment.avatarUrl
+      };
+    });
     
     return {
       id: backendEvent.id,
@@ -130,7 +138,7 @@ const EventsListPage: React.FC = () => {
       city: backendEvent.city,
       type: backendEvent.tags?.[0] || 'general',
       rating: rating,
-      reviewsCount: Object.keys(backendEvent.comments || {}).length,
+      reviewsCount: backendEvent.comments.length,
       usersIds: backendEvent.usersIds || [],
       tag: backendEvent.eventType === 'EMERGENCY' ? 'emergency' : 'regular',
       author: {
@@ -144,11 +152,13 @@ const EventsListPage: React.FC = () => {
       score: backendEvent.score,
       dateTime: backendEvent.dateTime,
       content: backendEvent.content,
-      location: backendEvent.location,
-      comments: backendEvent.comments,
-      commentsCount: Object.keys(backendEvent.comments || {}).length,
+      location: {
+        coordinates: [lng, lat]
+      },
+      comments: transformedComments,
+      commentsCount: backendEvent.comments.length,
       metadata: backendEvent.metadata,
-      tags: backendEvent.tags // Добавляем теги
+      tags: backendEvent.tags
     };
   };
 

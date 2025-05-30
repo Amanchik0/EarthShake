@@ -376,7 +376,7 @@ map.current.on('draw.create',  (e: DrawEvent)  => {
     <div className="relative w-full h-full min-h-[500px]">
       <div ref={mapContainer} style={{
         width: '100%',
-        height: '500px',
+        height: '600px',
       }}/>
       
       {/* <div className="absolute bottom-4 right-4 bg-white p-3 rounded shadow-md z-10 flex flex-col gap-2">

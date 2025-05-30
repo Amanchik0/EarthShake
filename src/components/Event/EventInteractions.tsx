@@ -23,7 +23,16 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
     try {
       const token = localStorage.getItem('accessToken');
       
-      // Создаем структуру данных точно как в примере API
+      // Преобразуем comments из объекта в массив для отправки
+      const commentsArray = Object.entries(event.comments || {}).map(([key, comment]) => ({
+        id: key,
+        author: comment.author,
+        text: comment.text,
+        date: comment.date,
+        avatarUrl: comment.avatarUrl || ''
+      }));
+      
+      // Создаем структуру данных точно как ожидает API
       const updatedEventData = {
         id: event.id,
         eventType: event.eventType,
@@ -36,7 +45,6 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
         location: {
           x: event.location.x,
           y: event.location.y
-          // Убираем coordinates и type, оставляем только x и y как в примере
         },
         mediaUrl: event.mediaUrl,
         score: event.score,
@@ -44,16 +52,27 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
         eventStatus: event.eventStatus,
         tags: [...event.tags],
         usersIds: [...event.usersIds],
-        metadata: {
+        metadata: event.metadata ? {
           address: event.metadata.address,
           scheduledDate: event.metadata.scheduledDate,
           createdAt: event.metadata.createdAt
-        },
-        comments: { ...event.comments },
+        } : {},
+        comments: commentsArray, // Отправляем как массив
         archived: event.archived,
         // Применяем обновления
         ...updates
       };
+
+      // Если в updates есть comments, преобразуем их тоже в массив
+      if (updates.comments) {
+        updatedEventData.comments = Object.entries(updates.comments).map(([key, comment]) => ({
+          id: key,
+          author: comment.author,
+          text: comment.text,
+          date: comment.date,
+          avatarUrl: comment.avatarUrl || ''
+        }));
+      }
 
       console.log('Отправляем данные для обновления:', JSON.stringify(updatedEventData, null, 2));
 
@@ -135,7 +154,9 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
     console.log('Оцениваем событие:', rating);
     setIsSubmittingRating(true);
     try {
-      await updateEvent({ score: rating });
+      // Преобразуем рейтинг из 1-5 в 0-1 шкалу для бэкенда
+      const normalizedScore = rating / 5;
+      await updateEvent({ score: normalizedScore });
       setUserRating(rating);
     } catch (error) {
       console.error('Ошибка оценки события:', error);
@@ -180,6 +201,9 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
   // Рендер звезд для оценки
   const renderRatingStars = () => {
     const stars = [];
+    // Преобразуем score из 0-1 шкалы в 1-5 для отображения
+    const displayRating = event.score ? Math.round(event.score * 5) : 0;
+    
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <button
@@ -191,7 +215,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
             border: 'none',
             fontSize: '1.5rem',
             cursor: isSubmittingRating ? 'not-allowed' : 'pointer',
-            color: i <= (userRating || event.score || 0) ? 'gold' : 'var(--light-gray)',
+            color: i <= (userRating || displayRating) ? 'gold' : 'var(--light-gray)',
             transition: 'color 0.2s',
             padding: '2px'
           }}
@@ -202,7 +226,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
           }}
           onMouseLeave={(e) => {
             if (!isSubmittingRating) {
-              e.currentTarget.style.color = i <= (userRating || event.score || 0) ? 'gold' : 'var(--light-gray)';
+              e.currentTarget.style.color = i <= (userRating || displayRating) ? 'gold' : 'var(--light-gray)';
             }
           }}
         >
@@ -245,7 +269,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
         <div className={styles.ratingStars}>
           {renderRatingStars()}
           <span className={styles.ratingText}>
-            ({event.score ? event.score.toFixed(1) : '0.0'})
+            ({event.score ? (event.score * 5).toFixed(1) : '0.0'})
           </span>
         </div>
         {isSubmittingRating && <p style={{ fontSize: '0.8rem', color: 'var(--dark-gray)' }}>Сохранение оценки...</p>}

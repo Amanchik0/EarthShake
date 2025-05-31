@@ -13,21 +13,48 @@ const DEFAULT_CENTER: [number, number] = [76.886, 43.238]; // Алматы
 // Устанавливаем токен СРАЗУ при импорте модуля
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-// Интерфейс для формы создания события
+  // Интерфейс для формы создания события
 interface EventCreateForm {
   title: string;
   description: string;
   content: string;
   city: string;
-  eventType: 'REGULAR' | 'EMERGENCY';
+  eventType: string; // Изменили с 'REGULAR' | 'EMERGENCY' на string
+  emergencyType: string;
   tags: string[];
   location: {
     x: number;
     y: number;
     address?: string;
   };
-  mediaFile?: File | null;
+  mediaFiles: File[]; // Изменили на массив файлов
   dateTime: string;
+  eventStatus: string;
+  price: string;
+}
+
+// Интерфейс для отправки на API (упрощенная версия)
+interface EventCreatePayload {
+  eventType: string;
+  emergencyType?: string; // Опционально для экстренных событий
+  title: string;
+  description: string;
+  content: string;
+  author: string;
+  city: string;
+  location: {
+    x: number;
+    y: number;
+  };
+  mediaUrl: string[];
+  dateTime: string;
+  tags: string[];
+  usersIds: string[];
+  metadata: {
+    [key: string]: string;
+  };
+  comments: Array<any>;
+  archived: boolean;
 }
 
 const EventCreatePage: React.FC = () => {
@@ -150,14 +177,17 @@ const EventCreatePage: React.FC = () => {
     content: '',
     city: '',
     eventType: 'REGULAR',
+    emergencyType: '',
     tags: [],
     location: {
       x: DEFAULT_CENTER[0],
       y: DEFAULT_CENTER[1],
       address: ''
     },
-    mediaFile: null,
-    dateTime: ''
+    mediaFiles: [], // Изменили на массив
+    dateTime: '',
+    eventStatus: 'ACTIVE',
+    price: ''
   });
 
   const [mapError, setMapError] = useState<string>('');
@@ -408,10 +438,11 @@ const EventCreatePage: React.FC = () => {
     }));
   };
 
-  // Обработчик загрузки изображения
+  // Обработчик загрузки изображений (множественный выбор)
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, mediaFile: e.target.files![0] }));
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setFormData(prev => ({ ...prev, mediaFiles: filesArray }));
       if (errors.mediaFile) {
         setErrors(prev => ({ ...prev, mediaFile: '' }));
       }
@@ -444,12 +475,17 @@ const EventCreatePage: React.FC = () => {
       }
     }
 
-    if (!formData.mediaFile) {
+    if (!formData.mediaFiles || formData.mediaFiles.length === 0) {
       newErrors.mediaFile = 'Изображение события обязательно';
     }
 
     if (formData.location.x === DEFAULT_CENTER[0] && formData.location.y === DEFAULT_CENTER[1]) {
       newErrors.location = 'Выберите место проведения события на карте';
+    }
+
+    // Валидация для экстренных событий
+    if (formData.eventType === 'EMERGENCY' && !formData.emergencyType.trim()) {
+      newErrors.emergencyType = 'Для экстренных событий необходимо указать тип экстренной ситуации';
     }
 
     setErrors(newErrors);
@@ -473,40 +509,46 @@ const EventCreatePage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      let mediaUrl = '';
+      let mediaUrls: string[] = [];
 
-      // 1. Загружаем изображение
-      if (formData.mediaFile) {
+      // 1. Загружаем изображения (массив)
+      if (formData.mediaFiles && formData.mediaFiles.length > 0) {
         const token = localStorage.getItem('accessToken');
-        const mediaFormData = new FormData();
-        mediaFormData.append('file', formData.mediaFile);
+        
+        console.log('📤 Загружаем изображения...');
+        
+        for (const file of formData.mediaFiles) {
+          const mediaFormData = new FormData();
+          mediaFormData.append('file', file);
 
-        console.log('Загружаем изображение...');
-        const uploadResponse = await fetch('http://localhost:8090/api/media/upload', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: mediaFormData,
-        });
+          const uploadResponse = await fetch('http://localhost:8090/api/media/upload', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            body: mediaFormData,
+          });
 
-        if (!uploadResponse.ok) {
-          const errorText = await uploadResponse.text();
-          console.error('Ошибка загрузки изображения:', errorText);
-          throw new Error('Ошибка загрузки изображения');
-        }
+          if (!uploadResponse.ok) {
+            const errorText = await uploadResponse.text();
+            console.error('❌ Ошибка загрузки изображения:', errorText);
+            throw new Error('Ошибка загрузки изображения');
+          }
 
-        mediaUrl = await uploadResponse.text();
-        console.log('Изображение загружено:', mediaUrl);
+          const mediaUrl = await uploadResponse.text();
+          console.log('✅ Изображение загружено:', mediaUrl);
 
-        // Проверяем, нужно ли добавить базовый URL
-        if (!mediaUrl.startsWith('http')) {
-          mediaUrl = `http://localhost:8090/api/media/${mediaUrl}`;
+          // Проверяем, нужно ли добавить базовый URL
+          const fullMediaUrl = mediaUrl.startsWith('http') 
+            ? mediaUrl 
+            : `http://localhost:8090/api/media/${mediaUrl}`;
+          
+          mediaUrls.push(fullMediaUrl);
         }
       }
 
-      // 2. Подготавливаем данные события
-      const apiPayload = {
+      // 2. Подготавливаем данные события согласно рабочему API
+      const apiPayload: EventCreatePayload = {
         eventType: formData.eventType,
         title: formData.title.trim(),
         description: formData.description.trim(),
@@ -514,18 +556,32 @@ const EventCreatePage: React.FC = () => {
         author: user.username,
         city: formData.city,
         location: {
-          x: formData.location.x,
-          y: formData.location.y,
+          x: Number(formData.location.x),
+          y: Number(formData.location.y),
         },
-        mediaUrl: mediaUrl || '',
+        mediaUrl: mediaUrls,
+        dateTime: formData.dateTime,
         tags: formData.tags.length > 0 ? formData.tags : ['event'],
+        usersIds: [user.username],
         metadata: {
-          address: formData.location.address,
-          scheduledDate: formData.dateTime
-        }
+          address: formData.location.address || '',
+          scheduledDate: formData.dateTime,
+          createdAt: new Date().toISOString(),
+          isCommunity: 'false'
+        },
+        comments: [],
+        archived: false
       };
 
-      console.log('Отправляем на бэкенд:', JSON.stringify(apiPayload, null, 2));
+      // Добавляем emergencyType только для экстренных событий
+      if (formData.eventType === 'EMERGENCY' && formData.emergencyType.trim()) {
+        apiPayload.emergencyType = formData.emergencyType.trim();
+      }
+
+      console.log('📦 Данные для отправки на API:');
+      console.log('=====================================');
+      console.log(JSON.stringify(apiPayload, null, 2));
+      console.log('=====================================');
 
       // 3. Создаем событие
       const token = localStorage.getItem('accessToken');
@@ -539,7 +595,7 @@ const EventCreatePage: React.FC = () => {
       });
 
       const responseText = await response.text();
-      console.log('Ответ сервера:', responseText);
+      console.log('📥 Ответ сервера:', responseText);
 
       if (!response.ok) {
         let errorMessage = 'Ошибка создания события';
@@ -555,7 +611,7 @@ const EventCreatePage: React.FC = () => {
       let result;
       try {
         result = JSON.parse(responseText);
-        console.log('Событие успешно создано:', result);
+        console.log('✅ Событие успешно создано:', result);
       } catch {
         result = { id: 'created' };
       }
@@ -566,7 +622,7 @@ const EventCreatePage: React.FC = () => {
       }, 1500);
 
     } catch (error: any) {
-      console.error('Ошибка создания события:', error);
+      console.error('❌ Ошибка создания события:', error);
       showNotificationMessage(error.message || 'Не удалось создать событие', false);
     } finally {
       setIsSubmitting(false);
@@ -607,7 +663,7 @@ const EventCreatePage: React.FC = () => {
             <div className={styles.profileHeader}>
               <div className={styles.profileImageContainer}>
                 <img
-                  src={formData.mediaFile ? URL.createObjectURL(formData.mediaFile) : "/api/placeholder/150/150"}
+                  src={formData.mediaFiles && formData.mediaFiles.length > 0 ? URL.createObjectURL(formData.mediaFiles[0]) : "/api/placeholder/150/150"}
                   alt="Обложка события"
                   className={styles.profileImage}
                 />
@@ -618,9 +674,15 @@ const EventCreatePage: React.FC = () => {
                   type="file"
                   id="imageUpload"
                   accept="image/*"
+                  multiple // Добавляем поддержку множественного выбора
                   onChange={handleImageChange}
                   style={{ display: 'none' }}
                 />
+                {formData.mediaFiles && formData.mediaFiles.length > 1 && (
+                  <div className={styles.multipleFilesIndicator}>
+                    +{formData.mediaFiles.length - 1} файл(ов)
+                  </div>
+                )}
                 {errors.mediaFile && <div className={styles.errorText}>{errors.mediaFile}</div>}
               </div>
 
@@ -670,6 +732,23 @@ const EventCreatePage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Тип экстренной ситуации (показывается только для экстренных событий) */}
+                {formData.eventType === 'EMERGENCY' && (
+                  <div className={styles.formGroup}>
+                    <label htmlFor="emergencyType" className={styles.label}>Тип экстренной ситуации *</label>
+                    <input
+                      type="text"
+                      id="emergencyType"
+                      name="emergencyType"
+                      value={formData.emergencyType}
+                      onChange={handleInputChange}
+                      className={`${styles.input} ${errors.emergencyType ? styles.inputError : ''}`}
+                      placeholder="Например: пожар, авария, стихийное бедствие"
+                    />
+                    {errors.emergencyType && <div className={styles.errorText}>{errors.emergencyType}</div>}
+                  </div>
+                )}
+
                 {/* Город */}
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Город *</label>
@@ -681,6 +760,20 @@ const EventCreatePage: React.FC = () => {
                     required
                   />
                 </div>
+
+                {/* Цена (опционально) - закомментировано */}
+                {/* <div className={styles.formGroup}>
+                  <label htmlFor="price" className={styles.label}>Цена участия</label>
+                  <input
+                    type="text"
+                    id="price"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                    placeholder="Например: Бесплатно, 1000 ₸, 50$"
+                  />
+                </div> */}
               </div>
             </div>
 

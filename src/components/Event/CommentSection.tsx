@@ -9,19 +9,13 @@ interface EventComment {
 }
 
 interface CommentSectionProps {
-  comments: Record<string, EventComment>;
+  comments: EventComment[]; // Теперь массив, а не объект
   styles: any;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ comments, styles }) => {
-  // Преобразуем объект комментариев в массив
-  const commentsArray = Object.entries(comments || {}).map(([id, comment]) => ({
-    id,
-    author: comment.author || 'Аноним',
-    text: comment.text || '',
-    date: comment.date || 'Недавно',
-    avatarUrl: comment.avatarUrl || ''
-  }));
+  // Обрабатываем массив комментариев
+  const commentsArray = Array.isArray(comments) ? comments : [];
 
   // Форматируем дату для отображения
   const formatDate = (dateString: string) => {
@@ -53,27 +47,38 @@ const CommentSection: React.FC<CommentSectionProps> = ({ comments, styles }) => 
             <div key={comment.id} className={styles.comment}>
               <div className={styles.authorAvatar}>
                 {comment.avatarUrl ? (
-                  <img src={comment.avatarUrl} alt="Автор комментария" />
-                ) : (
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    width: '100%', 
-                    height: '100%',
-                    background: 'var(--light-gray)',
-                    fontWeight: 'bold',
-                    color: 'var(--dark-gray)',
-                    borderRadius: '50%'
-                  }}>
-                    {comment.author.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                  <img 
+                    src={comment.avatarUrl} 
+                    alt="Автор комментария"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const placeholder = target.nextElementSibling as HTMLElement;
+                      if (placeholder) {
+                        placeholder.style.display = 'flex';
+                      }
+                    }}
+                  />
+                ) : null}
+                <div style={{ 
+                  display: comment.avatarUrl ? 'none' : 'flex',
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  width: '40px', 
+                  height: '40px',
+                  background: 'var(--light-gray)',
+                  fontWeight: 'bold',
+                  color: 'var(--dark-gray)',
+                  borderRadius: '50%',
+                  fontSize: '1.1rem'
+                }}>
+                  {comment.author?.charAt(0)?.toUpperCase() || '?'}
+                </div>
               </div>
               <div style={{ flex: 1 }}>
                 <div className={styles.commentMeta}>
                   <div className={styles.commentAuthor}>
-                    <strong>{comment.author}</strong>
+                    <strong>{comment.author || 'Аноним'}</strong>
                   </div>
                   <div className={styles.commentDate}>
                     {formatDate(comment.date)}

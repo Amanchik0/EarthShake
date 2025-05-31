@@ -13,6 +13,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   const { user: currentUser } = useAuth();
   const [authorData, setAuthorData] = useState<BackendUserData | null>(null);
   const [loadingAuthor, setLoadingAuthor] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Загружаем данные автора события
   useEffect(() => {
@@ -39,6 +40,26 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
     fetchAuthorData();
   }, [event.author]);
 
+  // Функции для работы с оценками
+  const getScores = () => {
+    if (!event.score) return [];
+    if (Array.isArray(event.score)) return event.score;
+    return [];
+  };
+
+  const getAverageScore = () => {
+    const scores = getScores();
+    if (scores.length === 0) return 0;
+    
+    const total = scores.reduce((sum, score) => {
+      // Поддержка разных форматов: {username: rating} или {username: "name", rating: number}
+      const rating = score.rating || Object.values(score).find(val => typeof val === 'number') || 0;
+      return sum + rating;
+    }, 0);
+    
+    return total / scores.length;
+  };
+
   // Функция для форматирования даты
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { 
@@ -54,11 +75,11 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   // Функция для отображения рейтинга
   const renderStars = () => {
     const stars = [];
-    const rating = event.score || 0;
+    const averageRating = getAverageScore();
     
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} className={styles.star} style={{ color: i <= rating ? '#FFD700' : '#E0E0E0' }}>
+        <span key={i} className={styles.star} style={{ color: i <= averageRating ? '#FFD700' : '#E0E0E0' }}>
           ★
         </span>
       );
@@ -77,7 +98,8 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
 
   // Функция для создания ссылки на 2GIS
   const generate2GISLink = () => {
-    const [lng, lat] = event.location.coordinates;
+    const lng = event.location.x;
+    const lat = event.location.y;
     return `https://2gis.kz/almaty/directions/points/%2C${lng}%2C${lat}`;
   };
 
@@ -89,19 +111,79 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
     navigate(`/events/${event.id}/edit`);
   };
 
+  // Функция для работы с медиа (поддержка массива и строки)
+  const getMediaUrls = (): string[] => {
+    if (Array.isArray(event.mediaUrl)) {
+      return event.mediaUrl;
+    }
+    return event.mediaUrl ? [event.mediaUrl] : [];
+  };
+
+  // Функции для навигации по изображениям
+  const nextImage = () => {
+    const mediaUrls = getMediaUrls();
+    setCurrentImageIndex((prev) => (prev + 1) % mediaUrls.length);
+  };
+
+  const prevImage = () => {
+    const mediaUrls = getMediaUrls();
+    setCurrentImageIndex((prev) => (prev - 1 + mediaUrls.length) % mediaUrls.length);
+  };
+
+  const mediaUrls = getMediaUrls();
+  const averageScore = getAverageScore();
+  const scoresCount = getScores().length;
+
   return (
     <section className={styles.eventMain}>
-      {/* Изображение события */}
-      {event.mediaUrl && (
+      {/* Изображения события с поддержкой галереи */}
+      {mediaUrls.length > 0 && (
         <div className={styles.eventPhoto}>
           <img 
-            src={event.mediaUrl} 
+            src={mediaUrls[currentImageIndex]} 
             alt={event.title}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = '/api/placeholder/600/400';
             }}
           />
+          
+          {/* Навигация по изображениям (если их несколько) */}
+          {mediaUrls.length > 1 && (
+            <>
+              <button 
+                className={styles.imageNavButton + ' ' + styles.prevButton}
+                onClick={prevImage}
+                aria-label="Предыдущее изображение"
+              >
+                ❮
+              </button>
+              <button 
+                className={styles.imageNavButton + ' ' + styles.nextButton}
+                onClick={nextImage}
+                aria-label="Следующее изображение"
+              >
+                ❯
+              </button>
+              
+              {/* Индикаторы изображений */}
+              <div className={styles.imageIndicators}>
+                {mediaUrls.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`${styles.imageIndicator} ${index === currentImageIndex ? styles.active : ''}`}
+                    onClick={() => setCurrentImageIndex(index)}
+                    aria-label={`Изображение ${index + 1}`}
+                  />
+                ))}
+              </div>
+              
+              {/* Счетчик изображений */}
+              <div className={styles.imageCounter}>
+                {currentImageIndex + 1} / {mediaUrls.length}
+              </div>
+            </>
+          )}
         </div>
       )}
       
@@ -125,7 +207,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           <div className={styles.metaItem}>
             <span className={styles.metaIcon}>📅</span>
             <span>
-              {event.metadata.scheduledDate 
+              {event.metadata?.scheduledDate 
                 ? formatDate(event.metadata.scheduledDate)
                 : formatDate(event.dateTime)
               }
@@ -160,7 +242,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           <h3>📍 Местоположение</h3>
           <div className={styles.locationInfo}>
             <p><strong>Город:</strong> {event.city}</p>
-            {event.metadata.address && (
+            {event.metadata?.address && (
               <p><strong>Адрес:</strong> {event.metadata.address}</p>
             )}
             <div className={styles.routeLink}>
@@ -193,9 +275,14 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
             <div className={styles.starsContainer}>
               {renderStars()}
               <span className={styles.ratingText}>
-                ({event.score ? event.score.toFixed(1) : '0.0'})
+                ({averageScore > 0 ? averageScore.toFixed(1) : '0.0'})
               </span>
             </div>
+            {scoresCount > 0 && (
+              <p style={{ fontSize: '0.8rem', color: 'var(--dark-gray)', marginTop: '3px' }}>
+                {scoresCount} оценок
+              </p>
+            )}
           </div>
           
           <div className={styles.eventParticipants}>

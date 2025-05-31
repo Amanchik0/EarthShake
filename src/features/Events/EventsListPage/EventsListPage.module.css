@@ -169,6 +169,12 @@
   color: #374151;
 }
 
+.ratingCount {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 .comments {
   font-size: 14px;
   color: #6b7280;
@@ -242,7 +248,7 @@
 
 .cityFilter {
   flex-grow: 1;
-  min-width: 180px;
+  min-width: 200px;
 }
 
 .filterLabel {

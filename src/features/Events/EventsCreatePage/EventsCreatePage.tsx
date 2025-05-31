@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../../components/auth/AuthContext';
 import CitySelect from '../../../components/CitySelect/CitySelect';
 import mapboxgl from 'mapbox-gl';
@@ -13,13 +13,13 @@ const DEFAULT_CENTER: [number, number] = [76.886, 43.238]; // Алматы
 // Устанавливаем токен СРАЗУ при импорте модуля
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-  // Интерфейс для формы создания события
+// Интерфейс для формы создания события
 interface EventCreateForm {
   title: string;
   description: string;
   content: string;
   city: string;
-  eventType: string; // Изменили с 'REGULAR' | 'EMERGENCY' на string
+  eventType: string;
   emergencyType: string;
   tags: string[];
   location: {
@@ -27,7 +27,7 @@ interface EventCreateForm {
     y: number;
     address?: string;
   };
-  mediaFiles: File[]; // Изменили на массив файлов
+  mediaFiles: File[];
   dateTime: string;
   eventStatus: string;
   price: string;
@@ -36,7 +36,7 @@ interface EventCreateForm {
 // Интерфейс для отправки на API (упрощенная версия)
 interface EventCreatePayload {
   eventType: string;
-  emergencyType?: string; // Опционально для экстренных событий
+  emergencyType?: string;
   title: string;
   description: string;
   content: string;
@@ -57,23 +57,118 @@ interface EventCreatePayload {
   archived: boolean;
 }
 
+// Интерфейс для информации о сообществе
+interface CommunityInfo {
+  id: string;
+  name: string;
+  description: string;
+  imageUrls: string[];
+  author: string;
+  city: string;
+}
+
 const EventCreatePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const communityId = searchParams.get('communityId');
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
+
+  // Состояние для информации о сообществе
+  const [communityInfo, setCommunityInfo] = useState<CommunityInfo | null>(null);
+  const [loadingCommunity, setLoadingCommunity] = useState<boolean>(!!communityId);
 
   // Используем callback ref вместо useRef для контейнера
   const mapCallbackRef = React.useCallback((node: HTMLDivElement | null) => {
     if (node && !map.current) {
       console.log('📦 Callback ref: контейнер карты готов', node);
+      console.log('📦 Родительские элементы:', node.parentElement, node.parentElement?.parentElement);
       
-      // Инициализируем карту сразу, как только контейнер готов
+      // Увеличиваем задержку для лучшей инициализации
       setTimeout(() => {
         initializeMapFromCallback(node);
-      }, 100);
+      }, 500);
     }
   }, []);
+
+  // Загружаем информацию о сообществе при монтировании
+  useEffect(() => {
+    if (communityId) {
+      loadCommunityInfo(communityId);
+    }
+  }, [communityId]);
+
+  // Функция загрузки информации о сообществе
+  const loadCommunityInfo = async (id: string) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      console.log('🔍 Загружаем сообщество:', id);
+      
+      // Пробуем разные возможные эндпоинты
+      const possibleEndpoints = [
+        `http://localhost:8090/api/communities/${id}`,
+        `http://localhost:8090/api/community/${id}`,
+        `http://localhost:8090/communities/${id}`,
+        `http://localhost:8090/community/${id}`
+      ];
+
+      let community = null;
+      let lastError = null;
+
+      for (const endpoint of possibleEndpoints) {
+        try {
+          console.log(`🔗 Пробуем эндпоинт: ${endpoint}`);
+          const response = await fetch(endpoint, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+
+          if (response.ok) {
+            community = await response.json();
+            console.log('✅ Информация о сообществе загружена:', community);
+            break;
+          } else {
+            console.log(`❌ ${endpoint} вернул ${response.status}`);
+            lastError = `${response.status}: ${response.statusText}`;
+          }
+        } catch (err) {
+          console.log(`❌ Ошибка запроса к ${endpoint}:`, err);
+          lastError = err;
+        }
+      }
+
+      if (community) {
+        setCommunityInfo(community);
+        
+        // Автоматически устанавливаем город из сообщества
+        if (community.city) {
+          setFormData(prev => ({ ...prev, city: community.city }));
+          // Отложим геокодирование до загрузки карты
+          setTimeout(() => {
+            geocodeCity(community.city);
+          }, 1000);
+        }
+      } else {
+        console.error('❌ Все эндпоинты не сработали. Последняя ошибка:', lastError);
+        showNotificationMessage(`Сообщество не найдено (ID: ${id}). Проверьте правильность ссылки.`, false);
+        
+        // Все равно позволяем создать событие, но без привязки к сообществу
+        setTimeout(() => {
+          const searchParams = new URLSearchParams(window.location.search);
+          searchParams.delete('communityId');
+          window.history.replaceState({}, '', `${window.location.pathname}?${searchParams}`);
+          window.location.reload();
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('❌ Общая ошибка при загрузке сообщества:', error);
+      showNotificationMessage('Ошибка при загрузке сообщества', false);
+    } finally {
+      setLoadingCommunity(false);
+    }
+  };
 
   const initializeMapFromCallback = (container: HTMLDivElement) => {
     if (map.current) return;
@@ -81,34 +176,48 @@ const EventCreatePage: React.FC = () => {
     console.log('🚀 Инициализация карты через callback ref');
     
     try {
-      // Принудительно задаем размеры
+      // Принудительно задаем размеры и делаем контейнер видимым
       container.style.width = '100%';
       container.style.height = '350px';
       container.style.minHeight = '350px';
       container.style.display = 'block';
+      container.style.position = 'relative';
+      container.style.visibility = 'visible';
 
-      const rect = container.getBoundingClientRect();
-      console.log('📏 Размеры контейнера (callback):', rect.width, 'x', rect.height);
-      
-      if (rect.width === 0 || rect.height === 0) {
-        console.error('❌ Нулевые размеры в callback ref');
-        setMapError('Контейнер карты имеет нулевые размеры');
-        setMapLoading(false);
-        return;
-      }
+      // Дожидаемся пока контейнер получит правильные размеры
+      const checkSizeAndInit = () => {
+        const rect = container.getBoundingClientRect();
+        console.log('📏 Размеры контейнера (callback):', rect.width, 'x', rect.height);
+        
+        if (rect.width === 0 || rect.height === 0) {
+          console.log('⏳ Размеры еще не готовы, пробуем снова...');
+          setTimeout(checkSizeAndInit, 200);
+          return;
+        }
 
-      map.current = new mapboxgl.Map({
-        container: container,
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: DEFAULT_CENTER,
-        zoom: 10,
-        attributionControl: false
-      });
+        // Размеры готовы, создаем карту
+        try {
+          map.current = new mapboxgl.Map({
+            container: container,
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: DEFAULT_CENTER,
+            zoom: 10,
+            attributionControl: false
+          });
 
-      console.log('✅ Карта создана через callback ref');
-      
-      // Добавляем все обработчики
-      setupMapHandlers();
+          console.log('✅ Карта создана через callback ref');
+          
+          // Добавляем все обработчики
+          setupMapHandlers();
+        } catch (mapError) {
+          console.error('❌ Ошибка создания карты:', mapError);
+          setMapError(`Ошибка создания карты: ${mapError instanceof Error ? mapError.message : String(mapError)}`);
+          setMapLoading(false);
+        }
+      };
+
+      // Запускаем проверку размеров
+      checkSizeAndInit();
       
     } catch (error) {
       console.error('❌ Ошибка в callback ref:', error);
@@ -184,7 +293,7 @@ const EventCreatePage: React.FC = () => {
       y: DEFAULT_CENTER[1],
       address: ''
     },
-    mediaFiles: [], // Изменили на массив
+    mediaFiles: [],
     dateTime: '',
     eventStatus: 'ACTIVE',
     price: ''
@@ -203,6 +312,20 @@ const EventCreatePage: React.FC = () => {
       }
     };
   }, []);
+
+  // Резервная инициализация карты если callback ref не сработал
+  useEffect(() => {
+    if (!loadingCommunity && !map.current) {
+      console.log('🔄 Попытка резервной инициализации карты через useEffect');
+      setTimeout(() => {
+        const mapContainer = document.querySelector('[data-map-container]') as HTMLDivElement;
+        if (mapContainer && !map.current) {
+          console.log('🎯 Найден контейнер карты через querySelector');
+          initializeMapFromCallback(mapContainer);
+        }
+      }, 1000);
+    }
+  }, [loadingCommunity]);
 
   // Функция обратного геокодирования через 2GIS API
   const reverseGeocode2GIS = async (lng: number, lat: number): Promise<string> => {
@@ -492,6 +615,48 @@ const EventCreatePage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+// Функция обновления списка событий в сообществе
+const updateCommunityEvents = async (eventId: string) => {
+  if (!communityId || !communityInfo) return;
+
+  try {
+    const token = localStorage.getItem('accessToken');
+    
+    console.log('🔄 Обновляем список событий сообщества...');
+    
+    // Добавляем новое событие к списку
+    const updatedListEvents = [...(communityInfo.listEvents || []), eventId];
+
+    console.log(`🔗 Обновляем сообщество через: http://localhost:8090/api/community/update`);
+    
+    const updateResponse = await fetch('http://localhost:8090/api/community/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        ...communityInfo,
+        listEvents: updatedListEvents,
+        eventsCount: updatedListEvents.length
+      })
+    });
+
+    if (updateResponse.ok) {
+      console.log('✅ Список событий сообщества обновлен');
+    } else {
+      const errorText = await updateResponse.text();
+      console.error(`❌ Ошибка обновления сообщества:`, updateResponse.status, errorText);
+      throw new Error(`Ошибка ${updateResponse.status}: ${errorText}`);
+    }
+
+  } catch (error) {
+    console.error('❌ Ошибка обновления сообщества:', error);
+    // Не прерываем процесс, так как событие уже создано
+    console.log('⚠️ Событие создано, но связь с сообществом может быть не установлена');
+    showNotificationMessage('Событие создано, но может потребоваться ручное добавление в сообщество', true);
+  }
+};
   // Отправка формы
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -567,7 +732,10 @@ const EventCreatePage: React.FC = () => {
           address: formData.location.address || '',
           scheduledDate: formData.dateTime,
           createdAt: new Date().toISOString(),
-          isCommunity: 'false'
+          // Устанавливаем isCommunity в зависимости от того, создается ли событие из сообщества
+          isCommunity: communityId ? 'true' : 'false',
+          // Добавляем communityId в метаданные если событие создается из сообщества
+          ...(communityId && { communityId: communityId })
         },
         comments: [],
         archived: false
@@ -616,9 +784,26 @@ const EventCreatePage: React.FC = () => {
         result = { id: 'created' };
       }
       
-      showNotificationMessage('Событие успешно создано!', true);
+      // 4. Если событие создается для сообщества, обновляем список событий
+      if (communityId && result.id) {
+        await updateCommunityEvents(result.id);
+      }
+      
+      showNotificationMessage(
+        communityId 
+          ? 'Событие успешно создано и добавлено в сообщество!' 
+          : 'Событие успешно создано!', 
+        true
+      );
+      
       setTimeout(() => {
-        navigate(`/events/${result.id || ''}`);
+        if (communityId) {
+          // Переходим обратно в сообщество
+          navigate(`/communities/${communityId}`);
+        } else {
+          // Переходим к созданному событию
+          navigate(`/events/${result.id || ''}`);
+        }
       }, 1500);
 
     } catch (error: any) {
@@ -652,10 +837,44 @@ const EventCreatePage: React.FC = () => {
     );
   }
 
+  // Показываем загрузку если ждем информацию о сообществе
+  if (loadingCommunity) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
+          <p>Загрузка информации о сообществе...</p>
+          <small>ID: {communityId}</small>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.profileSection}>
-        <div className={styles.sectionTitle}>Создание нового события</div>
+        <div className={styles.sectionTitle}>
+          {communityId ? (
+            <div>
+              <span>Создание события для сообщества</span>
+              {communityInfo && (
+                <div className={styles.communityInfo}>
+                  <img 
+                    src={communityInfo.imageUrls?.[0] || "/api/placeholder/40/40"} 
+                    alt={communityInfo.name}
+                    className={styles.communityImage}
+                  />
+                  <div>
+                    <div className={styles.communityName}>{communityInfo.name}</div>
+                    <div className={styles.communityCity}>{communityInfo.city}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            'Создание нового события'
+          )}
+        </div>
 
         <form onSubmit={handleSubmit}>
           <div className={styles.formSection}>
@@ -758,7 +977,13 @@ const EventCreatePage: React.FC = () => {
                     placeholder="Выберите город"
                     error={errors.city}
                     required
+                    disabled={!!communityInfo?.city} // Отключаем если город установлен из сообщества
                   />
+                  {communityInfo?.city && (
+                    <div className={styles.infoText}>
+                      Город автоматически установлен из сообщества
+                    </div>
+                  )}
                 </div>
 
                 {/* Цена (опционально) - закомментировано */}
@@ -839,10 +1064,15 @@ const EventCreatePage: React.FC = () => {
               {/* Контейнер карты */}
               <div
                 ref={mapCallbackRef}
+                data-map-container
                 className={styles.mapContainer}
                 style={{ 
                   display: mapError ? 'none' : 'block',
-                  opacity: mapLoading ? 0.5 : 1
+                  opacity: mapLoading ? 0.5 : 1,
+                  width: '100%',
+                  height: '350px',
+                  minHeight: '350px',
+                  position: 'relative'
                 }}
               />
               
@@ -894,7 +1124,13 @@ const EventCreatePage: React.FC = () => {
               <button
                 type="button"
                 className={`${styles.button} ${styles.buttonSecondary}`}
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  if (communityId) {
+                    navigate(`/communities/${communityId}`);
+                  } else {
+                    navigate(-1);
+                  }
+                }}
                 disabled={isSubmitting}
               >
                 Отмена
@@ -904,7 +1140,7 @@ const EventCreatePage: React.FC = () => {
                 className={styles.button}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Создание...' : 'Создать событие'}
+                {isSubmitting ? 'Создание...' : (communityId ? 'Создать для сообщества' : 'Создать событие')}
               </button>
             </div>
           </div>

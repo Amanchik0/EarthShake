@@ -1,6 +1,7 @@
 // hooks/useCommunityAPI.ts
 
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CommunityCreateData, CommunityCreateResponse } from '../types/community';
 
 interface UseCommunityAPIReturn {
@@ -16,6 +17,7 @@ const API_BASE_URL = 'http://localhost:8090/api';
 export const useCommunityAPI = (): UseCommunityAPIReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const clearError = useCallback(() => {
     setError(null);
@@ -29,7 +31,7 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
 
       console.log('🏘️ Создаем сообщество:', communityData);
 
-      const response = await fetch(`${API_BASE_URL}/community`, {
+      const response = await fetch(`${API_BASE_URL}/community/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -65,6 +67,12 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
 
       const createdCommunity: CommunityCreateResponse = await response.json();
       console.log('✅ Сообщество создано успешно:', createdCommunity);
+      
+      // Перенаправление на страницу созданного сообщества
+      if (createdCommunity.id) {
+        navigate(`/communities/${createdCommunity.id}`);
+      }
+      
       return createdCommunity;
     } catch (err) {
       console.error('❌ Ошибка создания сообщества:', err);
@@ -74,7 +82,7 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [navigate]);
 
   // Загрузка изображения для сообщества
   const uploadCommunityImage = useCallback(async (file: File): Promise<string | null> => {

@@ -1,4 +1,4 @@
-// types/community.ts
+// types/community.ts - обновленная версия
 
 // Базовый интерфейс сообщества (как в API)
 export interface Community {
@@ -80,7 +80,7 @@ export interface Admin {
   readonly avatarUrl: string;
 }
 
-// Событие сообщества
+// Событие сообщества - расширенная версия с дополнительными полями
 export interface CommunityEvent {
   id: string;
   title: string;
@@ -95,6 +95,10 @@ export interface CommunityEvent {
   tags?: string[];
   eventType?: 'REGULAR' | 'EMERGENCY';
   location?: string; // Адрес или координаты
+  // Дополнительные поля для фильтрации и сортировки
+  status?: 'active' | 'archived'; // Статус события
+  dateTime?: string; // Оригинальная дата/время из API для сортировки
+  createdAt?: string; // Дата создания для сортировки
 }
 
 // Участник сообщества
@@ -151,4 +155,69 @@ export const getCategoryDisplayName = (category: string): string => {
   };
   
   return categoryMap[category] || category;
+};
+
+// Утилитарные функции для работы с событиями
+
+// Фильтрация событий
+export const filterEvents = (
+  events: CommunityEvent[], 
+  filters: {
+    searchQuery?: string;
+    status?: 'all' | 'active' | 'archived';
+    type?: 'all' | 'REGULAR' | 'EMERGENCY';
+  }
+): CommunityEvent[] => {
+  return events.filter(event => {
+    // Поиск по названию и описанию
+    const matchesSearch = !filters.searchQuery || 
+      event.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+      event.description?.toLowerCase().includes(filters.searchQuery.toLowerCase());
+
+    // Фильтр по статусу
+    const matchesStatus = !filters.status || filters.status === 'all' || 
+      (filters.status === 'active' && event.status === 'active') ||
+      (filters.status === 'archived' && event.status === 'archived');
+
+    // Фильтр по типу
+    const matchesType = !filters.type || filters.type === 'all' || event.eventType === filters.type;
+
+    return matchesSearch && matchesStatus && matchesType;
+  });
+};
+
+// Сортировка событий
+export const sortEvents = (
+  events: CommunityEvent[], 
+  sortBy: 'date' | 'participants' | 'created',
+  sortOrder: 'asc' | 'desc' = 'asc'
+): CommunityEvent[] => {
+  return [...events].sort((a, b) => {
+    let comparison = 0;
+
+    switch (sortBy) {
+      case 'date':
+        comparison = new Date(a.dateTime || '').getTime() - new Date(b.dateTime || '').getTime();
+        break;
+      case 'participants':
+        comparison = a.participantsCount - b.participantsCount;
+        break;
+      case 'created':
+        comparison = new Date(a.createdAt || '').getTime() - new Date(b.createdAt || '').getTime();
+        break;
+    }
+
+    return sortOrder === 'desc' ? -comparison : comparison;
+  });
+};
+
+// Получение статистики событий
+export const getEventsStats = (events: CommunityEvent[]) => {
+  return {
+    total: events.length,
+    active: events.filter(e => e.status === 'active').length,
+    archived: events.filter(e => e.status === 'archived').length,
+    regular: events.filter(e => e.eventType === 'REGULAR').length,
+    emergency: events.filter(e => e.eventType === 'EMERGENCY').length,
+  };
 };

@@ -7,7 +7,14 @@ interface User {
   id: string;
   username: string;
   email?: string;
-  profileImageUrl?: string;
+  firstName?: string;
+  lastName?: string;
+  imageUrl?: string; // Исправляем поле для фотографии
+  city?: string;
+  registrationDate?: string;
+  metadata?: {
+    lastProfileUpdate?: string;
+  };
 }
 
 interface UseCommunityDetailReturn {
@@ -34,7 +41,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
     setError(null);
   }, []);
 
-  // Получение пользователя по username
+  // Получение пользователя по username - используем правильный эндпоинт
   const getUserByUsername = useCallback(async (username: string): Promise<User | null> => {
     try {
       console.log(`👤 Получаем пользователя: ${username}`);
@@ -125,8 +132,10 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
           if (user) {
             return {
               id: user.id,
-              name: user.username,
-              avatarUrl: user.profileImageUrl || '/api/placeholder/50/50'
+              name: user.firstName && user.lastName ? 
+                `${user.firstName} ${user.lastName}` : 
+                user.username,
+              avatarUrl: user.imageUrl || '/api/placeholder/50/50' // Используем правильное поле
             };
           } else {
             // Fallback для пользователей, которых не удалось загрузить
@@ -420,4 +429,3 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
     clearError,
   };
 };
-

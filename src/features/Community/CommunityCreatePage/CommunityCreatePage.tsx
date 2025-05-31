@@ -179,7 +179,7 @@ const CommunityCreatePage: React.FC = () => {
         
         // Переходим на страницу созданного сообщества через 1.5 секунды
         setTimeout(() => {
-          navigate(`/communities/${createdCommunity.id}`);
+          navigate(`/community/${createdCommunity.id}`);
         }, 1500);
       }
     } catch (error) {

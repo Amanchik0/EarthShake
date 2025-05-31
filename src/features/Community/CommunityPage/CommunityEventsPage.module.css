@@ -1,0 +1,532 @@
+/* pages/Community/CommunityEventsPage/CommunityEventsPage.module.css */
+
+.container {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+/* Хедер страницы */
+.pageHeader {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.backButton:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.communityInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.communityAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 4px 0;
+}
+
+.communityName {
+  color: #FF6B98;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.communityName:hover {
+  color: #e11d48;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #FF6B98;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.createButton:hover {
+  background: #e11d48;
+  transform: translateY(-1px);
+}
+
+/* Основной контент */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* Панель фильтров */
+.filtersPanel {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.searchContainer {
+  margin-bottom: 24px;
+}
+
+.searchBar {
+  position: relative;
+  max-width: 400px;
+}
+
+.searchBar svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 12px 12px 44px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #FF6B98;
+}
+
+.clearSearch {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #94a3b8;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.clearSearch:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.filterOptions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filterOption {
+  padding: 8px 16px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.filterOption:hover {
+  border-color: #FF6B98;
+  background: #fef7f0;
+}
+
+.filterOption.active {
+  background: #FF6B98;
+  border-color: #FF6B98;
+  color: white;
+}
+
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortSelect {
+  padding: 8px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.sortSelect:focus {
+  outline: none;
+  border-color: #FF6B98;
+}
+
+.sortOrderButton {
+  padding: 8px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sortOrderButton:hover {
+  border-color: #FF6B98;
+  background: #fef7f0;
+}
+
+/* Результаты */
+.resultsSection {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.resultsHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.resultsCount {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Сетка событий */
+.eventsGrid {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+/* Состояния */
+.loading,
+.eventsLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top: 3px solid #FF6B98;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.error h2 {
+  color: #dc2626;
+  margin: 0 0 12px 0;
+  font-size: 24px;
+}
+
+.error p {
+  color: #64748b;
+  margin: 0 0 24px 0;
+  max-width: 400px;
+}
+
+.errorActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.errorActions button {
+  padding: 10px 20px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.errorActions button:hover {
+  border-color: #FF6B98;
+  color: #FF6B98;
+}
+
+.noEvents {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.noEventsIcon {
+  margin-bottom: 20px;
+  color: #cbd5e1;
+}
+
+.noEvents h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 8px 0;
+}
+
+.noEvents p {
+  color: #64748b;
+  margin: 0 0 24px 0;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.createFirstEventButton {
+  padding: 12px 24px;
+  background: #FF6B98;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.createFirstEventButton:hover {
+  background: #e11d48;
+  transform: translateY(-1px);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .headerContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .communityInfo {
+    order: 1;
+  }
+  
+  .backButton {
+    order: 0;
+    align-self: flex-start;
+  }
+  
+  .createButton {
+    order: 2;
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 20px 16px;
+  }
+  
+  .headerContent {
+    padding: 0 16px;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .pageTitle {
+    font-size: 20px;
+  }
+  
+  .communityName {
+    font-size: 14px;
+  }
+  
+  .filtersPanel {
+    padding: 20px;
+  }
+  
+  .filters {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .filterOptions {
+    gap: 6px;
+  }
+  
+  .filterOption {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .sortContainer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .eventsGrid {
+    padding: 20px;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .createButton {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .createButton span {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerContent {
+    gap: 12px;
+  }
+  
+  .communityAvatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .pageTitle {
+    font-size: 18px;
+  }
+  
+  .searchBar {
+    max-width: none;
+  }
+  
+  .filtersPanel {
+    padding: 16px;
+  }
+  
+  .filterOptions {
+    gap: 4px;
+  }
+  
+  .filterOption {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  
+  .eventsGrid {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .resultsHeader {
+    padding: 16px 20px;
+  }
+}

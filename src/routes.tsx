@@ -27,6 +27,8 @@ import EmergencyNotification from './features/Emergency/EmergencyNotification';
 import NotFoundPage from './features/NotFoundPage/NotFoundPage';
 import AdminPage from './features/Admin/AdminPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import CommunityMembersPage from './features/Community/CommunityPage/CommunityMembersPage';
+import CommunityEventsPage from './features/Community/CommunityPage/CommunityEventPage';
 
 type Props = {
   isEmergency: boolean;
@@ -58,6 +60,9 @@ const AppRoutes: React.FC<Props> = ({ isEmergency }) => (
               <Route path="/communities/:id" element={<CommunityPage />} />
               <Route path="/communities/create" element={<CommunityCreatePage />} />
               <Route path="/communities/edit/:id" element={<ProtectedRoute><CommunityEditPage /></ProtectedRoute>} />
+              <Route path="/communities/:id/members" element={<ProtectedRoute><CommunityMembersPage /></ProtectedRoute>} />
+              <Route path="/communities/:id/events" element={<ProtectedRoute><CommunityEventsPage /></ProtectedRoute>} />
+
 
               <Route path="/evacuation" element={<EvacuationPage />} />
               <Route path="/reference" element={<ReferencePage />} />

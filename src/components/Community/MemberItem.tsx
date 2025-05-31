@@ -8,7 +8,7 @@ interface MemberItemProps {
 
 const MemberItem: React.FC<MemberItemProps> = ({ member }) => {
   return (
-    <div className={styles.memberItem}>
+    <div className={styles  .memberItem}>
       <div className={styles.avatar}>
         <img src={member.avatarUrl} alt={member.name} />
       </div>

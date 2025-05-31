@@ -7,10 +7,8 @@ interface UseEventAPIReturn {
   loading: boolean;
   error: string | null;
   loadEvent: (id: string) => Promise<BackendEventData | null>;
-  updateEvent: (eventData: EventUpdateData) => Promise<boolean>;
-  deleteEvent: (id: string) => Promise<boolean>;
+  updateEvent: (id: string, eventData: EventUpdateData) => Promise<boolean>;
   uploadMedia: (file: File) => Promise<string | null>;
-  deleteMedia: (fileName: string) => Promise<boolean>;
   clearError: () => void;
 }
 
@@ -30,6 +28,7 @@ export const useEventAPI = (): UseEventAPIReturn => {
       setLoading(true);
       setError(null);
 
+      console.log(`🔍 Загружаем событие ID: ${id}`);
       const response = await fetch(`${API_BASE_URL}/events/${id}`);
       
       if (!response.ok) {
@@ -39,86 +38,63 @@ export const useEventAPI = (): UseEventAPIReturn => {
         if (response.status === 500) {
           throw new Error('Ошибка сервера');
         }
-        throw new Error(`Ошибка загрузки события: ${response.status} ${response.statusText}`);
+        throw new Error(`Ошибка загрузки события: ${response.status}`);
       }
 
-      // Проверяем, что ответ действительно JSON
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const textResponse = await response.text();
-        console.error('Server returned non-JSON response:', textResponse);
+        console.error('❌ Сервер вернул не JSON:', textResponse);
         throw new Error('Сервер вернул некорректный ответ');
       }
 
       const eventData: BackendEventData = await response.json();
+      console.log('✅ Событие загружено:', eventData);
       return eventData;
     } catch (err) {
-      if (err instanceof SyntaxError) {
-        // Ошибка парсинга JSON
-        console.error('JSON parsing error:', err);
-        setError('Ошибка обработки ответа сервера');
-      } else {
-        const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при загрузке события';
-        setError(errorMessage);
-      }
+      console.error('❌ Ошибка загрузки события:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки события';
+      setError(errorMessage);
       return null;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Обновление события
-  const updateEvent = useCallback(async (eventData: EventUpdateData): Promise<boolean> => {
+  // Обновление события - ИСПРАВЛЕНО: ID в теле запроса
+  const updateEvent = useCallback(async (id: string, eventData: EventUpdateData): Promise<boolean> => {
     try {
       setLoading(true);
       setError(null);
 
-      console.log('Отправляем PUT запрос с данными:', eventData);
+      console.log(`📤 Отправляем обновление события ID: ${id}`, eventData);
 
-      // Пробуем сначала PUT метод
-      let response = await fetch(`${API_BASE_URL}/events/update`, {
+      // Формируем данные с ID в теле запроса (как ожидает ваш сервер)
+      const requestData = {
+        id: id,
+        ...eventData
+      };
+
+      console.log('📤 Полные данные запроса:', requestData);
+
+      const response = await fetch(`${API_BASE_URL}/events/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(eventData),
+        body: JSON.stringify(requestData),
       });
 
-      // Если PUT не работает, пробуем PATCH
-      if (response.status === 405) {
-        console.log('PUT не поддерживается, пробуем PATCH...');
-        response = await fetch(`${API_BASE_URL}/events/update`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(eventData),
-        });
-      }
-
-      // Если и PATCH не работает, пробуем другой endpoint с PUT
-      if (response.status === 405) {
-        console.log('PATCH не поддерживается, пробуем другой endpoint...');
-        response = await fetch(`${API_BASE_URL}/events/${eventData.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(eventData),
-        });
-      }
-
       if (!response.ok) {
-        // Получаем детали ошибки
         let errorDetails = '';
         try {
           const errorText = await response.text();
-          console.error('Server error response:', errorText);
+          console.error('❌ Ошибка сервера:', errorText);
           errorDetails = errorText;
         } catch {}
 
         if (response.status === 400) {
-          throw new Error(`Некорректные данные: ${errorDetails || 'проверьте правильность заполнения полей'}`);
+          throw new Error(`Некорректные данные: ${errorDetails || 'проверьте заполнение полей'}`);
         }
         if (response.status === 403) {
           throw new Error('У вас нет прав для редактирования этого события');
@@ -126,56 +102,18 @@ export const useEventAPI = (): UseEventAPIReturn => {
         if (response.status === 404) {
           throw new Error('Событие не найдено');
         }
-        if (response.status === 405) {
-          throw new Error('Метод обновления не поддерживается сервером');
-        }
         if (response.status === 500) {
           throw new Error('Ошибка сервера');
         }
         
-        throw new Error(`Ошибка обновления события: ${response.status} ${response.statusText}`);
+        throw new Error(`Ошибка обновления: ${response.status}`);
       }
 
-      console.log('Событие успешно обновлено');
+      console.log('✅ Событие обновлено успешно');
       return true;
     } catch (err) {
-      if (err instanceof SyntaxError) {
-        console.error('JSON parsing error in updateEvent:', err);
-        setError('Ошибка обработки ответа сервера при обновлении');
-      } else {
-        const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при обновлении события';
-        setError(errorMessage);
-        console.error('Update error:', err);
-      }
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Удаление события
-  const deleteEvent = useCallback(async (id: string): Promise<boolean> => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`${API_BASE_URL}/events/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error('У вас нет прав для удаления этого события');
-        }
-        if (response.status === 404) {
-          throw new Error('Событие не найдено');
-        }
-        throw new Error('Ошибка удаления события');
-      }
-
-      return true;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при удалении события';
+      console.error('❌ Ошибка обновления события:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Ошибка обновления события';
       setError(errorMessage);
       return false;
     } finally {
@@ -189,14 +127,15 @@ export const useEventAPI = (): UseEventAPIReturn => {
       setLoading(true);
       setError(null);
 
-      // Проверяем тип файла
-      if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-        throw new Error('Поддерживаются только изображения и видео');
+      console.log('📸 Загружаем файл:', file.name, file.size);
+
+      // Проверки
+      if (!file.type.startsWith('image/')) {
+        throw new Error('Поддерживаются только изображения');
       }
 
-      // Проверяем размер файла (максимум 50MB)
-      if (file.size > 50 * 1024 * 1024) {
-        throw new Error('Размер файла не должен превышать 50MB');
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error('Размер файла не должен превышать 10MB');
       }
 
       const formData = new FormData();
@@ -214,79 +153,36 @@ export const useEventAPI = (): UseEventAPIReturn => {
         if (response.status === 415) {
           throw new Error('Неподдерживаемый тип файла');
         }
-        
-        try {
-          const errorText = await response.text();
-          console.error('Upload error response:', errorText);
-        } catch {}
-        
-        throw new Error(`Ошибка загрузки файла: ${response.status} ${response.statusText}`);
+        throw new Error(`Ошибка загрузки: ${response.status}`);
       }
 
-      // Получаем ответ как текст
       const responseText = await response.text();
-      console.log('Upload response text:', responseText);
+      console.log('📸 Ответ сервера:', responseText);
 
-      // Проверяем, является ли ответ JSON
-      let responseData: any;
+      // Пробуем парсить как JSON
       try {
-        responseData = JSON.parse(responseText);
-        console.log('Parsed JSON response:', responseData);
-        
-        // Возвращаем полный URL из JSON
+        const responseData = JSON.parse(responseText);
         if (responseData.url) {
           return responseData.url;
         } else if (responseData.fileName) {
           return `${API_BASE_URL}/media/${responseData.fileName}`;
-        } else {
-          throw new Error('JSON ответ не содержит url или fileName');
         }
-      } catch (parseError) {
-        // Если ответ не JSON, считаем что это URL
-        console.log('Response is not JSON, treating as URL:', responseText);
-        
-        // Проверяем, что строка похожа на URL
-        if (responseText.startsWith('http://') || responseText.startsWith('https://')) {
+      } catch {
+        // Если не JSON, считаем что это URL или имя файла
+        if (responseText.startsWith('http')) {
           return responseText.trim();
         } else {
-          // Предполагаем, что это имя файла
-          const fileName = responseText.trim();
-          if (fileName) {
-            return `${API_BASE_URL}/media/${fileName}`;
-          } else {
-            throw new Error('Пустой ответ от сервера');
-          }
+          return `${API_BASE_URL}/media/${responseText.trim()}`;
         }
       }
+
+      console.log('✅ Файл загружен');
+      return null;
     } catch (err) {
-      console.error('Upload error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при загрузке файла';
+      console.error('❌ Ошибка загрузки файла:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки файла';
       setError(errorMessage);
       return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Удаление медиафайла
-  const deleteMedia = useCallback(async (fileName: string): Promise<boolean> => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`${API_BASE_URL}/media/${fileName}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok && response.status !== 404) {
-        throw new Error('Ошибка удаления файла');
-      }
-
-      return true;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Произошла ошибка при удалении файла';
-      setError(errorMessage);
-      return false;
     } finally {
       setLoading(false);
     }
@@ -297,9 +193,7 @@ export const useEventAPI = (): UseEventAPIReturn => {
     error,
     loadEvent,
     updateEvent,
-    deleteEvent,
     uploadMedia,
-    deleteMedia,
     clearError,
   };
 };

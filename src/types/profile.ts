@@ -14,8 +14,8 @@ export interface FullProfile {
   registrationDate: string;
   metadata: any;
   subscriber: boolean;
-  events?: EventData[];
-  communities?: CommunityData[];
+ eventIds?: string[]; // Добавляем массив ID событий
+  communityIds?: string[]; // Добавляем массив ID сообществ
 }
 
 export interface ProfileFormData {

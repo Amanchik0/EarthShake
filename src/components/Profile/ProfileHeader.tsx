@@ -27,9 +27,9 @@ const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
 }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Подготавливаем данные для формы редактирования (теперь с username)
+  // Подготавливаем данные для формы редактирования
   const initialForm: ProfileFormData = {
-    username: currentProfile.username, // Добавили username
+    username: currentProfile.username,
     firstName: currentProfile.firstName || '',
     lastName: currentProfile.lastName || '',
     email: currentProfile.email,
@@ -38,7 +38,7 @@ const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
     currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
-    imageUrl: currentProfile.imageUrl || '',
+    imageUrl: currentProfile.imageUrl || undefined,
   };
 
   const handleSave = async (updatedProfile: FullProfile) => {

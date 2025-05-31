@@ -28,9 +28,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     setModalRoot(modalRootElement);
     
     return () => {
-      if (modalRootElement && modalRootElement.parentNode) {
-        modalRootElement.parentNode.removeChild(modalRootElement);
-      }
+      // Не удаляем modal-root при размонтировании
     };
   }, []);
 
@@ -53,6 +51,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Subscription error:', error);
+      alert('Произошла ошибка при обработке подписки');
     } finally {
       setIsSubscribing(false);
     }
@@ -65,9 +64,9 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   };
 
   if (!modalRoot || !isOpen) return null;
-console.log('====================================');
-console.log('модалка работает');
-console.log('====================================');
+
+  console.log('Модалка отображается:', isOpen);
+
   const modalContent = (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
@@ -80,40 +79,56 @@ console.log('====================================');
           >
             ×
           </button>
-          <h2>Премиум подписка</h2>
-          <p>Откройте все возможности платформы</p>
+          <h2>{hasSubscription ? 'Управление подпиской' : 'Премиум подписка'}</h2>
+          <p>{hasSubscription ? 'Управляйте своей подпиской' : 'Откройте все возможности платформы'}</p>
         </div>
         
-        <div className={styles.modalBody}>
-          <div className={styles.subscriptionPrice}>
-            <span className={styles.price}>5000</span>
-            <span className={styles.currency}>тенге/месяц</span>
+        {!hasSubscription && (
+          <div className={styles.modalBody}>
+            <div className={styles.subscriptionPrice}>
+              <span className={styles.price}>5000</span>
+              <span className={styles.currency}>тенге/месяц</span>
+            </div>
+            
+            <div className={styles.benefits}>
+              <div className={styles.benefitItem}>
+                <span className={styles.checkIcon}>✓</span>
+                <span>Создание ивентов</span>
+              </div>
+              <div className={styles.benefitItem}>
+                <span className={styles.checkIcon}>✓</span>
+                <span>Отсутствие рекламы</span>
+              </div>
+              <div className={styles.benefitItem}>
+                <span className={styles.checkIcon}>✓</span>
+                <span>Создание сообществ</span>
+              </div>
+              <div className={styles.benefitItem}>
+                <span className={styles.checkIcon}>✓</span>
+                <span>Галочка в профиле возле ника</span>
+                <span className={styles.badgeHighlight}>VIP</span>
+              </div>
+            </div>
           </div>
-          
-          <div className={styles.benefits}>
-            <div className={styles.benefitItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Создание ивентов</span>
-            </div>
-            <div className={styles.benefitItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Отсутствие рекламы</span>
-            </div>
-            <div className={styles.benefitItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Создание сообществ</span>
-            </div>
-            <div className={styles.benefitItem}>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Галочка в профиле возле ника</span>
-              <span className={styles.badgeHighlight}>VIP</span>
+        )}
+
+        {hasSubscription && (
+          <div className={styles.modalBody}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <div style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
+                Подписка активна
+              </div>
+              <div style={{ fontSize: '14px', color: '#6b7280' }}>
+                Автопродление: включено<br />
+                Следующий платеж: 19 июля 2025 г.
+              </div>
             </div>
           </div>
-        </div>
+        )}
         
         <div className={styles.modalFooter}>
           <button 
-            className={styles.subscribeBtn}
+            className={`${styles.subscribeBtn} ${hasSubscription ? styles.cancelSubscription : ''}`}
             onClick={handleSubscribe}
             disabled={isSubscribing}
           >
@@ -127,7 +142,9 @@ console.log('====================================');
               </span>
             ) : hasSubscription ? 'Отменить подписку' : 'Оформить подписку'}
           </button>
-          <p>Подписка автоматически продлевается каждый месяц</p>
+          {!hasSubscription && (
+            <p>Подписка автоматически продлевается каждый месяц</p>
+          )}
         </div>
       </div>
     </div>

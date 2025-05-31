@@ -4,6 +4,7 @@ interface AuthUser {
   username: string;
   role: string;
   city: string;
+  isSubscriber: boolean; // Добавляем новое поле
 }
 
 interface AuthContextValue {
@@ -15,9 +16,10 @@ interface AuthContextValue {
     username: string;
     role: string;
     city: string;
+    isSubscriber: boolean; // Добавляем в интерфейс login
   }) => void;
   logout: () => void;
-  updateUser: (userData: Partial<AuthUser>) => void; // Добавляем функцию обновления
+  updateUser: (userData: Partial<AuthUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -31,20 +33,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
     const city = localStorage.getItem('city');
+    const isSubscriber = localStorage.getItem('isSubscriber');
 
-    if (username && role && city) {
-      setUser({ username, role, city });
+    if (username && role && city && isSubscriber !== null) {
+      setUser({ 
+        username, 
+        role, 
+        city, 
+        isSubscriber: isSubscriber === 'true' // Преобразуем строку в boolean
+      });
     }
     setIsLoading(false);
   }, []);
 
-  const login = ({ accessToken, refreshToken, username, role, city }: Parameters<AuthContextValue['login']>[0]) => {
+  const login = ({ accessToken, refreshToken, username, role, city, isSubscriber }: Parameters<AuthContextValue['login']>[0]) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('username', username);
     localStorage.setItem('role', role);
     localStorage.setItem('city', city);
-    setUser({ username, role, city });
+    localStorage.setItem('isSubscriber', isSubscriber.toString()); // Сохраняем как строку
+    
+    setUser({ username, role, city, isSubscriber });
   };
 
   const logout = () => {
@@ -52,7 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
-  // Новая функция для обновления данных пользователя
+  // Функция для обновления данных пользователя
   const updateUser = (userData: Partial<AuthUser>) => {
     if (!user) return;
 
@@ -67,6 +77,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
     if (userData.city !== undefined) {
       localStorage.setItem('city', userData.city);
+    }
+    if (userData.isSubscriber !== undefined) {
+      localStorage.setItem('isSubscriber', userData.isSubscriber.toString());
     }
     
     // Обновляем состояние

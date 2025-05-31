@@ -1,16 +1,16 @@
 import React from 'react';
-import CommunityHeader from '../../components/Community/CommunityHeader';
-import StatisticsBar from '../../components/Community/StatisticsBar';
-import AdminCard from '../../components/Community/AdminCard';
-import EventCard from '../../components/Community/EventCard';
-import MemberItem from '../../components/Community/MemberItem';
-import CommunityCard from '../../components/Community/CommunityCard';
+import CommunityHeader from '../../../components/Community/CommunityHeader';
+import StatisticsBar from '../../../components/Community/StatisticsBar';
+import AdminCard from '../../../components/Community/AdminCard';
+import EventCard from '../../../components/Community/EventCard';
+import MemberItem from '../../../components/Community/MemberItem';
+import CommunityCard from '../../../components/Community/CommunityCard';
 import { 
   Community, 
   Admin, 
   CommunityEvent, 
   Member 
-} from '../../types/types';
+} from '../../../types/types';
 import styles from './CommunityPage.module.css';
 
 const CommunityPage: React.FC = () => {
@@ -19,7 +19,7 @@ const CommunityPage: React.FC = () => {
   const communityData: Community = {
     id: '1',
     name: 'Название сообщества',
-    location: 'Good persons',
+    city: 'Good persons',
     createdAt: '15 января 2025',
     description: [
       'Здесь размещается описание сообщества. Оно может включать в себя информацию о целях и задачах сообщества, его истории, правилах участия и других важных аспектах. Описание может быть довольно подробным и содержать несколько абзацев текста.',

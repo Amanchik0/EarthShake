@@ -1,8 +1,90 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
+import { useAuth } from '../auth/AuthContext';
+
+interface AuthUser {
+  username: string;
+  role: string;
+  city: string;
+}
+
+interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  imageUrl: string | null;
+  city: string;
+  subscriber: boolean;
+}
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+
+  // Загружаем профиль пользователя для получения фотографии
+  useEffect(() => {
+    if (!user) return;
+
+    const loadUserProfile = async () => {
+      setIsLoadingProfile(true);
+      try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) return;
+
+        const response = await fetch(
+          `http://localhost:8090/api/users/get-by-username/${user.username}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (response.ok) {
+          const profileData = await response.json();
+          setUserProfile(profileData);
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки профиля пользователя:', error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    loadUserProfile();
+  }, [user]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Получаем отображаемое имя пользователя
+  const getDisplayName = () => {
+    if (userProfile?.firstName && userProfile?.lastName) {
+      return `${userProfile.firstName} ${userProfile.lastName}`;
+    }
+    if (userProfile?.firstName) {
+      return userProfile.firstName;
+    }
+    return user?.username || 'Пользователь';
+  };
+
+  // Получаем URL аватара
+  const getAvatarUrl = () => {
+    if (userProfile?.imageUrl) {
+      return userProfile.imageUrl;
+    }
+    // Дефолтная картинка
+    return "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg";
+  };
+
   return (
     <header className={styles.headerRoot}>
       <div className={styles.headerContainer}>
@@ -17,64 +99,71 @@ const Header: React.FC = () => {
             </div>
             <span className={styles.headerLogoText}>CityVora</span>
           </Link>
+
           <nav>
             <ul className={styles.headerNavMenu}>
-              <li className={styles.headerNavItem}>
-                <NavLink 
-                  to="/" 
-                  className={({isActive}) => 
-                    isActive ? `${styles.headerNavLink} ${styles.headerNavLinkActive}` : styles.headerNavLink
-                  }
-                >
-                  Главная
-                </NavLink>
-              </li>
-              <li className={styles.headerNavItem}>
-                <NavLink 
-                  to="/events" 
-                  className={({isActive}) => 
-                    isActive ? `${styles.headerNavLink} ${styles.headerNavLinkActive}` : styles.headerNavLink
-                  }
-                >
-                  События
-                </NavLink>
-              </li>
-              <li className={styles.headerNavItem}>
-                <NavLink 
-                  to="/communities" 
-                  className={({isActive}) => 
-                    isActive ? `${styles.headerNavLink} ${styles.headerNavLinkActive}` : styles.headerNavLink
-                  }
-                >
-                  Сообщества
-                </NavLink>
-              </li>
-              <li className={styles.headerNavItem}>
-                <NavLink 
-                  to="/reference" 
-                  className={({isActive}) => 
-                    isActive ? `${styles.headerNavLink} ${styles.headerNavLinkActive}` : styles.headerNavLink
-                  }
-                >
-                  Гайдлайны
-                </NavLink>
-              </li>
-              <li className={styles.headerNavItem}>
-                <NavLink 
-                  to="/support" 
-                  className={({isActive}) => 
-                    isActive ? `${styles.headerNavLink} ${styles.headerNavLinkActive}` : styles.headerNavLink
-                  }
-                >
-                  Поддержка
-                </NavLink>
-              </li>
+              {['/', '/events', '/communities', '/reference', '/support'].map((path, idx) => {
+                const labels = ['Главная', 'События', 'Сообщества', 'Гайдлайны', 'Поддержка'];
+                return (
+                  <li key={path} className={styles.headerNavItem}>
+                    <NavLink
+                      to={path}
+                      className={({ isActive }) =>
+                        isActive
+                          ? `${styles.headerNavLink} ${styles.headerNavLinkActive}`
+                          : styles.headerNavLink
+                      }
+                    >
+                      {labels[idx]}
+                    </NavLink>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
-          <Link to="/profile" className={styles.headerProfileButton}>
-            <img src="https://media.istockphoto.com/id/588348500/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%BE%D0%B9-%D0%B0%D0%B2%D0%B0%D1%82%D0%B0%D1%80-%D0%BF%D1%80%D0%BE%D1%84%D0%B8%D0%BB%D1%8F-%D1%84%D0%BE%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%B8-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80.jpg?s=612x612&w=0&k=20&c=8L_kt-Eo0R9vlgU8Aq97-T_spILhskbGZOGJ9eHJMNk=" alt="Profile" className={styles.headerProfileAvatar} />
-            <span>Профиль</span>
-          </Link>
+
+          <div className={styles.headerActions}>
+            {user ? (
+              <div className={styles.headerProfileBlock}>
+                <Link to="/profile" className={styles.headerProfileLink}>
+                  <div className={styles.headerProfileInfo}>
+                    {isLoadingProfile ? (
+                      <div className={styles.headerAvatarSkeleton}></div>
+                    ) : (
+                      <img
+                        src={getAvatarUrl()}
+                        alt="Profile"
+                        className={styles.headerProfileAvatar}
+                        onError={(e) => {
+                          // Fallback если изображение не загрузилось
+                          e.currentTarget.src = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg";
+                        }}
+                      />
+                    )}
+                    <div className={styles.headerUserInfo}>
+                      <span className={styles.headerUsername}>{getDisplayName()}</span>
+                      {userProfile?.subscriber && (
+                        <span className={styles.headerPremiumBadge}>Premium</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+                <button onClick={handleLogout} className={styles.headerLogoutButton}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16,17 21,12 16,7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  Выйти
+                </button>
+              </div>
+            ) : (
+              <div className={styles.headerAuthLinks}>
+                <Link to="/login" className={styles.headerNavLink}>Войти</Link>
+                <Link to="/auth" className={styles.headerNavLink}>Регистрация</Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </header>

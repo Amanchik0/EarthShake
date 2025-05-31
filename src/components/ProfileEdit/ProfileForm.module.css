@@ -1,3 +1,12 @@
+:root {
+    --pink-primary: #ff6b9b;
+    --pink-light: #ffd0e0;
+    --gray-dark: #4a4a4a;
+    --gray-medium: #7a7a7a;
+    --gray-light: #e5e5e5;
+    --white: #ffffff;
+}
+
 .profileForm {
     padding: 30px;
 }
@@ -15,6 +24,7 @@
 
 .formGroup input[type="text"], 
 .formGroup input[type="email"],
+.formGroup input[type="password"],
 .formGroup textarea {
     width: 100%;
     padding: 12px 15px;
@@ -22,10 +32,12 @@
     border-radius: 8px;
     font-size: 16px;
     transition: border 0.3s;
+    box-sizing: border-box;
 }
 
 .formGroup input[type="text"]:focus, 
 .formGroup input[type="email"]:focus,
+.formGroup input[type="password"]:focus,
 .formGroup textarea:focus {
     border-color: var(--pink-primary);
     outline: none;
@@ -48,8 +60,13 @@
     transition: background-color 0.3s;
 }
 
-.cancelBtn:hover {
+.cancelBtn:hover:not(:disabled) {
     background-color: #d5d5d5;
+}
+
+.cancelBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .saveBtn {
@@ -63,6 +80,11 @@
     transition: background-color 0.3s;
 }
 
-.saveBtn:hover {
+.saveBtn:hover:not(:disabled) {
     background-color: #e55b8a;
+}
+
+.saveBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

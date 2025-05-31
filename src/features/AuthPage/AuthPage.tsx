@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import CitySelect from '../../components/CitySelect/CitySelect';
 import styles from './AuthPage.module.css';
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const AuthPage: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     username: '',
@@ -12,50 +26,70 @@ const AuthPage: React.FC = () => {
     password: '',
     confirmPassword: ''
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCityChange = (cityName: string) => {
+    setFormData(prev => ({ ...prev, city: cityName }));
+    if (errors.city) {
+      setErrors(prev => ({ ...prev, city: '' }));
+    }
   };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
     if (!formData.firstName) newErrors.firstName = 'Имя обязательно';
     if (!formData.lastName) newErrors.lastName = 'Фамилия обязательна';
     if (!formData.username) newErrors.username = 'Имя пользователя обязательно';
-    if (!formData.email) {
-      newErrors.email = 'Email обязателен';
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = 'Введите корректный email';
-    }
+    if (!formData.email) newErrors.email = 'Email обязателен';
+    else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Введите корректный email';
     if (!formData.phoneNumber) newErrors.phoneNumber = 'Телефон обязателен';
-    if (!formData.city) newErrors.city = 'Город обязателен';
-    if (!formData.password) {
-      newErrors.password = 'Пароль обязателен';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Пароль должен содержать минимум 8 символов';
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Пароли не совпадают';
-    }
-
+    if (!formData.city) newErrors.city = 'Город обязателен'; 
+    if (!formData.password) newErrors.password = 'Пароль обязателен';
+    else if (formData.password.length < 8) newErrors.password = 'Минимум 8 символов';
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Пароли не совпадают';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Отправка формы
-      console.log('Форма отправлена:', formData);
+    if (!validateForm()) return;
+
+    const payload = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      city: formData.city,
+      role: 'USER',
+      phoneNumber: formData.phoneNumber,
+      firstName: formData.firstName,  
+      lastName: formData.lastName
+    };
+
+    try {
+      const response = await fetch('http://localhost:8090/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message || 'Ошибка при регистрации');
+        return;
+      }
+
+      navigate('/login');
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Сетевая ошибка. Попробуйте позже.');
     }
   };
 
@@ -179,23 +213,13 @@ const AuthPage: React.FC = () => {
             
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="city">Город</label>
-              <div className={styles.inputWithIcon}>
-                <svg className={styles.inputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A7A7A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <input
-                  className={styles.input}
-                  type="text"
-                  id="city"
-                  name="city"
-                  placeholder="Введите город"
-                  value={formData.city}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              {errors.city && <div className={styles.errorMessage}>{errors.city}</div>}
+              <CitySelect
+                value={formData.city}
+                onChange={handleCityChange}
+                placeholder="Выберите город"
+                error={errors.city}
+                required
+              />
             </div>
             
             <div className={styles.formGroup}>
@@ -267,9 +291,8 @@ const AuthPage: React.FC = () => {
               <span>или</span>
             </div>
             
-
             <div className={styles.loginLink}>
-              Уже есть аккаунт? <a href="#">Войти</a>
+              Уже есть аккаунт? <a href="/login">Войти</a>
             </div>
           </form>
         </div>

@@ -1,6 +1,6 @@
 // tabs/ProfileTab.tsx
 import React, { useState } from 'react';
-import styles from '../../features/Community/CommunityEditPage.module.css';
+import styles from '../../features/Community/CommunityEditPage/CommunityEditPage.module.css';
 
 
 interface ProfileTabProps {

@@ -1,5 +1,5 @@
 import { TabType, User, Event, Community } from '../../types/adminTypes';
-import <UserInfo></UserInfo> from '../UserInfj';
+import UserInfo from '../UserInfo';
 
 const mockUsers: User[] = [
   {
@@ -10,7 +10,7 @@ const mockUsers: User[] = [
     status: 'premium',
     registrationDate: '15 апр 2025'
   },
-  // ... more mock data
+  
 ];
 
 const mockEvents: Event[] = [
@@ -24,7 +24,7 @@ const mockEvents: Event[] = [
     participants: 24,
     date: '25 апр 2025'
   },
-  // ... more mock data
+
 ];
 
 const mockCommunities: Community[] = [
@@ -59,7 +59,7 @@ const DataTable = ({ tab }: { tab: TabType }) => {
               {mockUsers.map(user => (
                 <tr key={user.id}>
                   <td>
-                    <UserInfo 
+                    <UserInfo
                       avatar={user.avatar}
                       name={user.name}
                       email={user.email}

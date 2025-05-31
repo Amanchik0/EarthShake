@@ -1,118 +1,144 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './mainStyle.module.css';
+import { useNavigate } from 'react-router-dom';
+import HeroSection from '../../components/MainPage/HeroSection';
+import MapSection from '../../components/MainPage/MapSection';
+import EventSection from '../../components/MainPage/EventSection';
+import { Event } from '../../types/event';
+import { Community } from '../../types/community';
+import CommunitySection from '../../components/MainPage/CommunitiesSection';
+
+
 
 const MainPage: React.FC = () => {
+
+    const mockEvents = [
+        {
+            id: "1",
+            title: 'IT-конференция Kazakhstan Digital 2025',
+            description: 'Ежегодная конференция для профессионалов IT-индустрии со всего Казахстана.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            date: '27 апреля',
+            city: 'Алматы'
+        },
+        {
+            id: "2",
+            title: 'Фестиваль стартапов Astana Hub',
+            description: 'Презентация инновационных проектов и нетворкинг с инвесторами.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            date: '15 мая',
+            city: 'Нур-Султан'
+        },
+        {
+            id: "5",
+            title: 'Эко-фестиваль "Зеленый Казахстан"',
+            description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            date: '5 июня',
+            city: 'Шымкент'
+        },
+         {
+            id: "4",
+            title: 'Эко-фестиваль "Зеленый Казахстан"',
+            description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            date: '5 июня',
+            city: 'Шымкент'
+        },
+         {
+            id: "3",
+            title: 'Эко-фестиваль "Зеленый Казахстан"',
+            description: 'Мероприятие, посвященное экологичному образу жизни и защите природы.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            date: '5 июня',
+            city: 'Шымкент'
+        }
+
+    ];
+    const mockCommunities = [
+        {
+            id: '1',
+            name: 'IT-специалисты Казахстана',
+            description: 'Сообщество для обмена опытом и знаниями в области информационных технологий.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            numberMembers: 3245
+        },
+        {
+            id: "2",
+            name: 'Бизнес-сообщество',
+            description: 'Обсуждение актуальных тем бизнеса и предпринимательства.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            numberMembers: 1200
+        },
+        {
+            id: "3",
+            name: 'Творческие люди',
+            description: 'Сообщество для художников, музыкантов и творческих личностей.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            numberMembers: 1500
+        }, 
+         {
+            id: "4",
+            name: 'IT-специалисты Казахстана',
+            description: 'Сообщество для обмена опытом и знаниями в области информационных технологий.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            numberMembers: 3245
+        },
+         {
+            id: "5",
+            name: 'IT-специалисты Казахстана',
+            description: 'Сообщество для обмена опытом и знаниями в области информационных технологий.',
+            imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1',
+            numberMembers: 3245
+        },
+    ];
+    const [events , setEvents] = useState<Event[]>([])
+    const [communities , setCommunities] = useState<Community[]>([])
+    const navigate = useNavigate();
+      useEffect(() => {
+        const abortController = new AbortController()
+        const fetchData = async()=>{
+            try {
+                // const [eventsResponse, communitiesResponse] = await Promise.all([
+                //     fetch('/api/events/', { signal: abortController.signal }),
+                //     fetch('/api/communities/', { signal: abortController.signal })  
+                // ]);
+                // const [eventsData, communitiesData] = await Promise.all([
+                //     eventsResponse.json(),
+                //     communitiesResponse.json()
+                // ]); 
+                setEvents(mockEvents);
+                setCommunities(mockCommunities);
+
+            }
+            catch (error) {
+            if (error instanceof Error && error.name !== 'AbortError') {
+                    console.log('Error fetching data:', error);
+                } 
+            }
+        }; 
+        fetchData();
+    },[]);
+    
+
+    const handleEventClick = (eventId: number) => {
+        console.log('Event clicked:', eventId);
+        navigate(`/events/${eventId}`);
+    }
+    const handleCommunityClick = (communityId: number) => {
+        console.log('Community clicked:', communityId);
+        navigate(`/communities/${communityId}`);
+    }
   return (
     <div className={styles.pageWrapper}>
       
       <main>
-      <section className={styles.heroSection}>
-        <div className={styles.container}>
-            <div className={styles.heroContent}>
-                <div className={styles.heroText}>
-                    <h1 className={styles.heroTitle}>Объединяем людей через <span>события</span> по всему Казахстану</h1>
-                    <p className={styles.heroDescription}>Cityvora — платформа для создания и поиска интересных мероприятий, а также для объединения в сообщества по интересам в любом городе Казахстана.</p>
-                    <a href="#" className={styles.ctaButton}>Начать участвовать</a>
-                </div>
-                <div className={styles.heroImage}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Hero Image"/>
-                </div>
-            </div>
-        </div>
-    </section>
-        {/* TODO доделать карту  */}
-    <section className={styles.section}>
-        <div className={styles.container}>
-            <div className={styles.mapContainer}>
-                <h2 className={styles.mapTitle}>События по всему Казахстану</h2>
-                <img src="/api/placeholder/1000/500" alt="Карта Казахстана" className={styles.mapImage}/>
-            </div>
-        </div>
-    </section>
 
-    <section className={styles.section}>
-        <div className={styles.container}>
-            <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>Популярные события</h2>
-                <p className={styles.sectionSubtitle}>Присоединяйтесь к самым интересным мероприятиям в вашем городе</p>
-            </div>
-            <div className={styles.eventCards}>
-                <div className={styles.eventCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Event 1" className={styles.eventImage}/>
-                    <div className={styles.eventDetails}>
-                        <div className={styles.eventMeta}>
-                            <span className={styles.eventDate}>27 апреля</span>
-                            <span className={styles.eventLocation}>Алматы</span>
-                        </div>
-                        <h3 className={styles.eventTitle}>IT-конференция Kazakhstan Digital 2025</h3>
-                        <p className={styles.eventDescription}>Ежегодная конференция для профессионалов IT-индустрии со всего Казахстана.</p>
-                        <a href="/events/3" className={styles.eventButton}>Подробнее</a>
-                    </div>
-                </div>
-                <div className={styles.eventCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Event 2" className={styles.eventImage}/>
-                    <div className={styles.eventDetails}>
-                        <div className={styles.eventMeta}>
-                            <span className={styles.eventDate}>15 мая</span>
-                            <span className={styles.eventLocation}>Нур-Султан</span>
-                        </div>
-                        <h3 className={styles.eventTitle}>Фестиваль стартапов Astana Hub</h3>
-                        <p className={styles.eventDescription}>Презентация инновационных проектов и нетворкинг с инвесторами.</p>
-                        <a href="/events/2" className={styles.eventButton}>Подробнее</a>
-                    </div>
-                </div>
-                <div className={styles.eventCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Event 3" className={styles.eventImage}/>
-                    <div className={styles.eventDetails}>
-                        <div className={styles.eventMeta}>
-                            <span className={styles.eventDate}>5 июня</span>
-                            <span className={styles.eventLocation}>Шымкент</span>
-                        </div>
-                        <h3 className={styles.eventTitle}>Эко-фестиваль "Зеленый Казахстан"</h3>
-                        <p className={styles.eventDescription}>Мероприятие, посвященное экологичному образу жизни и защите природы.</p>
-                        <a href="/events/1" className={styles.eventButton}>Подробнее</a>
-                    </div>
-                </div>
-            </div>
-            <a href="/events" className={styles.viewAll}>Смотреть все события</a>
-        </div>
-    </section>
+    <HeroSection />
+    <MapSection />
+    <EventSection events={events}  onEventClick={handleEventClick}/>
+    <CommunitySection communities={communities} onCommunityClick={handleCommunityClick}/>
 
-    <section className={styles.section}>
-        <div className={styles.container}>
-            <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>Популярные сообщества</h2>
-                <p className={styles.sectionSubtitle}>Найдите единомышленников и присоединяйтесь к активным сообществам</p>
-            </div>
-            <div className={styles.communityCards}>
-                <div className={styles.communityCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Community 1" className={styles.communityIcon}/>
-                    <h3 className={styles.communityTitle}>IT-специалисты Казахстана</h3>
-                    <p className={styles.communityMembers}>3,245 участников</p>
-                    <a href="/communities" className={styles.communityButton}>Присоединиться</a>
-                </div>
-                <div className={styles.communityCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Community 2" className={styles.communityIcon}/>
-                    <h3 className={styles.communityTitle}>Бизнес-сообщество</h3>
-                    <p className={styles.communityMembers}>2,178 участников</p>
-                    <a href="/communities" className={styles.communityButton}>Присоединиться</a>
-                </div>
-                <div className={styles.communityCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Community 3" className={styles.communityIcon}/>
-                    <h3 className={styles.communityTitle}>Творческие люди</h3>
-                    <p className={styles.communityMembers}>1,823 участников</p>
-                    <a href="/communities" className={styles.communityButton}>Присоединиться</a>
-                </div>
-                <div className={styles.communityCard}>
-                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="Community 4" className={styles.communityIcon}/>
-                    <h3 className={styles.communityTitle}>Спортивная лига</h3>
-                    <p className={styles.communityMembers}>1,456 участников</p>
-                    <a href="/communities" className={styles.communityButton}>Присоединиться</a>
-                </div>
-            </div>
-            <a href="#" className={styles.viewAll}>Смотреть все сообщества</a>
-        </div>
-    </section>
 
     <section className={styles.section}>
         <div className={styles.container}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../features/Events/EventsListPage.module.css';
+import styles from '../../features/Events/EventsListPage/EventsListPage.module.css';
 
 interface FilterDropdownProps {
   label: string;

@@ -1,75 +1,87 @@
 import React, { useState } from 'react';
-import { ProfileHeaderProps, ProfileFormData } from '../../types/types';
-import ProfileEditPage from '../../features/Profile/ProfileEditPage';
+import { Link } from 'react-router-dom';
+import { ProfileHeaderProps, ProfileFormData, FullProfile } from '../../types/profile';
 import Modal from '../Modal/Modal';
+import ProfileEditPage from '../../features/Profile/ProfileEditPage';
 import styles from '../../features/Profile/profile.module.css';
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+// Расширяем интерфейс ProfileHeaderProps, чтобы он принимал FullProfile
+interface ExtendedProfileHeaderProps extends Omit<ProfileHeaderProps, 'onProfileUpdate'> {
+  currentProfile: FullProfile; // Добавляем полный профиль
+  onProfileUpdate: (updatedProfile: FullProfile) => Promise<void>; // Изменяем тип callback
+}
+
+const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
   name,
   username,
   email,
-  phone,
+  phoneNumber,
   city,
   registrationDate,
+  events,
+  communities,
+  hasSubscription,
+  onProfileUpdate,
+  photoUrl,
+  currentProfile, // Получаем полный профиль
 }) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Преобразуем данные профиля в форму, понятную для ProfileForm
-  const profileFormData: ProfileFormData = {
-    firstName: name.split(' ')[0],
-    lastName: name.split(' ')[1] || '',
-    email,
-    bio: `Телефон: ${phone}\nГород: ${city}`,
+  // Подготавливаем данные для формы редактирования (теперь с username)
+  const initialForm: ProfileFormData = {
+    username: currentProfile.username, // Добавили username
+    firstName: currentProfile.firstName || '',
+    lastName: currentProfile.lastName || '',
+    email: currentProfile.email,
+    phoneNumber: currentProfile.phoneNumber || '',
+    city: currentProfile.city || '',
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+    imageUrl: currentProfile.imageUrl || '',
   };
 
-  const handleSave = (data: ProfileFormData) => {
-    console.log('Сохраненные данные:', data);
-    // TODO загрузка профиля 
-    setIsEditModalOpen(false);
+  const handleSave = async (updatedProfile: FullProfile) => {
+    await onProfileUpdate(updatedProfile);
+    setIsEditOpen(false);
   };
 
   return (
     <div className={styles.profileHeader}>
-      <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1" alt="User Profile" className={styles.profilePhoto} />
+      <Link to="/profile">
+        <img
+          src={photoUrl || "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg"}
+          alt="Profile"
+          className={styles.profilePhoto}
+        />
+      </Link>
       <div className={styles.profileInfo}>
         <h1 className={styles.profileName}>{name}</h1>
         <p className={styles.profileUsername}>@{username}</p>
-        <div className={styles.subscriptionBadge}>Premium подписка</div>
-        <div className={styles.profileRating}>
-          <div className={styles.stars}>★★★★☆</div>
-          <span className={styles.ratingValue}>4.8</span>
+        <div className={styles.subscriptionBadge}>
+          {hasSubscription ? 'Premium' : 'БЕЗ ПОДПИСКИ'}
         </div>
         <div className={styles.profileDetails}>
-          <DetailItem label="Email" value={email} />
-          <DetailItem label="Телефон" value={phone} />
-          <DetailItem label="Город" value={city} />
-          <DetailItem label="Дата регистрации" value={registrationDate} />
+          <div><b>Email:</b> {email}</div>
+          <div><b>Телефон:</b> {phoneNumber || '-'}</div>
+          <div><b>Город:</b> {city}</div>
+          <div><b>Регистрация:</b> {registrationDate}</div>
         </div>
-        <button 
-          className={styles.editButton} 
-          onClick={() => setIsEditModalOpen(true)}
-        >
+        <button onClick={() => setIsEditOpen(true)} className={styles.editButton}>
           Редактировать профиль
         </button>
       </div>
 
-      {/* Модальное окно редактирования */}
-      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-        <ProfileEditPage 
-          initialData={profileFormData}
-          onCancel={() => setIsEditModalOpen(false)}
+      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)}>
+        <ProfileEditPage
+          initialData={initialForm}
+          currentProfile={currentProfile}
+          onClose={() => setIsEditOpen(false)}
           onSubmit={handleSave}
         />
       </Modal>
     </div>
   );
 };
-
-const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div className={styles.detailItem}>
-    <span className={styles.detailLabel}>{label}</span>
-    <span className={styles.detailValue}>{value}</span>
-  </div>
-);
 
 export default ProfileHeader;

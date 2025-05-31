@@ -1,3 +1,33 @@
+type DeepReadonly<Obj extends Record<string, unknown> | ReadonlyArray<unknown> | undefined> = {
+  +readonly [Key in keyof Obj]: Obj[Key] extends Record<string, unknown> | ReadonlyArray<unknown> | undefined 
+    ? DeepReadonly<Obj[Key]> 
+    : Obj[Key]
+} & unknown
+// todo надо будет все типы поменять и сделать так чтобы везде были читаемые 
+
+type EventTest = DeepReadonly<{
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+  description?: string[];
+  location?: string;
+  rating?: number;
+  reviewsCount?: number;
+  imageUrl?: string;
+  tag: 'regular' | 'emergency';
+  author: {
+    name: string;
+    role: string;
+    avatarUrl: string;
+  };
+price?: string;
+}>
+
+// const x: EventTest = {}
+
+// x.author.name = 'sadfdsfds'
+
 export interface Event {
     id: string;
     title: string;
@@ -18,15 +48,7 @@ export interface Event {
   price?: string;
 
   }
-  
-  export interface Comment {
-    id: string;
-    author: string;
-    avatarUrl: string;
-    date: string;
-    text: string;
-  }
-  
+
   export interface RecommendedEvent {
     id: string;
     title: string;
@@ -36,30 +58,9 @@ export interface Event {
   }
 
   
-  export interface FilterOption {
-    value: string;
-    label: string;
-  }
-  
-  export interface FilterConfig {
-    label: string;
-    options: FilterOption[];
-  }
-  export interface Community {
-  id: string;
-  name: string;
-  location: string;
-  createdAt: string;
-  description: string[];
-  avatarUrl: string;
-  coverUrl?: string;
-  membersCount: number;
-  eventsCount: number;
-  rating: number;
-  postsCount: number;
-  isMember: boolean;
-}
 
+
+  
 export interface Community {
   id: string;
   name: string;
@@ -173,15 +174,7 @@ export interface InfoItem {
 
 // profile
 
-export interface ProfileHeaderProps {
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  city: string;
-  registrationDate: string;
-  subscription?: boolean;
-}
+
 
 export interface EventCardProps {
   title: string;
@@ -208,14 +201,7 @@ export interface ProfilePhotoUploadProps {
   onPhotoChange: () => void;
 }
 
-export interface ProfileFormData {
 
-    firstName: string;
-    lastName: string;
-    email: string;
-    bio: string;
-  
-}
 
 //event edit 
 export interface EventPhotoUploadProps {

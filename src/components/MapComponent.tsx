@@ -6,7 +6,6 @@ import type { Feature, Polygon, GeoJsonProperties, Geometry } from 'geojson';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 
-// Типы
 
 export interface Emergency {
   id: string;

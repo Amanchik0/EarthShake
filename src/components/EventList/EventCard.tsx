@@ -33,23 +33,31 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     return stars;
   };
 
-  const getImageUrl = () => {
-    if (!event.imageUrl) {
-      return '/api/placeholder/120/90';
+  const getImageUrl = (imageUrl: string | string[] | null | undefined): string => {
+    // Проверяем, что imageUrl существует
+    if (!imageUrl) {
+      return '/api/placeholder/300/200';
     }
     
-    // If it's a localhost URL, keep it as is
-    if (event.imageUrl.startsWith('http://localhost:8090') || 
-        event.imageUrl.startsWith('https://')) {
-      return event.imageUrl;
+    // Если это массив, берем первый элемент
+    if (Array.isArray(imageUrl)) {
+      if (imageUrl.length === 0) {
+        return '/api/placeholder/300/200';
+      }
+      const firstUrl = imageUrl[0];
+      if (!firstUrl || typeof firstUrl !== 'string') {
+        return '/api/placeholder/300/200';
+      }
+      return firstUrl.startsWith('http') ? firstUrl : `/images/${firstUrl}`;
     }
     
-    // If it's a relative path, prepend the base URL
-    if (event.imageUrl.startsWith('/api/')) {
-      return `http://localhost:8090${event.imageUrl}`;
+    // Если это строка
+    if (typeof imageUrl === 'string') {
+      return imageUrl.startsWith('http') ? imageUrl : `/images/${imageUrl}`;
     }
     
-    return event.imageUrl;
+    // Fallback
+    return '/api/placeholder/300/200';
   };
 
   const getEventTypeIcon = () => {
@@ -73,15 +81,29 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   };
 
   const getParticipantsCount = () => {
-    if (!event.usersIds || !Array.isArray(event.usersIds)) return 0;
-    return event.usersIds.length;
+    if (!event.usersIds) return 0;
+    
+    // Обрабатываем случай, когда usersIds может быть строкой или массивом
+    if (Array.isArray(event.usersIds)) {
+      return event.usersIds.length;
+    }
+    
+    // Если это строка, считаем как 1 участника
+    if (typeof event.usersIds === 'string') {
+      return 1;
+    }
+    
+    return 0;
   };
+
+  // Получаем URL изображения для использования
+  const imageUrl = getImageUrl(event.imageUrl);
 
   return (
     <div className={styles.card} onClick={handleCardClick}>
       <div className={styles.image}>
         <img 
-          src={getImageUrl()} 
+          src={imageUrl} // Используем результат функции getImageUrl
           alt={event.title}
           onError={(e) => {
             e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjkwIiB2aWV3Qm94PSIwIDAgMTIwIDkwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjkwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik01MCA0NUw2MCA1NUw3MCA0NUg1MFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+Cg==';

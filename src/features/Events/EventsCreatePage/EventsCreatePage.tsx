@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../components/auth/AuthContext';
 import CitySelect from '../../../components/CitySelect/CitySelect';
 import mapboxgl from 'mapbox-gl';
@@ -12,6 +12,32 @@ const DEFAULT_CENTER: [number, number] = [76.886, 43.238]; // Алматы
 
 // Устанавливаем токен СРАЗУ при импорте модуля
 mapboxgl.accessToken = MAPBOX_TOKEN;
+
+// Интерфейс для данных создания события (согласно API)
+interface EventCreateData {
+  eventType: 'REGULAR' | 'EMERGENCY';
+  emergencyType?: string | null;
+  title: string;
+  description: string;
+  content: string;
+  author: string; // Всегда username создателя
+  city: string;
+  location: {
+    x: number;
+    y: number;
+  };
+  mediaUrl: string[]; // Массив URL изображений
+  tags: string[];
+  metadata: {
+    address?: string | undefined;
+    scheduledDate?: string;
+    // Информация о создании от имени сообщества
+    createdForCommunity?: boolean;
+    communityId?: string;
+    communityName?: string;
+    [key: string]: any;
+  };
+}
 
 // Интерфейс для формы создания события
 interface EventCreateForm {
@@ -28,13 +54,25 @@ interface EventCreateForm {
   };
   mediaFile?: File | null;
   dateTime: string;
+  // Информация о том, создается ли событие от имени сообщества
+  isForCommunity: boolean;
+  communityId?: string | undefined;
+  communityName?: string | undefined;
 }
 
 const EventCreatePage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const map = useRef<mapboxgl.Map | null>(null);
   const marker = useRef<mapboxgl.Marker | null>(null);
+
+  // Получаем параметры из URL
+  const searchParams = new URLSearchParams(location.search);
+  const communityId = searchParams.get('communityId');
+  const authorType = searchParams.get('authorType');
+
+  const [communityInfo, setCommunityInfo] = useState<{ id: string; name: string } | null>(null);
 
   // Используем callback ref вместо useRef для контейнера
   const mapCallbackRef = React.useCallback((node: HTMLDivElement | null) => {
@@ -157,11 +195,52 @@ const EventCreatePage: React.FC = () => {
       address: ''
     },
     mediaFile: null,
-    dateTime: ''
+    dateTime: '',
+    isForCommunity: false,
+    communityId: undefined,
+    communityName: undefined
   });
 
   const [mapError, setMapError] = useState<string>('');
   const [mapLoading, setMapLoading] = useState<boolean>(true);
+
+  // Загружаем информацию о сообществе, если событие создается от его имени
+  useEffect(() => {
+    if (communityId && authorType === 'community') {
+      fetchCommunityInfo(communityId);
+    }
+  }, [communityId, authorType]);
+
+  const fetchCommunityInfo = async (id: string) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:8090/api/community/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const communityData = await response.json();
+        setCommunityInfo({
+          id: communityData.id,
+          name: communityData.name
+        });
+
+        // Обновляем форму для создания от имени сообщества
+        setFormData(prev => ({
+          ...prev,
+          isForCommunity: true,
+          communityId: communityData.id,
+          communityName: communityData.name,
+          city: communityData.city || prev.city
+        }));
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки информации о сообществе:', error);
+    }
+  };
 
   // Cleanup при размонтировании компонента
   useEffect(() => {
@@ -473,7 +552,7 @@ const EventCreatePage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      let mediaUrl = '';
+      let mediaUrls: string[] = [];
 
       // 1. Загружаем изображение
       if (formData.mediaFile) {
@@ -496,32 +575,40 @@ const EventCreatePage: React.FC = () => {
           throw new Error('Ошибка загрузки изображения');
         }
 
-        mediaUrl = await uploadResponse.text();
+        let mediaUrl = await uploadResponse.text();
         console.log('Изображение загружено:', mediaUrl);
 
         // Проверяем, нужно ли добавить базовый URL
         if (!mediaUrl.startsWith('http')) {
           mediaUrl = `http://localhost:8090/api/media/${mediaUrl}`;
         }
+        
+        mediaUrls = [mediaUrl];
       }
 
-      // 2. Подготавливаем данные события
-      const apiPayload = {
+      // 2. Подготавливаем данные события согласно API
+      const apiPayload: EventCreateData = {
         eventType: formData.eventType,
         title: formData.title.trim(),
         description: formData.description.trim(),
         content: formData.content.trim() || formData.description.trim(),
-        author: user.username,
+        author: user.username, // Всегда username создателя
         city: formData.city,
         location: {
           x: formData.location.x,
           y: formData.location.y,
         },
-        mediaUrl: mediaUrl || '',
+        mediaUrl: mediaUrls,
         tags: formData.tags.length > 0 ? formData.tags : ['event'],
         metadata: {
-          address: formData.location.address,
-          scheduledDate: formData.dateTime
+          address: formData.location.address || undefined,
+          scheduledDate: formData.dateTime,
+          // Если событие создается от имени сообщества
+          ...(formData.isForCommunity && {
+            createdForCommunity: true,
+            communityId: formData.communityId,
+            communityName: formData.communityName,
+          })
         }
       };
 
@@ -560,9 +647,17 @@ const EventCreatePage: React.FC = () => {
         result = { id: 'created' };
       }
       
-      showNotificationMessage('Событие успешно создано!', true);
+      showNotificationMessage(
+        `Событие успешно создано${formData.isForCommunity ? ` от имени сообщества "${formData.communityName}"` : ''}!`, 
+        true
+      );
+      
       setTimeout(() => {
-        navigate(`/events/${result.id || ''}`);
+        if (formData.isForCommunity && formData.communityId) {
+          navigate(`/communities/${formData.communityId}`);
+        } else {
+          navigate(`/events/${result.id || ''}`);
+        }
       }, 1500);
 
     } catch (error: any) {
@@ -599,7 +694,14 @@ const EventCreatePage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.profileSection}>
-        <div className={styles.sectionTitle}>Создание нового события</div>
+        <div className={styles.sectionTitle}>
+          Создание нового события
+          {formData.isForCommunity && (
+            <div className={styles.communityBadge}>
+              <span>От имени сообщества: <strong>{formData.communityName}</strong></span>
+            </div>
+          )}
+        </div>
 
         <form onSubmit={handleSubmit}>
           <div className={styles.formSection}>
@@ -801,7 +903,14 @@ const EventCreatePage: React.FC = () => {
               <button
                 type="button"
                 className={`${styles.button} ${styles.buttonSecondary}`}
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  // Возвращаемся в сообщество или назад
+                  if (formData.isForCommunity && formData.communityId) {
+                    navigate(`/communities/${formData.communityId}`);
+                  } else {
+                    navigate(-1);
+                  }
+                }}
                 disabled={isSubmitting}
               >
                 Отмена
@@ -818,7 +927,6 @@ const EventCreatePage: React.FC = () => {
         </form>
       </div>
 
-      {/* Уведомления */}
       {showNotification && (
         <div className={`${styles.notification} ${isSuccess ? styles.notificationSuccess : styles.notificationError}`}>
           {notificationMessage}

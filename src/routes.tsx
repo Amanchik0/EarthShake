@@ -1,4 +1,3 @@
-// src/app/AppRoutes.tsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/HeadFoot/Header';
@@ -19,7 +18,7 @@ import EvacuationPage from './features/Evacuation/EvacuationPage';
 import ReferencePage from './features/Reference/ReferencePage';
 import SupportPage from './features/Support/SupportPage';
 import ProfilePage from './features/Profile/ProfilePage';
-import ProfileEditPage from './features/Profile/ProfileEditPage';
+// import ProfileEditPage from './features/Profile/ProfileEditPage'; 
 import NewsListPage from './features/News/NewsListPage';
 import AuthPage from './features/AuthPage/AuthPage';
 import LoginPage from './features/AuthPage/LoginPage';

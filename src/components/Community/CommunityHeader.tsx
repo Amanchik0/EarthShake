@@ -1,13 +1,25 @@
 import React from 'react';
-import { Community } from '../../types/types';
+import { CommunityDetails } from '../../types/community';
 import styles from './CommunityHeader.module.css';
 
 interface CommunityHeaderProps {
-  community: Community;
+  community: CommunityDetails;
   onJoin: () => void;
+  isJoining?: boolean;
 }
 
-const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin }) => {
+const CommunityHeader: React.FC<CommunityHeaderProps> = ({ 
+  community, 
+  onJoin, 
+  isJoining = false 
+}) => {
+  const formatDescription = (description: string | string[]) => {
+    if (Array.isArray(description)) {
+      return description;
+    }
+    return [description];
+  };
+
   return (
     <div className={styles.communityHeader}>
       <div className={styles.avatar}>
@@ -35,16 +47,32 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin }) 
             </svg>
             Создано: {community.createdAt}
           </div>
+          
+          <div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+            </svg>
+            Категория: {community.category}
+          </div>
         </div>
         
         <div className={styles.description}>
-          {community.description.map((paragraph, index) => (
+          {formatDescription(community.description).map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
         
-        <button className={styles.joinButton} onClick={onJoin}>
-          {community.isMember ? 'Вы участник' : 'Вступить в сообщество'}
+        <button 
+          className={`${styles.joinButton} ${community.isMember ? styles.joined : ''}`} 
+          onClick={onJoin}
+          disabled={isJoining}
+        >
+          {isJoining 
+            ? 'Загрузка...' 
+            : community.isMember 
+              ? 'Покинуть сообщество' 
+              : 'Вступить в сообщество'
+          }
         </button>
       </div>
     </div>

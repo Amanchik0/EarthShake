@@ -14,6 +14,11 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   const [authorData, setAuthorData] = useState<BackendUserData | null>(null);
   const [loadingAuthor, setLoadingAuthor] = useState(true);
 
+  // Проверяем, создано ли событие от имени сообщества
+  const isCreatedForCommunity = event.metadata?.createdForCommunity === true;
+  const communityName = event.metadata?.communityName;
+  const communityId = event.metadata?.communityId;
+
   // Загружаем данные автора события
   useEffect(() => {
     const fetchAuthorData = async () => {
@@ -51,10 +56,21 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
     return new Date(dateString).toLocaleDateString('ru-RU', options);
   };
 
+  // Функция для вычисления среднего рейтинга из массива
+  const calculateAverageScore = (): number => {
+    if (!event.score || !Array.isArray(event.score) || event.score.length === 0) {
+      return 0;
+    }
+    const sum = event.score.reduce((acc, score) => acc + score, 0);
+    return sum / event.score.length;
+  };
+
   // Функция для отображения рейтинга
   const renderStars = () => {
     const stars = [];
-    const rating = event.score || 0;
+    const averageScore = calculateAverageScore();
+    // Преобразуем из 0-1 шкалы в 1-5 шкалу для отображения
+    const rating = averageScore * 5;
     
     for (let i = 1; i <= 5; i++) {
       stars.push(
@@ -81,6 +97,14 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
     return `https://2gis.kz/almaty/directions/points/%2C${lng}%2C${lat}`;
   };
 
+  // Получаем первое изображение из массива mediaUrl
+  const getImageUrl = () => {
+    if (Array.isArray(event.mediaUrl) && event.mediaUrl.length > 0) {
+      return event.mediaUrl[0];
+    }
+    return '';
+  };
+
   // Проверяем, является ли текущий пользователь владельцем события
   const isOwner = currentUser?.username === event.author;
 
@@ -89,13 +113,20 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
     navigate(`/events/${event.id}/edit`);
   };
 
+  // Обработчик перехода к сообществу
+  const handleCommunityClick = () => {
+    if (communityId) {
+      navigate(`/communities/${communityId}`);
+    }
+  };
+
   return (
     <section className={styles.eventMain}>
       {/* Изображение события */}
-      {event.mediaUrl && (
+      {getImageUrl() && (
         <div className={styles.eventPhoto}>
           <img 
-            src={event.mediaUrl} 
+            src={getImageUrl()} 
             alt={event.title}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
@@ -125,7 +156,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           <div className={styles.metaItem}>
             <span className={styles.metaIcon}>📅</span>
             <span>
-              {event.metadata.scheduledDate 
+              {event.metadata?.scheduledDate 
                 ? formatDate(event.metadata.scheduledDate)
                 : formatDate(event.dateTime)
               }
@@ -139,7 +170,12 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           
           <div className={styles.metaItem}>
             <span className={styles.metaIcon}>👤</span>
-            <span>{event.author}</span>
+            <span>
+              {isCreatedForCommunity && communityName 
+                ? `${communityName} • @${event.author}`
+                : event.author
+              }
+            </span>
           </div>
         </div>
         
@@ -160,7 +196,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           <h3>📍 Местоположение</h3>
           <div className={styles.locationInfo}>
             <p><strong>Город:</strong> {event.city}</p>
-            {event.metadata.address && (
+            {event.metadata?.address && (
               <p><strong>Адрес:</strong> {event.metadata.address}</p>
             )}
             <div className={styles.routeLink}>
@@ -193,7 +229,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
             <div className={styles.starsContainer}>
               {renderStars()}
               <span className={styles.ratingText}>
-                ({event.score ? event.score.toFixed(1) : '0.0'})
+                ({calculateAverageScore().toFixed(1)})
               </span>
             </div>
           </div>
@@ -204,7 +240,7 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           </div>
         </div>
         
-        {/* Информация об авторе */}
+        {/* Информация об авторе/организаторе */}
         <div className={styles.authorInfo}>
           <div className={styles.authorAvatar}>
             {loadingAuthor ? (
@@ -233,18 +269,48 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
             )}
           </div>
           <div className={styles.authorDetails}>
-            <div className={styles.authorName}>
-              <strong>
-                {authorData?.firstName && authorData?.lastName 
-                  ? `${authorData.firstName} ${authorData.lastName}`
-                  : event.author
-                }
-              </strong>
-            </div>
-            <div className={styles.authorRole}>Организатор события</div>
-            <div className={styles.authorUsername}>@{event.author}</div>
-            {authorData?.bio && (
-              <div className={styles.authorBio}>{authorData.bio}</div>
+            {isCreatedForCommunity ? (
+              // Отображение для событий от сообщества
+              <>
+                <div className={styles.authorName}>
+                  <strong 
+                    onClick={handleCommunityClick}
+                    style={{ cursor: 'pointer', color: 'var(--primary-pink)' }}
+                  >
+                    {communityName}
+                  </strong>
+                </div>
+                <div className={styles.authorRole}>Сообщество</div>
+                <div className={styles.authorCreator}>
+                  Создано пользователем: <strong>
+                    {authorData?.firstName && authorData?.lastName 
+                      ? `${authorData.firstName} ${authorData.lastName}`
+                      : event.author
+                    }
+                  </strong>
+                </div>
+                <div className={styles.authorUsername}>@{event.author}</div>
+                {authorData?.bio && (
+                  <div className={styles.authorBio}>{authorData.bio}</div>
+                )}
+              </>
+            ) : (
+              // Отображение для событий от пользователя
+              <>
+                <div className={styles.authorName}>
+                  <strong>
+                    {authorData?.firstName && authorData?.lastName 
+                      ? `${authorData.firstName} ${authorData.lastName}`
+                      : event.author
+                    }
+                  </strong>
+                </div>
+                <div className={styles.authorRole}>Организатор события</div>
+                <div className={styles.authorUsername}>@{event.author}</div>
+                {authorData?.bio && (
+                  <div className={styles.authorBio}>{authorData.bio}</div>
+                )}
+              </>
             )}
             <div className={styles.eventCreated}>
               Создано: {formatDate(event.dateTime)}

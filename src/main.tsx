@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import { BrowserRouter } from 'react-router-dom'; // 👈 Добавить это
+import { BrowserRouter } from 'react-router-dom'; 
 import App from './App';
 import { AuthProvider } from './components/auth/AuthContext';
 

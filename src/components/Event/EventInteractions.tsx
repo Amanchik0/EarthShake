@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { BackendEventData, NewComment, NewRating } from '../../types/event';
-import { useAuth } from '../../components/auth/AuthContext';
+import { BackendEventData } from '../../types/event';
+import { useAuth } from '../auth/AuthContext';
 
 interface EventInteractionsProps {
   event: BackendEventData;
@@ -10,298 +10,241 @@ interface EventInteractionsProps {
 
 const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, onEventUpdate }) => {
   const { user } = useAuth();
-  const [commentText, setCommentText] = useState('');
-  const [userRating, setUserRating] = useState(0);
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
-  const [isJoiningEvent, setIsJoiningEvent] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+  const [isRating, setIsRating] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [showRatingModal, setShowRatingModal] = useState(false);
 
   // Проверяем, участвует ли пользователь в событии
-  const isParticipant = user ? event.usersIds.includes(user.username) : false;
+  const isParticipating = user ? event.usersIds.includes(user.username) : false;
 
-  const updateEvent = async (updates: Partial<BackendEventData>) => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      
-      // Преобразуем comments из объекта в массив для отправки
-      const commentsArray = Object.entries(event.comments || {}).map(([key, comment]) => ({
-        id: key,
-        author: comment.author,
-        text: comment.text,
-        date: comment.date,
-        avatarUrl: comment.avatarUrl || ''
-      }));
-      
-      // Создаем структуру данных точно как ожидает API
-      const updatedEventData = {
-        id: event.id,
-        eventType: event.eventType,
-        emergencyType: event.emergencyType,
-        title: event.title,
-        description: event.description,
-        content: event.content,
-        author: event.author,
-        city: event.city,
-        location: {
-          x: event.location.x,
-          y: event.location.y
-        },
-        mediaUrl: event.mediaUrl,
-        score: event.score,
-        dateTime: event.dateTime,
-        eventStatus: event.eventStatus,
-        tags: [...event.tags],
-        usersIds: [...event.usersIds],
-        metadata: event.metadata ? {
-          address: event.metadata.address,
-          scheduledDate: event.metadata.scheduledDate,
-          createdAt: event.metadata.createdAt
-        } : {},
-        comments: commentsArray, // Отправляем как массив
-        archived: event.archived,
-        // Применяем обновления
-        ...updates
-      };
-
-      // Если в updates есть comments, преобразуем их тоже в массив
-      if (updates.comments) {
-        updatedEventData.comments = Object.entries(updates.comments).map(([key, comment]) => ({
-          id: key,
-          author: comment.author,
-          text: comment.text,
-          date: comment.date,
-          avatarUrl: comment.avatarUrl || ''
-        }));
-      }
-
-      console.log('Отправляем данные для обновления:', JSON.stringify(updatedEventData, null, 2));
-
-      const response = await fetch('http://localhost:8090/api/events/update', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` })
-        },
-        body: JSON.stringify(updatedEventData)
-      });
-
-      const responseText = await response.text();
-      console.log('Ответ сервера:', responseText);
-
-      if (!response.ok) {
-        console.error('Ошибка сервера:', responseText);
-        throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
-      }
-
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (e) {
-        console.error('Не удалось парсить ответ как JSON:', responseText);
-        throw new Error('Некорректный ответ сервера');
-      }
-
-      console.log('Событие обновлено:', result);
-      onEventUpdate(result);
-      return result;
-    } catch (error) {
-      console.error('Ошибка обновления события:', error);
-      throw error;
+  // Функция для вычисления среднего рейтинга из массива
+  const calculateAverageRating = (): number => {
+    if (!event.score || !Array.isArray(event.score) || event.score.length === 0) {
+      return 0;
     }
+    const sum = event.score.reduce((acc, score) => acc + score, 0);
+    return sum / event.score.length;
   };
 
-  // Добавление комментария
-  const handleAddComment = async () => {
-    if (!user || !commentText.trim()) {
-      console.log('Нет пользователя или пустой комментарий');
-      return;
-    }
-
-    setIsSubmittingComment(true);
-    try {
-      const newCommentId = `comment_${Date.now()}_${user.username}`;
-      const newComment = {
-        author: user.username,
-        text: commentText.trim(),
-        date: new Date().toISOString(),
-        avatarUrl: ''
-      };
-
-      console.log('Добавляем комментарий:', newComment);
-
-      const updatedComments = {
-        ...event.comments,
-        [newCommentId]: newComment
-      };
-
-      await updateEvent({ comments: updatedComments });
-      setCommentText('');
-    } catch (error) {
-      console.error('Ошибка добавления комментария:', error);
-      alert('Не удалось добавить комментарий');
-    } finally {
-      setIsSubmittingComment(false);
-    }
-  };
-
-  // Добавление/изменение оценки
-  const handleRateEvent = async (rating: number) => {
-    if (!user) {
-      console.log('Нет пользователя для оценки');
-      return;
-    }
-
-    console.log('Оцениваем событие:', rating);
-    setIsSubmittingRating(true);
-    try {
-      // Преобразуем рейтинг из 1-5 в 0-1 шкалу для бэкенда
-      const normalizedScore = rating / 5;
-      await updateEvent({ score: normalizedScore });
-      setUserRating(rating);
-    } catch (error) {
-      console.error('Ошибка оценки события:', error);
-      alert('Не удалось оценить событие');
-    } finally {
-      setIsSubmittingRating(false);
-    }
-  };
-
-  // Присоединение к событию / покинуть событие
-  const handleToggleParticipation = async () => {
-    if (!user) {
-      console.log('Нет пользователя для участия');
-      return;
-    }
-
-    console.log('Текущий статус участия:', isParticipant);
-    console.log('Текущие участники:', event.usersIds);
-
-    setIsJoiningEvent(true);
-    try {
-      let updatedUsersIds;
-      if (isParticipant) {
-        // Покинуть событие
-        updatedUsersIds = event.usersIds.filter(id => id !== user.username);
-        console.log('Покидаем событие, новый список:', updatedUsersIds);
-      } else {
-        // Присоединиться к событию
-        updatedUsersIds = [...event.usersIds, user.username];
-        console.log('Присоединяемся к событию, новый список:', updatedUsersIds);
-      }
-
-      await updateEvent({ usersIds: updatedUsersIds });
-    } catch (error) {
-      console.error('Ошибка изменения участия:', error);
-      alert('Не удалось изменить участие в событии');
-    } finally {
-      setIsJoiningEvent(false);
-    }
-  };
-
-  // Рендер звезд для оценки
-  const renderRatingStars = () => {
+  // Функция для отображения звезд рейтинга
+  const renderRatingStars = (rating: number, interactive: boolean = false, onStarClick?: (star: number) => void) => {
     const stars = [];
-    // Преобразуем score из 0-1 шкалы в 1-5 для отображения
-    const displayRating = event.score ? Math.round(event.score * 5) : 0;
-    
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <button
+        <span
           key={i}
-          onClick={() => handleRateEvent(i)}
-          disabled={isSubmittingRating}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '1.5rem',
-            cursor: isSubmittingRating ? 'not-allowed' : 'pointer',
-            color: i <= (userRating || displayRating) ? 'gold' : 'var(--light-gray)',
-            transition: 'color 0.2s',
-            padding: '2px'
+          className={`${styles.star} ${interactive ? styles.interactiveStar : ''}`}
+          style={{ 
+            color: i <= rating ? '#FFD700' : '#E0E0E0',
+            cursor: interactive ? 'pointer' : 'default'
           }}
-          onMouseEnter={(e) => {
-            if (!isSubmittingRating) {
-              e.currentTarget.style.color = 'gold';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isSubmittingRating) {
-              e.currentTarget.style.color = i <= (userRating || displayRating) ? 'gold' : 'var(--light-gray)';
-            }
-          }}
+          onClick={() => interactive && onStarClick && onStarClick(i)}
         >
           ★
-        </button>
+        </span>
       );
     }
     return stars;
   };
 
-  if (!user) {
-    return (
-      <div className={styles.interactionsSection}>
-        <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--dark-gray)' }}>
-          <p>Войдите в систему, чтобы взаимодействовать с событием</p>
-        </div>
-      </div>
-    );
-  }
+  // Обработчик участия/отмены участия в событии
+  const handleJoinToggle = async () => {
+    if (!user) {
+      alert('Необходимо авторизоваться для участия в событии');
+      return;
+    }
+
+    setIsJoining(true);
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      const action = isParticipating ? 'leave' : 'join';
+      
+      const response = await fetch(`http://localhost:8090/api/events/${event.id}/${action}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Обновляем список участников локально
+        const updatedUsersIds = isParticipating 
+          ? event.usersIds.filter(id => id !== user.username)
+          : [...event.usersIds, user.username];
+
+        const updatedEvent: BackendEventData = {
+          ...event,
+          usersIds: updatedUsersIds
+        };
+
+        onEventUpdate(updatedEvent);
+        console.log(`${action === 'join' ? 'Присоединились' : 'Покинули'} событие`);
+      } else {
+        const errorText = await response.text();
+        console.error(`Ошибка ${action}:`, errorText);
+        alert(`Не удалось ${action === 'join' ? 'присоединиться к' : 'покинуть'} событие`);
+      }
+    } catch (error) {
+      console.error('Ошибка сети:', error);
+      alert('Ошибка соединения с сервером');
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
+  // Обработчик отправки рейтинга
+  const handleRatingSubmit = async () => {
+    if (!user || selectedRating === 0) {
+      return;
+    }
+
+    setIsRating(true);
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      
+      const response = await fetch(`http://localhost:8090/api/events/${event.id}/rate`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          rating: selectedRating / 5 // Преобразуем из 1-5 в 0-1 для бэкенда
+        })
+      });
+
+      if (response.ok) {
+        // Обновляем рейтинг локально
+        const normalizedRating = selectedRating / 5;
+        const updatedScores = event.score || [];
+        const newScores = [...updatedScores, normalizedRating];
+
+        const updatedEvent: BackendEventData = {
+          ...event,
+          score: newScores
+        };
+
+        onEventUpdate(updatedEvent);
+        setShowRatingModal(false);
+        setSelectedRating(0);
+        console.log('Рейтинг успешно отправлен');
+      } else {
+        const errorText = await response.text();
+        console.error('Ошибка отправки рейтинга:', errorText);
+        alert('Не удалось отправить рейтинг');
+      }
+    } catch (error) {
+      console.error('Ошибка сети:', error);
+      alert('Ошибка соединения с сервером');
+    } finally {
+      setIsRating(false);
+    }
+  };
+
+  const averageRating = calculateAverageRating();
+  const displayRating = averageRating * 5; // Преобразуем для отображения в шкале 1-5
 
   return (
-    <div className={styles.interactionsSection}>
-      {/* Участие в событии */}
-      <div className={styles.participationSection}>
+    <section className={styles.eventInteractions}>
+      <div className={styles.interactionButtons}>
+        {/* Кнопка участия */}
         <button
-          onClick={handleToggleParticipation}
-          disabled={isJoiningEvent}
-          className={`${styles.participationButton} ${isParticipant ? styles.leaveButton : styles.joinButton}`}
+          className={`${styles.interactionBtn} ${isParticipating ? styles.participating : styles.joinBtn}`}
+          onClick={handleJoinToggle}
+          disabled={isJoining}
         >
-          {isJoiningEvent ? '...' : isParticipant ? '❌ Покинуть событие' : '✅ Участвовать в событии'}
+          {isJoining ? (
+            '⏳ Загрузка...'
+          ) : isParticipating ? (
+            '✅ Участвую'
+          ) : (
+            '🎯 Участвовать'
+          )}
         </button>
-        <span className={styles.participantsCount}>
-          {event.usersIds.length} участник{event.usersIds.length === 1 ? '' : event.usersIds.length < 5 ? 'а' : 'ов'}
-        </span>
+
+        {/* Кнопка рейтинга */}
+        <button
+          className={`${styles.interactionBtn} ${styles.rateBtn}`}
+          onClick={() => setShowRatingModal(true)}
+          disabled={!user}
+        >
+          ⭐ Оценить
+        </button>
+
+        {/* Кнопка поделиться */}
+        <button
+          className={`${styles.interactionBtn} ${styles.shareBtn}`}
+          onClick={() => {
+            if (navigator.share) {
+              navigator.share({
+                title: event.title,
+                text: event.description,
+                url: window.location.href
+              });
+            } else {
+              navigator.clipboard.writeText(window.location.href);
+              alert('Ссылка скопирована в буфер обмена');
+            }
+          }}
+        >
+          📤 Поделиться
+        </button>
       </div>
 
-      {/* Оценка события */}
-      <div className={styles.ratingSection}>
-        <h3 className={styles.sectionTitle}>Оцените событие:</h3>
-        <div className={styles.ratingStars}>
-          {renderRatingStars()}
-          <span className={styles.ratingText}>
-            ({event.score ? (event.score * 5).toFixed(1) : '0.0'})
-          </span>
-        </div>
-        {isSubmittingRating && <p style={{ fontSize: '0.8rem', color: 'var(--dark-gray)' }}>Сохранение оценки...</p>}
-      </div>
-
-      {/* Добавление комментария */}
-      <div className={styles.addCommentSection}>
-        <h3 className={styles.sectionTitle}>Добавить комментарий:</h3>
-        <div className={styles.commentForm}>
-          <textarea
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            placeholder="Напишите ваш комментарий..."
-            className={styles.commentTextarea}
-            rows={3}
-            maxLength={500}
-          />
-          <div className={styles.commentActions}>
-            <span className={styles.charCount}>
-              {commentText.length}/500
+      {/* Информация о рейтинге */}
+      <div className={styles.ratingInfo}>
+        <div className={styles.currentRating}>
+          <span className={styles.ratingLabel}>Рейтинг события:</span>
+          <div className={styles.ratingStars}>
+            {renderRatingStars(displayRating)}
+            <span className={styles.ratingValue}>
+              ({displayRating.toFixed(1)} из 5, {(event.score || []).length} оценок)
             </span>
-            <button
-              onClick={handleAddComment}
-              disabled={isSubmittingComment || !commentText.trim()}
-              className={styles.submitCommentButton}
-            >
-              {isSubmittingComment ? 'Отправка...' : 'Отправить'}
-            </button>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Информация об участниках */}
+      <div className={styles.participantsInfo}>
+        <span className={styles.participantsCount}>
+          👥 Участников: <strong>{event.usersIds.length}</strong>
+        </span>
+      </div>
+
+      {/* Модальное окно для оценки */}
+      {showRatingModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowRatingModal(false)}>
+          <div className={styles.ratingModal} onClick={(e) => e.stopPropagation()}>
+            <h3>Оцените событие</h3>
+            <div className={styles.ratingInput}>
+              {renderRatingStars(selectedRating, true, setSelectedRating)}
+            </div>
+            <div className={styles.modalButtons}>
+              <button
+                className={`${styles.modalBtn} ${styles.cancelBtn}`}
+                onClick={() => {
+                  setShowRatingModal(false);
+                  setSelectedRating(0);
+                }}
+              >
+                Отмена
+              </button>
+              <button
+                className={`${styles.modalBtn} ${styles.submitBtn}`}
+                onClick={handleRatingSubmit}
+                disabled={selectedRating === 0 || isRating}
+              >
+                {isRating ? 'Отправка...' : 'Оценить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
   );
 };
 

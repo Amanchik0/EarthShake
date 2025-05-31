@@ -14,7 +14,6 @@ interface CommentSectionProps {
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ comments, styles }) => {
-  // Преобразуем объект комментариев в массив
   const commentsArray = Object.entries(comments || {}).map(([id, comment]) => ({
     id,
     author: comment.author || 'Аноним',
@@ -23,7 +22,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ comments, styles }) => 
     avatarUrl: comment.avatarUrl || ''
   }));
 
-  // Форматируем дату для отображения
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);

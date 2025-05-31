@@ -125,7 +125,7 @@ const LoginPage: React.FC = () => {
               <span>или</span>
             </div>
             <div className={styles.loginLink}>
-              Нет аккаунта? <a href="#" onClick={() => navigate('/register')}>Зарегистрироваться</a>
+              Нет аккаунта? <a href="#" onClick={() => navigate('/auth')}>Зарегистрироваться</a>
             </div>
           </form>
         </div>

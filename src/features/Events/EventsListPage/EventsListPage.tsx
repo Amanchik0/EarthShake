@@ -5,6 +5,7 @@ import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import ViewToggle from '../../../components/EventList/ViewToggle';
 import MapView from '../../../components/EventList/MapView';
 import styles from './EventsListPage.module.css';
+import {CitySelect} from '../../../components/CitySelect/CitySelect'
 import { EventDetails, BackendEventData, EventComment } from '../../../types/event';
 
 export interface FilterConfig {
@@ -103,22 +104,37 @@ const EventsListPage: React.FC = () => {
     location: '',
   });
 
-  // Transform backend event data to frontend format
-  const transformEvent = (backendEvent: BackendEventData): EventDetails => {
-    const eventDate = new Date(backendEvent.dateTime);
-    const formattedDate = formatDate(backendEvent.dateTime);
-    
-    // Get coordinates
-    const lng = backendEvent.location.coordinates[0];
-    const lat = backendEvent.location.coordinates[1];
+// В EventsListPage.tsx - обновленная функция transformEvent
+const transformEvent = (backendEvent: BackendEventData): EventDetails => {
+  const eventDate = new Date(backendEvent.dateTime);
+  const formattedDate = formatDate(backendEvent.dateTime);
+  
+  // Получаем координаты
+  let lng: number, lat: number;
+  
+  if (backendEvent.location.coordinates && Array.isArray(backendEvent.location.coordinates)) {
+    lng = backendEvent.location.coordinates[0];
+    lat = backendEvent.location.coordinates[1];
+  } else {
+    lng = backendEvent.location.x;
+    lat = backendEvent.location.y;
+  }
 
-    // Calculate rating from score (0-1 to 1-5 scale)
-    const rating = backendEvent.score && backendEvent.score > 0 
-      ? Math.min(5, Math.max(1, backendEvent.score * 5)) 
-      : 0;
-    
-    // Transform comments from array to object format for frontend
-    const transformedComments: Record<string, EventComment> = {};
+  // Получаем первое изображение из массива mediaUrl
+  const imageUrl = Array.isArray(backendEvent.mediaUrl) && backendEvent.mediaUrl.length > 0 
+    ? backendEvent.mediaUrl[0] 
+    : '';
+
+  // Вычисляем рейтинг из массива score
+  let rating = 0;
+  if (backendEvent.score && Array.isArray(backendEvent.score) && backendEvent.score.length > 0) {
+    const average = backendEvent.score.reduce((sum, val) => sum + val, 0) / backendEvent.score.length;
+    rating = Math.min(5, Math.max(1, average));
+  }
+  
+  // Трансформируем комментарии из массива в объект для UI
+  const transformedComments: Record<string, EventComment> = {};
+  if (backendEvent.comments && Array.isArray(backendEvent.comments)) {
     backendEvent.comments.forEach((comment) => {
       transformedComments[comment.id] = {
         id: comment.id,
@@ -128,65 +144,85 @@ const EventsListPage: React.FC = () => {
         avatarUrl: comment.avatarUrl
       };
     });
-    
-    return {
-      id: backendEvent.id,
-      title: backendEvent.title,
-      date: formattedDate,
-      description: backendEvent.description,
-      imageUrl: backendEvent.mediaUrl,
-      city: backendEvent.city,
-      type: backendEvent.tags?.[0] || 'general',
-      rating: rating,
-      reviewsCount: backendEvent.comments.length,
-      usersIds: backendEvent.usersIds || [],
-      tag: backendEvent.eventType === 'EMERGENCY' ? 'emergency' : 'regular',
-      author: {
-        name: backendEvent.author,
-        role: 'Организатор',
-        avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(backendEvent.author)}&background=random`
-      },
-      price: '0 тг',
-      lat: lat,
-      lng: lng,
-      score: backendEvent.score,
-      dateTime: backendEvent.dateTime,
-      content: backendEvent.content,
-      location: {
-        coordinates: [lng, lat]
-      },
-      comments: transformedComments,
-      commentsCount: backendEvent.comments.length,
-      metadata: backendEvent.metadata,
-      tags: backendEvent.tags
-    };
+  }
+  
+  return {
+    id: backendEvent.id,
+    title: backendEvent.title,
+    date: formattedDate,
+    description: backendEvent.description,
+    imageUrl: imageUrl, // Первое изображение для UI
+    city: backendEvent.city,
+    type: backendEvent.tags?.[0] || 'general',
+    rating: rating,
+    reviewsCount: backendEvent.comments?.length || 0,
+    usersIds: backendEvent.usersIds || [],
+    tag: backendEvent.eventType === 'EMERGENCY' ? 'emergency' : 'regular',
+    author: {
+      name: backendEvent.author,
+      role: 'Организатор',
+      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(backendEvent.author)}&background=random`
+    },
+    price: '0 тг',
+    lat: lat,
+    lng: lng,
+    score: Array.isArray(backendEvent.score) && backendEvent.score.length > 0 
+      ? backendEvent.score.reduce((sum, val) => sum + val, 0) / backendEvent.score.length 
+      : 0,
+    dateTime: backendEvent.dateTime,
+    content: backendEvent.content,
+    location: {
+      coordinates: [lng, lat]
+    },
+    comments: transformedComments,
+    commentsCount: backendEvent.comments?.length || 0,
+    metadata: backendEvent.metadata,
+    tags: backendEvent.tags
   };
+};
 
-  // Fetch events from API
-  const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const response = await fetch('http://localhost:8090/api/events/get-all');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      // Transform backend data to frontend format
-      const transformedEvents = data.content.map(transformEvent);
-      setEvents(transformedEvents);
-      
-    } catch (err) {
-      console.error('Error fetching events:', err);
-      setError('Не удалось загрузить события');
-    } finally {
-      setLoading(false);
+// Также нужно обновить fetchEvents функцию для обработки ошибок
+const fetchEvents = async () => {
+  try {
+    setLoading(true);
+    setError(null);
+    
+    const response = await fetch('http://localhost:8090/api/events/get-all');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  };
+    
+    const data = await response.json();
+    console.log('Raw API response:', data); // Для отладки
+    
+    // Проверяем структуру ответа
+    const eventsArray = data.content || data || [];
+    
+    if (!Array.isArray(eventsArray)) {
+      console.error('Expected array but got:', typeof eventsArray, eventsArray);
+      throw new Error('Неверный формат данных с сервера');
+    }
+    
+    // Transform backend data to frontend format
+    const transformedEvents = eventsArray.map((event, index) => {
+      try {
+        return transformEvent(event);
+      } catch (transformError) {
+        console.error(`Error transforming event at index ${index}:`, transformError, event);
+        return null;
+      }
+    }).filter(Boolean); 
+    
+    setEvents(transformedEvents);
+    
+  } catch (err) {
+    console.error('Error fetching events:', err);
+    setError('Не удалось загрузить события');
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchEvents();
@@ -293,7 +329,6 @@ const EventsListPage: React.FC = () => {
           ))}
         </div>
         
-        {/* Clear filters button */}
         {Object.values(filters).some(filter => filter !== '') && (
           <button 
             className={styles.clearFilters}

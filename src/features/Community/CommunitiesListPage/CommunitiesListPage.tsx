@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import CommunityCard from '../../../components/Community/CommunityCard';
+import { useCommunitiesList } from '../../../hooks/useCommunityApi';
 import styles from './CommunitiesListPage.module.css';
-import { CommunityDetails } from '../../../types/community';
 
 export interface FilterConfig {
   readonly label: string;
@@ -15,59 +16,46 @@ export interface FilterOption {
 }
 
 const CommunitiesListPage: React.FC = () => {
-  const communities: CommunityDetails[] = [
-    {
-      id: '1',
-      name: 'Клуб любителей походов',
-      location: 'Алматы',
-      createdAt: '10 января 2025',
-      description: 'Группа для любителей активного отдыха и походов в горы.',
-      avatarUrl: 'https://example.com/avatar1.jpg',
-      coverUrl: 'https://example.com/cover1.jpg',
-      imageUrl: 'https://example.com/image2.jpg', 
-      numberMembers: 765,
-      eventsCount: 23,
-      rating: 4.7,
-      postsCount: 145,
-      isMember: false,
-      category: 'active',
-    },
-    {
-      id: '2',
-      name: 'Книжный клуб',
-      location: 'Астана',
-      createdAt: '5 февраля 2025',
-      description: 'Сообщество для обсуждения книг и литературы.',
-      avatarUrl: 'https://example.com/avatar2.jpg',
-      coverUrl: 'https://example.com/cover2.jpg',
-      imageUrl: 'https://example.com/image2.jpg', 
+  const navigate = useNavigate();
+  const { 
+    communities, 
+    loading, 
+    error, 
+    pagination,
+    fetchCommunities, 
+    loadMore, 
+    searchCommunities 
+  } = useCommunitiesList();
 
-      numberMembers: 432,
-      eventsCount: 15,
-      rating: 4.9,
-      postsCount: 278,
-      isMember: true,
-      category: 'education',
-    },
-  ];
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState<Record<string, string>>({
+    type: '',
+    city: '',
+    size: '',
+  });
+  const [localFilteredCommunities, setLocalFilteredCommunities] = useState(communities);
+
   const filterConfigs: FilterConfig[] = [
     {
-      label: 'category',
+      label: 'type',
       options: [
         { value: '', label: 'Все категории' },
-        { value: 'active', label: 'Активный отдых' },
-        { value: 'education', label: 'Образование' },
-        { value: 'creative', label: 'Творчество' },
-        { value: 'tech', label: 'Технологии' },
-        { value: 'entertainment', label: 'Развлечения' },
+        { value: 'hobby', label: 'Хобби' },
+        { value: 'technology', label: 'Технологии' },
+        { value: 'arts', label: 'Искусство и культура' },
         { value: 'sports', label: 'Спорт' },
+        { value: 'education', label: 'Образование' },
+        { value: 'social', label: 'Социальные' },
+        { value: 'business', label: 'Бизнес' },
+        { value: 'other', label: 'Другое' },
       ],
     },
     {
-      label: 'location',
+      label: 'city',
       options: [
         { value: '', label: 'Все города' },
         { value: 'Алматы', label: 'Алматы' },
+        { value: 'Almaty', label: 'Almaty' },
         { value: 'Астана', label: 'Астана' },
         { value: 'Шымкент', label: 'Шымкент' },
         { value: 'Караганда', label: 'Караганда' },
@@ -78,20 +66,61 @@ const CommunitiesListPage: React.FC = () => {
       label: 'size',
       options: [
         { value: '', label: 'Любой размер' },
-        { value: 'small', label: 'До 500 участников' },
-        { value: 'medium', label: 'От 500 до 1000' },
-        { value: 'large', label: 'Более 1000' },
+        { value: 'small', label: 'До 50 участников' },
+        { value: 'medium', label: 'От 50 до 500' },
+        { value: 'large', label: 'Более 500' },
       ],
     },
   ];
 
-  const [filters, setFilters] = useState<Record<string, string>>({
-    category: '',
-    location: '',
-    size: '',
-  });
+  // Загружаем сообщества при монтировании компонента
+  useEffect(() => {
+    fetchCommunities();
+  }, [fetchCommunities]);
 
-  const [search, setSearch] = useState('');
+  // Локальная фильтрация (поскольку API может не поддерживать все фильтры)
+  useEffect(() => {
+    let filtered = communities;
+
+    // Фильтрация по типу/категории
+    if (filters.type) {
+      filtered = filtered.filter(community => community.category === filters.type);
+    }
+
+    // Фильтрация по городу
+    if (filters.city) {
+      filtered = filtered.filter(community => 
+        community.location.toLowerCase().includes(filters.city.toLowerCase())
+      );
+    }
+
+    // Фильтрация по размеру
+    if (filters.size) {
+      const count = (community: any) => community.numberMembers;
+      
+      switch (filters.size) {
+        case 'small':
+          filtered = filtered.filter(community => count(community) < 50);
+          break;
+        case 'medium':
+          filtered = filtered.filter(community => count(community) >= 50 && count(community) < 500);
+          break;
+        case 'large':
+          filtered = filtered.filter(community => count(community) >= 500);
+          break;
+      }
+    }
+
+    // Поиск по названию
+    if (search.trim()) {
+      filtered = filtered.filter(community =>
+        community.name.toLowerCase().includes(search.toLowerCase()) ||
+        community.description.toString().toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    setLocalFilteredCommunities(filtered);
+  }, [communities, filters, search]);
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters(prev => ({
@@ -100,42 +129,39 @@ const CommunitiesListPage: React.FC = () => {
     }));
   };
 
-  const filteredCommunities = communities.filter(community => {
-    // Фильтрация по категории
-    if (filters.category && community.category !== filters.category) return false;
-    
-    // Фильтрация по локации
-    if (filters.location && community.location !== filters.location) return false;
-    
-    // Фильтрация по размеру
-    if (filters.size) {
-      const count = community.numberMembers;
-      
-      switch (filters.size) {
-        case 'small':
-          return count < 500;
-        case 'medium':
-          return count >= 500 && count < 1000;
-        case 'large':
-          return count >= 1000;
-        default:
-          return true;
-      }
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    // Можно добавить debounced поиск через API
+    // searchCommunities(value, filters);
+  };
+
+  const handleCreateCommunity = () => {
+    navigate('/communities/create');
+  };
+
+  const handleLoadMore = async () => {
+    if (pagination.hasMore && !loading) {
+      await loadMore();
     }
-    
-    // Поиск по названию
-    if (search && !community.name.toLowerCase().includes(search.toLowerCase())) {
-      return false;
-    }
-    
-    return true;
-  });
+  };
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          <h2>Ошибка загрузки</h2>
+          <p>{error}</p>
+          <button onClick={() => fetchCommunities()}>Попробовать снова</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Сообщества</h1>
-        <button className={styles.createButton}>
+        <button className={styles.createButton} onClick={handleCreateCommunity}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -155,15 +181,15 @@ const CommunitiesListPage: React.FC = () => {
             placeholder="Поиск сообществ..." 
             className={styles.searchInput}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
           />
         </div>
         <div className={styles.filters}>
           {filterConfigs.map((filter) => (
             <FilterDropdown
               key={filter.label}
-              label={filter.label === 'category' ? 'Категория' : 
-                    filter.label === 'location' ? 'Город' : 'Размер'}
+              label={filter.label === 'type' ? 'Категория' : 
+                    filter.label === 'city' ? 'Город' : 'Размер'}
               options={filter.options}
               value={filters[filter.label] || ''}
               onChange={(value) => handleFilterChange(filter.label, value)}
@@ -171,15 +197,36 @@ const CommunitiesListPage: React.FC = () => {
           ))}
         </div>
       </div>
+
+      <div className={styles.statsSection}>
+        <p className={styles.resultsCount}>
+          {loading ? 'Загрузка...' : `Найдено ${localFilteredCommunities.length} из ${pagination.totalElements} сообществ`}
+        </p>
+      </div>
       
       <div className={styles.contentWrapper}>
         <div className={styles.listView}>
-          {filteredCommunities.length > 0 ? (
-            <div className={styles.communitiesGrid}>
-              {filteredCommunities.map((community) => (
-                <CommunityCard key={community.id} community={community} />
-              ))}
-            </div>
+          {localFilteredCommunities.length > 0 ? (
+            <>
+              <div className={styles.communitiesGrid}>
+                {localFilteredCommunities.map((community) => (
+                  <CommunityCard key={community.id} community={community} />
+                ))}
+              </div>
+              
+              {/* Кнопка "Загрузить еще" */}
+              {pagination.hasMore && !search && Object.values(filters).every(f => !f) && (
+                <div className={styles.loadMoreSection}>
+                  <button 
+                    className={styles.loadMoreButton}
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                  >
+                    {loading ? 'Загрузка...' : 'Загрузить еще'}
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className={styles.noResults}>
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -194,6 +241,14 @@ const CommunitiesListPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Loading overlay */}
+      {loading && communities.length === 0 && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.spinner}></div>
+          <p>Загрузка сообществ...</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -119,3 +119,36 @@ export const toCommunityDetails = (community: Community, currentUserId?: string)
     category: community.type,
   };
 };
+
+// Утилитарная функция для поиска сообществ
+export const searchCommunities = (communities: CommunityDetails[], query: string): CommunityDetails[] => {
+  if (!query.trim()) return communities;
+  
+  const searchTerm = query.toLowerCase().trim();
+  
+  return communities.filter(community => 
+    community.name.toLowerCase().includes(searchTerm) ||
+    community.description.toLowerCase().includes(searchTerm) ||
+    community.city.toLowerCase().includes(searchTerm) ||
+    community.category.toLowerCase().includes(searchTerm) ||
+    community.author.toLowerCase().includes(searchTerm)
+  );
+};
+
+// Утилитарная функция для получения отображаемого названия категории
+export const getCategoryDisplayName = (category: string): string => {
+  const categoryMap: Record<string, string> = {
+    'active': 'Активный отдых',
+    'education': 'Образование',
+    'creative': 'Творчество',
+    'tech': 'Технологии',
+    'entertainment': 'Развлечения',
+    'sports': 'Спорт',
+    'business': 'Бизнес',
+    'science': 'Наука',
+    'health': 'Здоровье',
+    'art': 'Искусство',
+  };
+  
+  return categoryMap[category] || category;
+};

@@ -326,4 +326,228 @@
   
   .communityCard:hover .joinButton {
     opacity: 1;
+  }/* Дополнительные стили для CommunitiesListPage.module.css */
+
+/* Состояние загрузки */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff69b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.miniSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #ff69b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Баннер ошибки */
+.errorBanner {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.errorContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #c33;
+}
+
+.errorActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.closeError {
+  background: none;
+  border: none;
+  color: #c33;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+}
+
+.retryButton {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.retryButton:hover {
+  background: #e54b9d;
+}
+
+/* Фильтр по городу */
+.cityFilter {
+  margin-bottom: 16px;
+}
+
+/* Секция сортировки */
+.sortSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.sortLabel {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.sortButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sortButton {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sortButton:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.sortButton.active {
+  background: #ff69b4;
+  color: white;
+  border-color: #ff69b4;
+}
+
+.sortIcon {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Статистическая панель */
+.statsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.resultsCount {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #ff69b4;
+}
+
+/* Улучшенное состояние отсутствия результатов */
+.createFirstButton {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.2s ease;
+}
+
+.createFirstButton:hover {
+  background: #e54b9d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+/* Адаптивные улучшения */
+@media (max-width: 768px) {
+  .sortSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
+  
+  .sortButtons {
+    width: 100%;
+  }
+  
+  .sortButton {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+  
+  .statsBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .errorContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .cityFilter {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sortButtons {
+    flex-direction: column;
+  }
+  
+  .sortButton {
+    justify-content: space-between;
+  }
+}

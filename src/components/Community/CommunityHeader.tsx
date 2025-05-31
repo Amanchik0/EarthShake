@@ -18,7 +18,7 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin, lo
   };
 
   const handleEditCommunity = () => {
-    navigate(`/communities/${community.id}/edit`);
+    navigate(`/communities/edit/${community.id}`);
   };
 
   return (

@@ -140,12 +140,12 @@ import AppRoutes from './routes';
 import AdModal from './components/Modal/AdModal';
 
 const App: React.FC = () => {
-  const { adData, handleCloseAd } = useAdLogic();
+  const { adData, handleCloseAd, handleAdClick } = useAdLogic();
   const isEmergency = useEmergencyRedirect();
 
   return (
     <>
-      {adData && <AdModal ad={adData} onClose={handleCloseAd} />}
+      {adData && <AdModal ad={adData} onClose={handleCloseAd} onAdClick={handleAdClick} />}
       <AppRoutes isEmergency={isEmergency} />
     </>
   );

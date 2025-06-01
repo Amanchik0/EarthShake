@@ -77,24 +77,33 @@ const ProfilePage: React.FC = () => {
     setLoadingEvents(true);
     try {
       const token = localStorage.getItem('accessToken');
+      console.log('📋 Загружаем события:', eventIds);
+      
       const eventPromises = eventIds.map(async (eventId) => {
-        const response = await fetch(`http://localhost:8090/api/events/${eventId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+        try {
+          const response = await fetch(`http://localhost:8090/api/events/${eventId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error(`Ошибка загрузки события ${eventId}:`, response.status);
+            return null;
           }
-        });
-        
-        if (!response.ok) {
-          console.error(`Ошибка загрузки события ${eventId}:`, response.status);
+          
+          return await response.json() as ApiEvent;
+        } catch (error) {
+          console.error(`Ошибка запроса события ${eventId}:`, error);
           return null;
         }
-        
-        return await response.json() as ApiEvent;
       });
 
       const loadedEvents = await Promise.all(eventPromises);
       const validEvents = loadedEvents.filter(Boolean) as ApiEvent[];
+      
+      console.log('✅ Загружены события:', validEvents.map(e => ({ id: e.id, title: e.title })));
       
       // Преобразуем API данные в EventData
       const transformedEvents: EventData[] = validEvents.map(event => ({
@@ -107,7 +116,7 @@ const ProfilePage: React.FC = () => {
 
       setEvents(transformedEvents);
     } catch (error) {
-      console.error('Ошибка загрузки событий:', error);
+      console.error('💥 Ошибка загрузки событий:', error);
       setEvents([]);
     } finally {
       setLoadingEvents(false);
@@ -124,24 +133,33 @@ const ProfilePage: React.FC = () => {
     setLoadingCommunities(true);
     try {
       const token = localStorage.getItem('accessToken');
+      console.log('🏘️ Загружаем сообщества:', communityIds);
+      
       const communityPromises = communityIds.map(async (communityId) => {
-        const response = await fetch(`http://localhost:8090/api/community/${communityId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+        try {
+          const response = await fetch(`http://localhost:8090/api/community/${communityId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error(`Ошибка загрузки сообщества ${communityId}:`, response.status);
+            return null;
           }
-        });
-        
-        if (!response.ok) {
-          console.error(`Ошибка загрузки сообщества ${communityId}:`, response.status);
+          
+          return await response.json() as ApiCommunity;
+        } catch (error) {
+          console.error(`Ошибка запроса сообщества ${communityId}:`, error);
           return null;
         }
-        
-        return await response.json() as ApiCommunity;
       });
 
       const loadedCommunities = await Promise.all(communityPromises);
       const validCommunities = loadedCommunities.filter(Boolean) as ApiCommunity[];
+      
+      console.log('✅ Загружены сообщества:', validCommunities.map(c => ({ id: c.id, name: c.name })));
       
       // Преобразуем API данные в CommunityData
       const transformedCommunities: CommunityData[] = validCommunities.map(community => ({
@@ -153,12 +171,98 @@ const ProfilePage: React.FC = () => {
 
       setCommunities(transformedCommunities);
     } catch (error) {
-      console.error('Ошибка загрузки сообществ:', error);
+      console.error('💥 Ошибка загрузки сообществ:', error);
       setCommunities([]);
     } finally {
       setLoadingCommunities(false);
     }
   };
+
+  // Функция для перезагрузки событий (новая функция)
+  const refreshEvents = async () => {
+    if (!fullProfile || !user) return;
+    
+    console.log('🔄 Перезагружаем события после изменений...');
+    
+    try {
+      const token = localStorage.getItem('accessToken');
+      
+      // Получаем обновленные данные профиля
+      const res = await fetch(
+        `http://localhost:8090/api/users/get-by-username/${user.username}`,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          } 
+        }
+      );
+      
+      if (res.ok) {
+        const freshProfile = await res.json();
+        const newEventIds = freshProfile.eventIds || [];
+        
+        console.log('📋 Старые ID событий:', fullProfile.eventIds);
+        console.log('📋 Новые ID событий:', newEventIds);
+        
+        // Проверяем, изменились ли ID событий
+        const oldIds = JSON.stringify((fullProfile.eventIds || []).sort());
+        const newIds = JSON.stringify(newEventIds.sort());
+        
+        if (oldIds !== newIds) {
+          console.log('🔄 ID событий изменились, перезагружаем...');
+          
+          // Перезагружаем события с новыми ID
+          await loadEvents(newEventIds);
+          
+          // Обновляем eventIds в профиле
+          setFullProfile(prev => prev ? { ...prev, eventIds: newEventIds } : null);
+        } else {
+          console.log('✅ ID событий не изменились');
+        }
+      }
+    } catch (error) {
+      console.error('💥 Ошибка обновления событий:', error);
+    }
+  };
+
+  // Слушатель изменений событий (новый useEffect)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'events_updated') {
+        console.log('🔔 Получен сигнал об обновлении событий из localStorage');
+        refreshEvents();
+        // Удаляем флаг после обработки
+        localStorage.removeItem('events_updated');
+      }
+    };
+
+    // Слушаем изменения localStorage (работает между вкладками)
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Также проверяем периодически в той же вкладке
+    const interval = setInterval(() => {
+      if (localStorage.getItem('events_updated')) {
+        console.log('🔔 Найден флаг обновления событий');
+        refreshEvents();
+        localStorage.removeItem('events_updated');
+      }
+    }, 1000);
+
+    // Слушаем custom events
+    const handleCustomEvent = (e: CustomEvent) => {
+      console.log('🔔 Получен custom event об обновлении событий:', e.detail);
+      refreshEvents();
+    };
+
+    window.addEventListener('eventsUpdated', handleCustomEvent as EventListener);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('eventsUpdated', handleCustomEvent as EventListener);
+      clearInterval(interval);
+    };
+  }, [fullProfile, user]);
 
   // Load profile data
   useEffect(() => {
@@ -173,6 +277,8 @@ const ProfilePage: React.FC = () => {
           throw new Error('Токен авторизации не найден');
         }
 
+        console.log('👤 Загружаем профиль пользователя:', user.username);
+
         const res = await fetch(
           `http://localhost:8090/api/users/get-by-username/${user.username}`,
           { 
@@ -185,6 +291,7 @@ const ProfilePage: React.FC = () => {
         
         if (!res.ok) {
           if (res.status === 401) {
+            console.error('❌ Ошибка авторизации, выполняем logout');
             logout();
             return;
           }
@@ -192,6 +299,11 @@ const ProfilePage: React.FC = () => {
         }
         
         const apiProfile: ApiProfile = await res.json();
+        console.log('✅ Профиль загружен:', {
+          username: apiProfile.username,
+          eventIds: apiProfile.eventIds,
+          communityIds: apiProfile.communityId
+        });
         
         // Преобразуем API профиль в ваш FullProfile интерфейс
         const fullProfileData: FullProfile = {
@@ -209,19 +321,22 @@ const ProfilePage: React.FC = () => {
           metadata: apiProfile.metadata,
           subscriber: apiProfile.isSubscriber,
           events: [], // Будут загружены отдельно
-          communities: [] // Будут загружены отдельно
+          communities: [], // Будут загружены отдельно
+          eventIds: apiProfile.eventIds || [], // Сохраняем ID событий
+          communityIds: apiProfile.communityId || [] // Сохраняем ID сообществ
         };
         
         setFullProfile(fullProfileData);
         
         // Загружаем события и сообщества
+        console.log('🔄 Загружаем связанные данные...');
         await Promise.all([
           loadEvents(apiProfile.eventIds || []),
           loadCommunities(apiProfile.communityId || [])
         ]);
         
       } catch (err: any) {
-        console.error('Ошибка загрузки профиля:', err);
+        console.error('💥 Ошибка загрузки профиля:', err);
         setProfileError(err.message || 'Не удалось загрузить профиль');
         
         // Если критическая ошибка авторизации, разлогиниваем
@@ -270,6 +385,7 @@ const ProfilePage: React.FC = () => {
 
   // Обработка успешного обновления профиля
   const handleProfileUpdate = async (updatedProfile: FullProfile) => {
+    console.log('🔄 Обновляем профиль:', updatedProfile.username);
     setFullProfile(updatedProfile);
     
     // Если обновились события или сообщества, перезагружаем их
@@ -278,7 +394,6 @@ const ProfilePage: React.FC = () => {
       const currentCommunityIds = fullProfile.communityIds || [];
       
       // Проверяем, нужно ли перезагрузить события и сообщества
-      // (в случае если они изменились в API)
       try {
         const token = localStorage.getItem('accessToken');
         const res = await fetch(
@@ -297,20 +412,22 @@ const ProfilePage: React.FC = () => {
           const newCommunityIds = freshProfile.communityId || [];
           
           // Перезагружаем только если изменились ID
-          if (JSON.stringify(currentEventIds) !== JSON.stringify(newEventIds)) {
+          if (JSON.stringify(currentEventIds.sort()) !== JSON.stringify(newEventIds.sort())) {
+            console.log('🔄 Перезагружаем события после обновления профиля');
             await loadEvents(newEventIds);
           }
           
-          if (JSON.stringify(currentCommunityIds) !== JSON.stringify(newCommunityIds)) {
+          if (JSON.stringify(currentCommunityIds.sort()) !== JSON.stringify(newCommunityIds.sort())) {
+            console.log('🔄 Перезагружаем сообщества после обновления профиля');
             await loadCommunities(newCommunityIds);
           }
         }
       } catch (error) {
-        console.log('Не удалось проверить изменения в событиях/сообществах:', error);
+        console.log('⚠️ Не удалось проверить изменения в событиях/сообществах:', error);
       }
     }
     
-    // Обновляем данные в AuthContext, если изменились username или city
+    // Обновляем данные в AuthContext, если изменились username, city или подписка
     if (user) {
       const authUpdates: Partial<any> = {};
       if (updatedProfile.username !== user.username) {
@@ -319,9 +436,13 @@ const ProfilePage: React.FC = () => {
       if (updatedProfile.city !== user.city) {
         authUpdates.city = updatedProfile.city;
       }
+      if (updatedProfile.subscriber !== user.isSubscriber) {
+        authUpdates.isSubscriber = updatedProfile.subscriber;
+      }
       
       // Если есть изменения, обновляем AuthContext
       if (Object.keys(authUpdates).length > 0) {
+        console.log('🔄 Обновляем AuthContext:', authUpdates);
         updateUser(authUpdates);
       }
     }
@@ -349,6 +470,16 @@ const ProfilePage: React.FC = () => {
     }, 3000);
   };
 
+  // Обработчик клика на событие
+  const handleEventClick = (eventId: string) => {
+    navigate(`/events/${eventId}`);
+  };
+
+  // Обработчик клика на сообщество
+  const handleCommunityClick = (communityId: string) => {
+    navigate(`/communities/${communityId}`);
+  };
+
   if (isLoading) return <div className={styles.loading}>Загрузка...</div>;
   
   if (profileError) {
@@ -372,24 +503,31 @@ const ProfilePage: React.FC = () => {
       case 0:
         return (
           <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>Мои события</h2>
+            <h2 className={styles.sectionTitle}>Мои события ({events.length})</h2>
             {loadingEvents ? (
               <div className={styles.loading}>Загрузка событий...</div>
             ) : events.length > 0 ? (
               <div className={styles.eventsGrid}>
                 {events.map((e: EventData) => (
-                  <EventCard
-                    key={e.id}
-                    title={e.title}
-                    date={e.date}
-                    participants={`${e.participantsCount} участников`}
-                    imageUrl={e.imageUrl}
-                  />
+                  <div key={`event-${e.id}`} onClick={() => handleEventClick(e.id)}>
+                    <EventCard
+                      title={e.title}
+                      date={e.date}
+                      participants={`${e.participantsCount} участников`}
+                      imageUrl={e.imageUrl}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
               <div className={styles.emptyState}>
                 <p>У вас пока нет событий</p>
+                <button 
+                  onClick={() => navigate('/events')}
+                  className={styles.actionButton}
+                >
+                  Найти события
+                </button>
               </div>
             )}
           </div>
@@ -397,23 +535,30 @@ const ProfilePage: React.FC = () => {
       case 1:
         return (
           <div className={styles.contentSection}>
-            <h2 className={styles.sectionTitle}>Мои сообщества</h2>
+            <h2 className={styles.sectionTitle}>Мои сообщества ({communities.length})</h2>
             {loadingCommunities ? (
               <div className={styles.loading}>Загрузка сообществ...</div>
             ) : communities.length > 0 ? (
               <div className={styles.communityList}>
                 {communities.map((c: CommunityData) => (
-                  <CommunityCard
-                    key={c.id}
-                    name={c.name}
-                    members={`${c.membersCount} участников`}
-                    logoUrl={c.logoUrl}
-                  />
+                  <div key={`community-${c.id}`} onClick={() => handleCommunityClick(c.id)}>
+                    <CommunityCard
+                      name={c.name}
+                      members={`${c.membersCount} участников`}
+                      logoUrl={c.logoUrl}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
               <div className={styles.emptyState}>
                 <p>Вы не состоите ни в одном сообществе</p>
+                <button 
+                  onClick={() => navigate('/communities')}
+                  className={styles.actionButton}
+                >
+                  Найти сообщества
+                </button>
               </div>
             )}
           </div>

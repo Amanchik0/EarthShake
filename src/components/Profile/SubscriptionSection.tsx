@@ -53,23 +53,41 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
   const handleSubscriptionChange = async () => {
     setIsLoading(true);
     try {
-      // Подготавливаем данные для обновления
+      // Получаем актуальные данные профиля с сервера перед обновлением
+      const token = localStorage.getItem('accessToken');
+      const profileResponse = await fetch(
+        `http://localhost:8090/api/users/get-by-username/${currentProfile.username}`,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          } 
+        }
+      );
+      
+      if (!profileResponse.ok) {
+        throw new Error('Не удалось получить актуальные данные профиля');
+      }
+      
+      const actualProfile = await profileResponse.json();
+      
+      // Подготавливаем данные для обновления с актуальными массивами
       const subscriptionData = {
-        id: currentProfile.id,
-        username: currentProfile.username,
-        email: currentProfile.email,
-        password: currentProfile.password,
-        firstName: currentProfile.firstName,
-        lastName: currentProfile.lastName,
-        role: currentProfile.role,
-        city: currentProfile.city,
-        imageUrl: currentProfile.imageUrl,
-        phoneNumber: currentProfile.phoneNumber,
-        registrationDate: currentProfile.registrationDate,
-        communityId: [], // Используем пустой массив, так как в API это может быть массивом
-        eventIds: [], // Используем пустой массив
+        id: actualProfile.id,
+        username: actualProfile.username,
+        email: actualProfile.email,
+        password: actualProfile.password,
+        firstName: actualProfile.firstName,
+        lastName: actualProfile.lastName,
+        role: actualProfile.role,
+        city: actualProfile.city,
+        imageUrl: actualProfile.imageUrl,
+        phoneNumber: actualProfile.phoneNumber,
+        registrationDate: actualProfile.registrationDate,
+        communityId: actualProfile.communityId || [], // Используем актуальные данные
+        eventIds: actualProfile.eventIds || [], // Используем актуальные данные
         metadata: {
-          ...currentProfile.metadata,
+          ...actualProfile.metadata,
           lastProfileUpdate: new Date().toISOString(),
           subscriptionUpdatedAt: new Date().toISOString()
         },
@@ -93,8 +111,8 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
         registrationDate: updatedProfile.registrationDate,
         metadata: updatedProfile.metadata,
         subscriber: updatedProfile.subscriber,
-        events: currentProfile.events || [],
-        communities: currentProfile.communities || []
+        events: currentProfile.events || [], // Сохраняем уже загруженные события
+        communities: currentProfile.communities || [] // Сохраняем уже загруженные сообщества
       };
 
       // Обновляем профиль в родительском компоненте

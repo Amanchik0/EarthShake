@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
-// Заменяем react-icons/fi на @mui/icons-material
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import TagIcon from '@mui/icons-material/LocalOffer';
-import GroupIcon from '@mui/icons-material/Group';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import ShareIcon from '@mui/icons-material/Share';
 import styles from './NewsListPage.module.css';
 
-// Типы данных
+// Типы данных для API ответа
+interface ApiNewsItem {
+  title: string;
+  link: string;
+  pubDate: string;
+  keywords: string[] | null;
+  description: string | null;
+  content: string;
+  image_url: string | null;
+  video_url: string | null;
+  source_icon: string | null;
+  source_name: string;
+}
+
+// Адаптированные типы для компонента
 interface NewsItem {
   id: number;
   title: string;
@@ -28,6 +39,7 @@ interface NewsItem {
   likeCount: number;
   commentCount: number;
   isBookmarked: boolean;
+  link: string;
 }
 
 interface NewsFilterState {
@@ -35,180 +47,6 @@ interface NewsFilterState {
   category: string;
   dateRange: string;
 }
-
-// Моковые данные для примера
-const MOCK_NEWS: NewsItem[] = [
-  {
-    id: 1,
-    title: 'Новый прорыв в технологии искусственного интеллекта',
-    excerpt: 'Ученые объявили о значительном прогрессе в разработке систем искусственного интеллекта, способных к глубокому пониманию контекста...',
-    imageUrl: 'https://example.com/news1.jpg',
-    author: {
-      name: 'Анна Петрова',
-      avatarUrl: 'https://example.com/avatar1.jpg',
-    },
-    date: '2025-05-15',
-    category: 'tech',
-    tags: ['AI', 'технологии', 'наука'],
-    viewCount: 1245,
-    likeCount: 342,
-    commentCount: 56,
-    isBookmarked: false,
-  },
-  {
-    id: 2,
-    title: 'Международный фестиваль искусств объявил программу на следующий год',
-    excerpt: 'Организаторы одного из крупнейших фестивалей искусств представили программу мероприятий на следующий год...',
-    imageUrl: 'https://example.com/news2.jpg',
-    author: {
-      name: 'Михаил Сидоров',
-      avatarUrl: 'https://example.com/avatar2.jpg',
-    },
-    date: '2025-05-14',
-    category: 'creative',
-    tags: ['искусство', 'фестиваль', 'культура'],
-    viewCount: 895,
-    likeCount: 210,
-    commentCount: 32,
-    isBookmarked: true,
-  },
-  {
-    id: 3,
-    title: 'Новые методы обучения показали высокую эффективность',
-    excerpt: 'Исследование, проведенное международной группой педагогов, выявило новые подходы к образованию...',
-    imageUrl: 'https://example.com/news3.jpg',
-    author: {
-      name: 'Елена Иванова',
-      avatarUrl: 'https://example.com/avatar3.jpg',
-    },
-    date: '2025-05-13',
-    category: 'education',
-    tags: ['образование', 'исследование', 'методика'],
-    viewCount: 1056,
-    likeCount: 286,
-    commentCount: 41,
-    isBookmarked: false,
-  },
-  {
-    id: 4,
-    title: 'Обзор новых спортивных событий сезона',
-    excerpt: 'Предстоящий спортивный сезон обещает быть насыщенным событиями. Мы подготовили обзор...',
-    imageUrl: 'https://example.com/news4.jpg',
-    author: {
-      name: 'Алексей Смирнов',
-      avatarUrl: 'https://example.com/avatar4.jpg',
-    },
-    date: '2025-05-12',
-    category: 'sports',
-    tags: ['спорт', 'соревнования', 'обзор'],
-    viewCount: 782,
-    likeCount: 195,
-    commentCount: 28,
-    isBookmarked: false,
-  },
-  {
-    id: 5,
-    title: 'Премьеры месяца: что посмотреть в кинотеатрах',
-    excerpt: 'В этом месяце на большие экраны выходят несколько долгожданных премьер. Мы составили список...',
-    imageUrl: 'https://example.com/news5.jpg',
-    author: {
-      name: 'Ольга Козлова',
-      avatarUrl: 'https://example.com/avatar5.jpg',
-    },
-    date: '2025-05-11',
-    category: 'entertainment',
-    tags: ['кино', 'премьеры', 'развлечения'],
-    viewCount: 1345,
-    likeCount: 312,
-    commentCount: 62,
-    isBookmarked: true,
-  },
-  {
-    id: 6,
-    title: 'Экологические инициативы набирают популярность',
-    excerpt: 'Всё больше компаний внедряют экологические практики в свою деятельность. Эксперты отмечают...',
-    imageUrl: 'https://example.com/news6.jpg',
-    author: {
-      name: 'Дмитрий Соколов',
-      avatarUrl: 'https://example.com/avatar6.jpg',
-    },
-    date: '2025-05-10',
-    category: 'active',
-    tags: ['экология', 'устойчивое развитие', 'инициативы'],
-    viewCount: 964,
-    likeCount: 275,
-    commentCount: 38,
-    isBookmarked: false,
-  },
-  {
-    id: 7,
-    title: 'Новые тенденции в области информационной безопасности',
-    excerpt: 'Специалисты по кибербезопасности выделили ключевые тренды, которые будут определять развитие отрасли...',
-    imageUrl: 'https://example.com/news7.jpg',
-    author: {
-      name: 'Сергей Волков',
-      avatarUrl: 'https://example.com/avatar7.jpg',
-    },
-    date: '2025-05-09',
-    category: 'tech',
-    tags: ['кибербезопасность', 'технологии', 'тренды'],
-    viewCount: 1125,
-    likeCount: 298,
-    commentCount: 47,
-    isBookmarked: false,
-  },
-  {
-    id: 8,
-    title: 'Галерея современного искусства анонсировала новую выставку',
-    excerpt: 'Одна из ведущих галерей готовит масштабную выставку работ молодых художников. Куратор проекта рассказал...',
-    imageUrl: 'https://example.com/news8.jpg',
-    author: {
-      name: 'Наталия Морозова',
-      avatarUrl: 'https://example.com/avatar8.jpg',
-    },
-    date: '2025-05-08',
-    category: 'creative',
-    tags: ['искусство', 'выставка', 'галерея'],
-    viewCount: 735,
-    likeCount: 186,
-    commentCount: 25,
-    isBookmarked: true,
-  },
-  {
-    id: 9,
-    title: 'Результаты международной олимпиады по программированию',
-    excerpt: 'Завершилась престижная международная олимпиада по программированию. Команды из разных стран показали высокие результаты...',
-    imageUrl: 'https://example.com/news9.jpg',
-    author: {
-      name: 'Игорь Белов',
-      avatarUrl: 'https://example.com/avatar9.jpg',
-    },
-    date: '2025-05-07',
-    category: 'education',
-    tags: ['программирование', 'олимпиада', 'образование'],
-    viewCount: 968,
-    likeCount: 254,
-    commentCount: 36,
-    isBookmarked: false,
-  },
-  {
-    id: 10,
-    title: 'Инновации в индустрии развлечений: виртуальная реальность',
-    excerpt: 'Технологии виртуальной реальности меняют индустрию развлечений. Новые проекты и решения...',
-    imageUrl: 'https://example.com/news10.jpg',
-    author: {
-      name: 'Мария Лебедева',
-      avatarUrl: 'https://example.com/avatar10.jpg',
-    },
-    date: '2025-05-06',
-    category: 'entertainment',
-    tags: ['VR', 'развлечения', 'технологии'],
-    viewCount: 1089,
-    likeCount: 267,
-    commentCount: 42,
-    isBookmarked: false,
-  },
-];
 
 const CATEGORIES = [
   { id: 'all', name: 'Все категории' },
@@ -228,6 +66,76 @@ const DATE_RANGES = [
   { id: 'year', name: 'За год' },
 ];
 
+// Функция для определения категории на основе ключевых слов и контента
+const determineCategory = (item: ApiNewsItem): string => {
+  const title = item.title?.toLowerCase() || '';
+  const description = item.description?.toLowerCase() || '';
+  const keywords = item.keywords?.join(' ').toLowerCase() || '';
+  const content = `${title} ${description} ${keywords}`;
+
+  if (content.includes('спорт') || content.includes('футбол') || content.includes('теннис') || 
+      content.includes('олимп') || content.includes('чемпион')) {
+    return 'sports';
+  }
+  if (content.includes('технолог') || content.includes('ит') || content.includes('цифров') || 
+      content.includes('интернет') || content.includes('компьютер')) {
+    return 'tech';
+  }
+  if (content.includes('образован') || content.includes('школ') || content.includes('универ') || 
+      content.includes('студент') || content.includes('учеб')) {
+    return 'education';
+  }
+  if (content.includes('искусств') || content.includes('культур') || content.includes('творч') || 
+      content.includes('выставк') || content.includes('театр') || content.includes('музей')) {
+    return 'creative';
+  }
+  if (content.includes('развлеч') || content.includes('кино') || content.includes('фильм') || 
+      content.includes('шоу') || content.includes('концерт')) {
+    return 'entertainment';
+  }
+  return 'active'; // по умолчанию для новостей общего характера
+};
+
+// Функция для извлечения тегов из ключевых слов и контента
+const extractTags = (item: ApiNewsItem): string[] => {
+  const tags: string[] = [];
+  
+  if (item.keywords) {
+    tags.push(...item.keywords.filter(keyword => keyword !== 'новости'));
+  }
+  
+  // Добавляем источник как тег
+  if (item.source_name) {
+    tags.push(item.source_name);
+  }
+  
+  return tags.slice(0, 3); // ограничиваем до 3 тегов
+};
+
+// Функция для преобразования API данных в формат компонента
+const transformApiDataToNewsItems = (apiData: ApiNewsItem[][]): NewsItem[] => {
+  const flatData = apiData.flat();
+  
+  return flatData.map((item, index) => ({
+    id: index + 1,
+    title: item.title,
+    excerpt: item.description || 'Описание недоступно',
+    imageUrl: item.image_url || '/api/placeholder/400/200',
+    author: {
+      name: item.source_name || 'Неизвестный автор',
+      avatarUrl: item.source_icon || '/api/placeholder/40/40',
+    },
+    date: item.pubDate,
+    category: determineCategory(item),
+    tags: extractTags(item),
+    viewCount: Math.floor(Math.random() * 2000) + 100, // случайные значения
+    likeCount: Math.floor(Math.random() * 500) + 10,
+    commentCount: Math.floor(Math.random() * 100) + 1,
+    isBookmarked: Math.random() > 0.7, // 30% вероятность быть в закладках
+    link: item.link,
+  }));
+};
+
 const NewsListPage: React.FC = () => {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [filters, setFilters] = useState<NewsFilterState>({
@@ -236,18 +144,34 @@ const NewsListPage: React.FC = () => {
     dateRange: 'all',
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Имитация загрузки данных с сервера
+  // Загрузка данных с API
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchNews = async () => {
       setIsLoading(true);
-      // Имитация задержки сети
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setNewsItems(MOCK_NEWS);
-      setIsLoading(false);
+      setError(null);
+      
+      try {
+        const response = await fetch('http://localhost:8090/api/news');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data: ApiNewsItem[][] = await response.json();
+        const transformedNews = transformApiDataToNewsItems(data);
+        setNewsItems(transformedNews);
+        
+      } catch (err) {
+        console.error('Ошибка при загрузке новостей:', err);
+        setError(err instanceof Error ? err.message : 'Неизвестная ошибка');
+      } finally {
+        setIsLoading(false);
+      }
     };
     
-    fetchData();
+    fetchNews();
   }, []);
 
   // Функция фильтрации новостей
@@ -260,7 +184,7 @@ const NewsListPage: React.FC = () => {
       // Фильтр по категории
       const matchesCategory = filters.category === 'all' || item.category === filters.category;
       
-      // Фильтр по дате (упрощенно для примера)
+      // Фильтр по дате
       let matchesDate = true;
       const itemDate = new Date(item.date);
       const now = new Date();
@@ -307,7 +231,16 @@ const NewsListPage: React.FC = () => {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     });
+  };
+
+  // Обработчик клика "Читать далее"
+  const handleReadMore = (newsItem: NewsItem) => {
+    if (newsItem.link) {
+      window.open(newsItem.link, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -343,27 +276,11 @@ const NewsListPage: React.FC = () => {
                 >
                   {category.name}
                 </button>
-              ))}
+              ))} 
             </div>
           </div>
           
-          <div className={styles.filterGroup}>
-            <div className={styles.filterLabel}>
-              <CalendarTodayIcon fontSize="small" />
-              <span>Период</span>
-            </div>
-            <div className={styles.filterOptions}>
-              {DATE_RANGES.map(range => (
-                <button
-                  key={range.id}
-                  className={`${styles.filterButton} ${filters.dateRange === range.id ? styles.active : ''}`}
-                  onClick={() => handleDateRangeChange(range.id)}
-                >
-                  {range.name}
-                </button>
-              ))}
-            </div>
-          </div>
+
         </div>
       </div>
       
@@ -373,12 +290,30 @@ const NewsListPage: React.FC = () => {
             <div className={styles.spinner}></div>
             <p>Загрузка новостей...</p>
           </div>
+        ) : error ? (
+          <div className={styles.noResults}>
+            <SearchIcon style={{ fontSize: 48 }} />
+            <h3>Ошибка загрузки</h3>
+            <p>{error}</p>
+            <button 
+              className={styles.readMoreButton}
+              onClick={() => window.location.reload()}
+            >
+              Попробовать снова
+            </button>
+          </div>
         ) : filteredNews.length > 0 ? (
           <div className={styles.newsList}>
             {filteredNews.map(news => (
               <div key={news.id} className={styles.newsCard}>
                 <div className={styles.newsImageContainer}>
-                  <div className={styles.newsImage} style={{ backgroundImage: `url(/api/placeholder/400/200)` }} />
+                  <div 
+                    className={styles.newsImage} 
+                    style={{ 
+                      backgroundImage: `url(${news.imageUrl})`,
+                      backgroundColor: '#f0f0f0'
+                    }} 
+                  />
                   <div className={styles.categoryBadge}>
                     <span className={`${styles.tag} ${styles[news.category]}`}>
                       {CATEGORIES.find(cat => cat.id === news.category)?.name}
@@ -392,7 +327,13 @@ const NewsListPage: React.FC = () => {
                   <div className={styles.newsInfo}>
                     <div className={styles.authorInfo}>
                       <div className={styles.authorAvatar}>
-                        <img src="/api/placeholder/40/40" alt={news.author.name} />
+                        <img 
+                          src={news.author.avatarUrl} 
+                          alt={news.author.name}
+                          onError={(e) => {
+                            e.currentTarget.src = '/api/placeholder/40/40';
+                          }}
+                        />
                       </div>
                       <span className={styles.authorName}>{news.author.name}</span>
                     </div>
@@ -430,7 +371,10 @@ const NewsListPage: React.FC = () => {
                       </div>
                     </div>
                     
-                    <button className={styles.readMoreButton}>
+                    <button 
+                      className={styles.readMoreButton}
+                      onClick={() => handleReadMore(news)}
+                    >
                       Читать далее
                     </button>
                   </div>

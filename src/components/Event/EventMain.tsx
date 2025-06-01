@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { BackendEventData, BackendUserData } from '../../types/event';
 import { useAuth } from '../../components/auth/AuthContext';
 
+// Интерфейс для данных сообщества
+interface CommunityData {
+  id: string;
+  name: string;
+  description?: string;
+  imageUrls?: string[]; // Массив изображений
+  // Добавьте другие поля сообщества по необходимости
+}
+
 interface EventMainProps {
   event: BackendEventData;
   styles: any
@@ -12,33 +21,76 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const [authorData, setAuthorData] = useState<BackendUserData | null>(null);
+  const [communityData, setCommunityData] = useState<CommunityData | null>(null);
   const [loadingAuthor, setLoadingAuthor] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Загружаем данные автора события
+  // Проверяем, является ли событие событием сообщества
+  const isCommunityEvent = event.metadata?.isCommunity === "true" || event.metadata?.isCommunity === true;
+  const communityId = event.metadata?.communityId;
+
+  // Загружаем данные автора или сообщества
   useEffect(() => {
-    const fetchAuthorData = async () => {
+    const fetchAuthorOrCommunityData = async () => {
       try {
-        console.log(`Загружаем данные автора: ${event.author}`);
-        
-        const response = await fetch(`http://localhost:8090/api/users/get-by-username/${event.author}`);
-        
-        if (response.ok) {
-          const userData: BackendUserData = await response.json();
-          console.log('Получены данные автора:', userData);
-          setAuthorData(userData);
+        if (isCommunityEvent && communityId) {
+          // Загружаем данные сообщества
+          console.log(`Загружаем данные сообщества: ${communityId}`);
+          
+          // Попробуем разные возможные эндпоинты
+          let response;
+          const possibleEndpoints = [
+            `http://localhost:8090/api/community/${communityId}`,
+          ];
+
+          for (const endpoint of possibleEndpoints) {
+            try {
+              response = await fetch(endpoint);
+              if (response.ok) {
+                console.log(`Успешный эндпоинт: ${endpoint}`);
+                break;
+              }
+            } catch (error) {
+              console.log(`Эндпоинт ${endpoint} не работает`);
+            }
+          }
+          
+          if (response && response.ok) {
+            const community: CommunityData = await response.json();
+            console.log('Получены данные сообщества:', community);
+            setCommunityData(community);
+          } else {
+            console.log('Не удалось загрузить данные сообщества со всех эндпоинтов');
+            // Устанавливаем fallback данные с именем из author поля
+            setCommunityData({
+              id: communityId,
+              name: event.author, // Используем author как fallback название
+              description: 'Сообщество'
+            });
+          }
         } else {
-          console.log('Не удалось загрузить данные автора');
+          // Загружаем данные автора-пользователя
+          console.log(`Загружаем данные автора: ${event.author}`);
+          
+          const response = await fetch(`http://localhost:8090/api/users/get-by-username/${event.author}`);
+          
+          if (response.ok) {
+            const userData: BackendUserData = await response.json();
+            console.log('Получены данные автора:', userData);
+            setAuthorData(userData);
+          } else {
+            console.log('Не удалось загрузить данные автора');
+          }
         }
       } catch (error) {
-        console.error('Ошибка загрузки данных автора:', error);
+        console.error('Ошибка загрузки данных автора/сообщества:', error);
       } finally {
         setLoadingAuthor(false);
       }
     };
 
-    fetchAuthorData();
-  }, [event.author]);
+    fetchAuthorOrCommunityData();
+  }, [event.author, isCommunityEvent, communityId]);
 
   // Функции для работы с оценками
   const getScores = () => {
@@ -106,12 +158,17 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   // Проверяем, является ли текущий пользователь владельцем события
   const isOwner = currentUser?.username === event.author;
 
+  // Обработчик перехода на страницу сообщества
+  const handleCommunityClick = () => {
+    if (isCommunityEvent && communityId) {
+      navigate(`/communities/${communityId}`);
+    }
+  };
+
   // Обработчик редактирования события
   const handleEditEvent = () => {
     navigate(`/events/${event.id}/edit`);
   };
-
-  // Функция для работы с медиа (поддержка массива и строки)
   const getMediaUrls = (): string[] => {
     if (Array.isArray(event.mediaUrl)) {
       return event.mediaUrl;
@@ -128,6 +185,44 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
   const prevImage = () => {
     const mediaUrls = getMediaUrls();
     setCurrentImageIndex((prev) => (prev - 1 + mediaUrls.length) % mediaUrls.length);
+  };
+
+  // Функция для получения отображаемого имени автора
+  const getDisplayAuthorName = () => {
+    if (isCommunityEvent && communityData) {
+      return communityData.name; // Название сообщества
+    }
+    if (authorData?.firstName && authorData?.lastName) {
+      return `${authorData.firstName} ${authorData.lastName}`; // Полное имя пользователя
+    }
+    return event.author; // Username как fallback
+  };
+
+  // Функция для получения роли автора
+  const getAuthorRole = () => {
+    if (isCommunityEvent) {
+      return 'Сообщество';
+    }
+    return 'Организатор события';
+  };
+
+  // Функция для получения аватара автора
+  const getAuthorAvatar = () => {
+    if (isCommunityEvent && communityData?.imageUrls && communityData.imageUrls.length > 0) {
+      return communityData.imageUrls[0]; // Первое изображение из массива
+    }
+    if (authorData?.imageUrl) {
+      return authorData.imageUrl;
+    }
+    return null;
+  };
+
+  // Функция для получения заглавной буквы для аватара-плейсхолдера
+  const getAvatarPlaceholderLetter = () => {
+    if (isCommunityEvent && communityData) {
+      return communityData.name.charAt(0).toUpperCase();
+    }
+    return event.author.charAt(0).toUpperCase();
   };
 
   const mediaUrls = getMediaUrls();
@@ -220,8 +315,15 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           </div>
           
           <div className={styles.metaItem}>
-            <span className={styles.metaIcon}>👤</span>
-            <span>{event.author}</span>
+            <span className={styles.metaIcon}>
+              {isCommunityEvent ? '👥' : '👤'}
+            </span>
+            <span 
+              style={isCommunityEvent ? { cursor: 'pointer', color: 'var(--primary-pink)' } : {}}
+              onClick={isCommunityEvent ? handleCommunityClick : undefined}
+            >
+              {getDisplayAuthorName()}
+            </span>
           </div>
         </div>
         
@@ -291,52 +393,106 @@ const EventMain: React.FC<EventMainProps> = ({ event, styles }) => {
           </div>
         </div>
         
-        {/* Информация об авторе */}
+        {/* Информация об авторе/сообществе */}
         <div className={styles.authorInfo}>
-          <div className={styles.authorAvatar}>
-            {loadingAuthor ? (
-              <div className={styles.avatarPlaceholder}>
-                <div className={styles.avatarLoader}>⏳</div>
+          {isCommunityEvent ? (
+            // Отображение для сообщества - вся секция как кнопка
+            <div 
+              className={styles.communityButton}
+              onClick={handleCommunityClick}
+              style={{ 
+                cursor: 'pointer', 
+                display: 'flex', 
+                alignItems: 'center', 
+                padding: '1rem',
+                borderRadius: '8px',
+                transition: 'background-color 0.2s',
+                border: 'none',
+                background: 'transparent',
+                width: '100%'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <div className={styles.authorAvatar}>
+                {loadingAuthor ? (
+                  <div className={styles.avatarPlaceholder}>
+                    <div className={styles.avatarLoader}>⏳</div>
+                  </div>
+                ) : getAuthorAvatar() ? (
+                  <img 
+                    src={getAuthorAvatar()!} 
+                    alt={getDisplayAuthorName()}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove(styles.hidden);
+                    }}
+                  />
+                ) : (
+                  <div className={styles.avatarPlaceholder}>
+                    {getAvatarPlaceholderLetter()}
+                  </div>
+                )}
+                {getAuthorAvatar() && (
+                  <div className={`${styles.avatarPlaceholder} ${styles.hidden}`}>
+                    {getAvatarPlaceholderLetter()}
+                  </div>
+                )}
               </div>
-            ) : authorData?.imageUrl ? (
-              <img 
-                src={authorData.imageUrl} 
-                alt={authorData.username}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  target.nextElementSibling?.classList.remove(styles.hidden);
-                }}
-              />
-            ) : (
-              <div className={styles.avatarPlaceholder}>
-                {event.author.charAt(0).toUpperCase()}
+              <div className={styles.authorDetails}>
+                <div className={styles.authorName}>
+                  <strong>{getDisplayAuthorName()}</strong>
+                </div>
+                <div className={styles.authorRole}>{getAuthorRole()}</div>
+                <div className={styles.authorUsername}>@{event.author}</div>
+                <div className={styles.eventCreated}>
+                  Создано: {formatDate(event.dateTime)}
+                </div>
               </div>
-            )}
-            {authorData?.imageUrl && (
-              <div className={`${styles.avatarPlaceholder} ${styles.hidden}`}>
-                {event.author.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
-          <div className={styles.authorDetails}>
-            <div className={styles.authorName}>
-              <strong>
-                {authorData?.firstName && authorData?.lastName 
-                  ? `${authorData.firstName} ${authorData.lastName}`
-                  : event.author
-                }
-              </strong>
             </div>
-            <div className={styles.authorRole}>Организатор события</div>
-            <div className={styles.authorUsername}>@{event.author}</div>
-            {authorData?.bio && (
-              <div className={styles.authorBio}>{authorData.bio}</div>
-            )}
-            <div className={styles.eventCreated}>
-              Создано: {formatDate(event.dateTime)}
-            </div>
-          </div>
+          ) : (
+            // Отображение для обычного пользователя - без кнопки
+            <>
+              <div className={styles.authorAvatar}>
+                {loadingAuthor ? (
+                  <div className={styles.avatarPlaceholder}>
+                    <div className={styles.avatarLoader}>⏳</div>
+                  </div>
+                ) : getAuthorAvatar() ? (
+                  <img 
+                    src={getAuthorAvatar()!} 
+                    alt={getDisplayAuthorName()}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove(styles.hidden);
+                    }}
+                  />
+                ) : (
+                  <div className={styles.avatarPlaceholder}>
+                    {getAvatarPlaceholderLetter()}
+                  </div>
+                )}
+                {getAuthorAvatar() && (
+                  <div className={`${styles.avatarPlaceholder} ${styles.hidden}`}>
+                    {getAvatarPlaceholderLetter()}
+                  </div>
+                )}
+              </div>
+              <div className={styles.authorDetails}>
+                <div className={styles.authorName}>
+                  <strong>{getDisplayAuthorName()}</strong>
+                </div>
+                <div className={styles.authorRole}>{getAuthorRole()}</div>
+                <div className={styles.authorUsername}>@{event.author}</div>
+                {authorData?.bio && (
+                  <div className={styles.authorBio}>{authorData.bio}</div>
+                )}
+
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>

@@ -23,7 +23,6 @@ const CommunityHeader: React.FC<CommunityHeaderProps> = ({ community, onJoin, lo
 
   return (
     <div className={styles.communityHeader}>
-      {/* Обложка (если есть) */}
       {community.coverUrl && (
         <div className={styles.coverImage}>
           <img src={community.coverUrl} alt={`Обложка ${community.name}`} />

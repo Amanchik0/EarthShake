@@ -49,17 +49,7 @@ const timerStyle: React.CSSProperties = {
   color: '#999',
 };
 
-const closeButtonStyle: React.CSSProperties = {
-  position: 'absolute',
-  top: 8,
-  left: 12,
-  background: 'none',
-  border: 'none',
-  fontSize: 20,
-  cursor: 'pointer',
-  color: '#999',
-  padding: 4,
-};
+
 
 const AdModal: React.FC<AdModalProps> = ({ ad, onClose, onAdClick }) => {
   const [secondsLeft, setSecondsLeft] = useState(10);
@@ -68,7 +58,7 @@ const AdModal: React.FC<AdModalProps> = ({ ad, onClose, onAdClick }) => {
     const interval = setInterval(() => {
       setSecondsLeft(prev => {
         if (prev <= 1) {
-          // onClose();
+          onClose();
           return 0;
         }
         return prev - 1;
@@ -101,13 +91,13 @@ const AdModal: React.FC<AdModalProps> = ({ ad, onClose, onAdClick }) => {
   return (
     <div style={overlayStyle}>
       <div style={modalStyle}>
-        <button 
+        {/* <button 
           style={closeButtonStyle}
           onClick={onClose}
           title="Закрыть"
         >
           ✕
-        </button>
+        </button> */}
         
         <div style={timerStyle}>
           Закроется через {secondsLeft} сек

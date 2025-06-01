@@ -63,6 +63,20 @@ export interface UserScore {
   readonly [key: string]: any; // Для поддержки формата {username: rating}
 }
 
+// Интерфейс для данных сообщества
+export interface CommunityData {
+  readonly id: string;
+  readonly name: string;
+  readonly description?: string;
+  readonly imageUrls?: string[]; // Массив изображений
+  readonly createdAt?: string;
+  readonly membersCount?: number;
+  readonly isActive?: boolean;
+  readonly creatorId?: string;
+  readonly category?: string;
+  readonly tags?: string[];
+}
+
 // Основной интерфейс для данных с бэкенда (обновлен под новую структуру)
 export interface BackendEventData {
   readonly id: string;
@@ -89,7 +103,8 @@ export interface BackendEventData {
     readonly address?: string;
     readonly scheduledDate?: string;
     readonly createdAt?: string;
-    readonly isCommunity?: string;
+    readonly isCommunity?: string | boolean; // Поддержка строки и boolean
+    readonly communityId?: string; // ID сообщества
   };
   readonly comments: Array<{
     readonly id: string;
@@ -151,7 +166,8 @@ export interface EventUpdateData {
     readonly address?: string;
     readonly scheduledDate?: string;
     readonly createdAt?: string;
-    readonly isCommunity?: string;
+    readonly isCommunity?: string | boolean;
+    readonly communityId?: string;
   };
   readonly comments: Array<{
     readonly id: string;
@@ -233,4 +249,13 @@ export const updateUserScore = (scores: UserScore[], username: string, rating: n
     // Добавляем новую оценку
     return [...scores, { [username]: rating }];
   }
+};
+
+// Утилитарные функции для работы с сообществами
+export const isCommunityEvent = (event: BackendEventData): boolean => {
+  return event.metadata?.isCommunity === "true" || event.metadata?.isCommunity === true;
+};
+
+export const getCommunityId = (event: BackendEventData): string | undefined => {
+  return isCommunityEvent(event) ? event.metadata?.communityId : undefined;
 };

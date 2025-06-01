@@ -56,36 +56,81 @@ const EventPage: React.FC = () => {
   // Функция для загрузки рекомендаций
   useEffect(() => {
     const loadRecommendations = async () => {
-      // TODO: Реальный запрос к API для получения рекомендаций
-      // const response = await fetch(`http://localhost:8090/api/events/recommendations/${id}`);
-      // const data = await response.json();
-      
-      // Моковые данные пока что
-      const mockRecommendations: RecommendedEvent[] = [
-        {
-          id: '1',
-          title: 'Концерт в парке',
-          date: '30 мая 2025',
-          type: 'Музыка',
-          imageUrl: '/api/placeholder/200/150'
-        },
-        {
-          id: '2', 
-          title: 'Спортивное мероприятие',
-          date: '1 июня 2025',
-          type: 'Спорт',
-          imageUrl: '/api/placeholder/200/150'
-        },
-        {
-          id: '3',
-          title: 'Образовательный семинар',
-          date: '3 июня 2025', 
-          type: 'Образование',
-          imageUrl: '/api/placeholder/200/150'
+      try {
+        // Получаем все события с API
+        const response = await fetch('http://localhost:8090/api/events/get-all?page=0&size=20');
+        
+        if (!response.ok) {
+          throw new Error('Ошибка загрузки рекомендаций');
         }
-      ];
-      
-      setRecommendations(mockRecommendations);
+        
+        const data = await response.json();
+        console.log('Получены данные для рекомендаций:', data);
+        
+        // Преобразуем данные с бэкенда в формат RecommendedEvent
+        const allEvents: RecommendedEvent[] = data.content
+          .filter((eventData: any) => eventData.id !== id) // Исключаем текущее событие
+          .map((eventData: any) => ({
+            id: eventData.id,
+            title: eventData.title,
+            date: new Date(eventData.dateTime).toLocaleDateString('ru-RU', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            }),
+            type: eventData.eventType === 'REGULAR' ? 'Обычное' : 'Экстренное',
+            imageUrl: Array.isArray(eventData.mediaUrl) && eventData.mediaUrl.length > 0 
+              ? eventData.mediaUrl[0] 
+              : (typeof eventData.mediaUrl === 'string' ? eventData.mediaUrl : '/api/placeholder/200/150')
+          }));
+        
+        // Функция для получения 4 случайных событий
+        const getRandomEvents = (events: RecommendedEvent[], count: number): RecommendedEvent[] => {
+          const shuffled = [...events].sort(() => Math.random() - 0.5);
+          return shuffled.slice(0, count);
+        };
+        
+        // Если событий достаточно, выбираем случайные 4
+        const randomRecommendations = getRandomEvents(allEvents, Math.min(4, allEvents.length));
+        setRecommendations(randomRecommendations);
+        
+      } catch (error) {
+        console.error('Ошибка загрузки рекомендаций:', error);
+        
+        // Fallback на моковые данные в случае ошибки
+        const fallbackEvents: RecommendedEvent[] = [
+          {
+            id: 'mock-1',
+            title: 'Концерт в парке',
+            date: '30 мая 2025',
+            type: 'Музыка',
+            imageUrl: '/api/placeholder/200/150'
+          },
+          {
+            id: 'mock-2', 
+            title: 'Спортивное мероприятие',
+            date: '1 июня 2025',
+            type: 'Спорт',
+            imageUrl: '/api/placeholder/200/150'
+          },
+          {
+            id: 'mock-3',
+            title: 'Образовательный семинар',
+            date: '3 июня 2025', 
+            type: 'Образование',
+            imageUrl: '/api/placeholder/200/150'
+          },
+          {
+            id: 'mock-4',
+            title: 'Выставка современного искусства',
+            date: '5 июня 2025',
+            type: 'Искусство',
+            imageUrl: '/api/placeholder/200/150'
+          }
+        ];
+        
+        setRecommendations(fallbackEvents);
+      }
     };
 
     loadRecommendations();

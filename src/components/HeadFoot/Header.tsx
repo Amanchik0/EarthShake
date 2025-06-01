@@ -110,8 +110,8 @@ const Header: React.FC = () => {
 
           <nav className={`${styles.headerNav} ${isMenuOpen ? styles.menuOpen : ''}`}>
             <ul className={styles.headerNavMenu}>
-              {['/', '/events', '/communities', '/reference', '/support'].map((path, idx) => {
-                const labels = ['Главная', 'События', 'Сообщества', 'Гайдлайны', 'Поддержка'];
+              {['/', '/events', '/communities', '/news', '/support'].map((path, idx) => {
+                const labels = ['Главная', 'События', 'Сообщества', 'Новости', 'Поддержка'];
                 return (
                   <li key={path} className={styles.headerNavItem}>
                     <NavLink

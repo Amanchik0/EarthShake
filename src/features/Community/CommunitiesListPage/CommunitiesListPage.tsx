@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../components/auth/AuthContext';
 import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import CommunityCard from '../../../components/Community/CommunityCard';
-import CitySelect from '../../../components/CitySelect/CitySelect';
 import styles from './CommunitiesListPage.module.css';
 import { Community, CommunityDetails, toCommunityDetails } from '../../../types/community';
 
@@ -347,14 +346,7 @@ const CommunitiesListPage: React.FC = () => {
           />
         </div>
 
-        {/* Фильтр по городу с CitySelect */}
-        <div className={styles.cityFilter}>
-          <CitySelect
-            value={selectedCity}
-            onChange={handleCitySelect}
-            placeholder="Выберите город для фильтрации..."
-          />
-        </div>
+
 
         {/* Фильтры */}
         <div className={styles.filters}>

@@ -70,7 +70,6 @@ const AppRoutes: React.FC<Props> = ({ isEmergency }) => (
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-              {/* <Route path="/profile/edit" element={<ProtectedRoute>  <ProfileEditPage /></ProtectedRoute>} /> */}
               <Route path="/news" element={<NewsListPage />} />
               <Route path="/emergency" element={<EmergencyNotification />} />
               <Route path="/404" element={<NotFoundPage />} />

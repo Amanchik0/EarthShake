@@ -181,6 +181,7 @@ const MainPage: React.FC = () => {
                 <h2 className={styles.sectionTitle}>Преимущества нашей платформы</h2>
                 <p className={styles.sectionSubtitle}>Почему сотни организаторов и тысячи участников выбирают Cityvora</p>
             </div>
+            <div className={styles.featuresWrapper}>
             <div className={styles.featuresCards}>
                 <div className={styles.featureCard}>
                     <div className={styles.featureIcon}>🔍</div>
@@ -213,6 +214,7 @@ const MainPage: React.FC = () => {
                     <p className={styles.featureDescription}>Система рейтингов помогает выбирать лучшие события и надежных организаторов.</p>
                 </div>
             </div>
+        </div>
         </div>
     </section>
       </main>

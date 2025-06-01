@@ -72,7 +72,7 @@ const EventsListPage: React.FC = () => {
       label: 'category',
       options: [
         { value: '', label: 'Все категории' },
-        { value: 'sport', label: 'Спорт' },
+        { value: 'sport', label: '1орт' },
         { value: 'soccer', label: 'Футбол' },
         { value: 'музыка', label: 'Музыка' },
         { value: 'образование', label: 'Образование' },
@@ -197,7 +197,7 @@ const EventsListPage: React.FC = () => {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchEvents();
   }, []);

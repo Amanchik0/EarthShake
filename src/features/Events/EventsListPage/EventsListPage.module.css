@@ -300,7 +300,7 @@
 /* View Toggle styles */
 .viewToggle {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   margin-bottom: 20px;
   background: #f8fafc;
   border-radius: 12px;
@@ -648,7 +648,7 @@
   
   .filters {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
   
   .contentWrapper {
@@ -675,13 +675,14 @@
   }
   
   .viewToggle {
-    justify-content: center;
+    justify-content: space-around;
   }
   
   .toggleButton {
     padding: 10px 16px;
     font-size: 12px;
   }
+
 }
 
 @media (max-width: 480px) {
@@ -710,5 +711,25 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+
+
   }
-}
+  .filterLabel {
+      text-align: left;
+      margin-left: 0;
+    }
+    .filterDropdown {
+      text-align: left;
+      width: 100%;
+
+  }
+  .filters {
+    text-align: left;
+  }
+  .noResults h3 {
+    font-size: 1.5rem;
+  }
+  .noResults p {
+    font-size: 0.9rem;
+  }
+ }

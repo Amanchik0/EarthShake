@@ -11,7 +11,7 @@ const NavMenu = ({ activeTab, onTabChange }: NavMenuProps) => {
     { tab: 'events', icon: '🗓️', label: 'События' },
     { tab: 'communities', icon: '👪', label: 'Сообщества' },
     { icon: '⚙️', label: 'Настройки' },
-    { icon: '📊', label: 'Статистика' },
+    { icon: '', label: 'Статистика' },
   ];
 
   return (

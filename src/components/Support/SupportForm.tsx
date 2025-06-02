@@ -80,14 +80,7 @@ const SupportForm: React.FC<SupportFormProps> = ({ styles }) => {
           onChange={handleChange}
         ></textarea>
       </div>
-      <div className={styles.formGroup}>
-        <label htmlFor="file">Приложить файл (необязательно)</label>
-        <input 
-          type="file" 
-          id="file" 
-          onChange={handleFileChange}
-        />
-      </div>
+
       <button type="submit" className={styles.btn}>Отправить запрос</button>
     </form>
   );

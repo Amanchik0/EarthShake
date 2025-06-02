@@ -6,7 +6,7 @@ import { Community } from '../../types/community';
 interface CommunitySectionProps {
     communities: Community[];
     onCommunityClick: (communityId: number) => void;
-    maxVisibleCards?: number; // Optional prop to limit the number of visible cards
+    maxVisibleCards?: number; 
     
 }
 const CommunitySection: React.FC<CommunitySectionProps> = ({ communities, onCommunityClick, maxVisibleCards = 4 }) => {
@@ -25,7 +25,7 @@ const CommunitySection: React.FC<CommunitySectionProps> = ({ communities, onComm
                     <img src={community.imageUrl} alt={community.name} className={styles.communityIcon}/>
                     <h3 className={styles.communityTitle}>{community.name}</h3>
                     <p className={styles.communityMembers}>{community.numberMembers} участников </p>
-                    <button  onClick={()=> onCommunityClick(community.id)} className={styles.communityButton}>Присоединиться</button>
+                    <button  onClick={()=> onCommunityClick(community.id)} className={styles.communityButton}>Подробнее</button>
                 </div>
                     ))}
             </div>

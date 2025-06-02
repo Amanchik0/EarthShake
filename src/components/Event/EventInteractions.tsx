@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BackendEventData, NewComment, NewRating } from '../../types/event';
+import React, { useState, useEffect } from 'react';
+import { BackendEventData } from '../../types/event';
 import { useAuth } from '../../components/auth/AuthContext';
 
 interface EventInteractionsProps {
@@ -19,96 +19,279 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
   // Проверяем, участвует ли пользователь в событии
   const isParticipant = user ? event.usersIds.includes(user.username) : false;
 
-  const updateEvent = async (updates: Partial<BackendEventData>) => {
-    try {
-      const token = localStorage.getItem('accessToken');
-      
-      // Преобразуем comments из объекта в массив для отправки
-      const commentsArray = Object.entries(event.comments || {}).map(([key, comment]) => ({
-        id: key,
-        author: comment.author,
-        text: comment.text,
-        date: comment.date,
-        avatarUrl: comment.avatarUrl || ''
-      }));
-      
-      // Создаем структуру данных точно как ожидает API
-      const updatedEventData = {
-        id: event.id,
-        eventType: event.eventType,
-        emergencyType: event.emergencyType,
-        title: event.title,
-        description: event.description,
-        content: event.content,
-        author: event.author,
-        city: event.city,
-        location: {
-          x: event.location.x,
-          y: event.location.y
-        },
-        mediaUrl: event.mediaUrl,
-        score: event.score,
-        dateTime: event.dateTime,
-        eventStatus: event.eventStatus,
-        tags: [...event.tags],
-        usersIds: [...event.usersIds],
-        metadata: event.metadata ? {
-          address: event.metadata.address,
-          scheduledDate: event.metadata.scheduledDate,
-          createdAt: event.metadata.createdAt
-        } : {},
-        comments: commentsArray, // Отправляем как массив
-        archived: event.archived,
-        // Применяем обновления
-        ...updates
-      };
+  // Функции для работы с оценками
+  const getScores = () => {
+    if (!event.score) return [];
+    if (Array.isArray(event.score)) return event.score;
+    return [];
+  };
 
-      // Если в updates есть comments, преобразуем их тоже в массив
-      if (updates.comments) {
-        updatedEventData.comments = Object.entries(updates.comments).map(([key, comment]) => ({
-          id: key,
-          author: comment.author,
-          text: comment.text,
-          date: comment.date,
-          avatarUrl: comment.avatarUrl || ''
-        }));
+  const getUserScore = () => {
+    if (!user) return 0;
+    const scores = getScores();
+    const userScore = scores.find(score => {
+      // Поддерживаем разные форматы: {username: rating} или {username: "name", rating: number}
+      return score.username === user.username || score[user.username] !== undefined;
+    });
+    
+    if (userScore) {
+      // Если есть поле rating, используем его, иначе ищем значение по username
+      return userScore.rating || userScore[user.username] || 0;
+    }
+    return 0;
+  };
+
+  const getAverageScore = () => {
+    const scores = getScores();
+    if (scores.length === 0) return 0;
+    
+    const total = scores.reduce((sum, score) => {
+      // Поддержка разных форматов
+      const rating = score.rating || Object.values(score).find(val => typeof val === 'number') || 0;
+      return sum + rating;
+    }, 0);
+    
+    return total / scores.length;
+  };
+
+  // Устанавливаем пользовательский рейтинг при загрузке
+  useEffect(() => {
+    const currentUserScore = getUserScore();
+    setUserRating(currentUserScore);
+  }, [event.score, user]);
+
+// Исправленная функция с двумя API вызовами
+const handleToggleParticipation = async () => {
+  if (!user) {
+    console.log('Нет пользователя для участия');
+    return;
+  }
+
+  setIsJoiningEvent(true);
+  
+  try {
+    const token = localStorage.getItem('accessToken');
+    const shouldJoin = !isParticipant;
+    const actionText = shouldJoin ? 'присоединения к' : 'выхода из';
+    
+    console.log(`🎯 Начинаем процесс ${actionText} события для пользователя:`, user.username);
+
+    // Шаг 1: Получаем ID пользователя
+    console.log('🔍 Получаем ID пользователя...');
+    const userResponse = await fetch(
+      `http://localhost:8090/api/users/get-by-username/${user.username}`,
+      {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` })
+        }
       }
+    );
 
-      console.log('Отправляем данные для обновления:', JSON.stringify(updatedEventData, null, 2));
+    if (!userResponse.ok) {
+      throw new Error(`Не удалось получить данные пользователя: ${userResponse.status}`);
+    }
 
-      const response = await fetch('http://localhost:8090/api/events/update', {
-        method: 'PUT',
+    const userData = await userResponse.json();
+    const userId = userData.id;
+    console.log(' Получен ID пользователя:', userId);
+
+    // Шаг 2: PATCH запрос - добавляем/удаляем событие в списке событий пользователя
+    console.log(`📝 Шаг 1: ${actionText} события в профиле пользователя...`);
+    const patchResponse = await fetch(
+      `http://localhost:8090/api/users/add-or-delete-event/${event.id}/${userId}/${shouldJoin}`,
+      {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           ...(token && { Authorization: `Bearer ${token}` })
-        },
-        body: JSON.stringify(updatedEventData)
-      });
-
-      const responseText = await response.text();
-      console.log('Ответ сервера:', responseText);
-
-      if (!response.ok) {
-        console.error('Ошибка сервера:', responseText);
-        throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
+        }
       }
+    );
 
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (e) {
-        console.error('Не удалось парсить ответ как JSON:', responseText);
-        throw new Error('Некорректный ответ сервера');
-      }
+    const patchResponseText = await patchResponse.text();
+    console.log(`📥 PATCH ответ (${actionText} в профиле):`, patchResponse.status, patchResponseText);
 
-      console.log('Событие обновлено:', result);
-      onEventUpdate(result);
-      return result;
-    } catch (error) {
-      console.error('Ошибка обновления события:', error);
-      throw error;
+    if (!patchResponse.ok) {
+      throw new Error(`PATCH ошибка ${patchResponse.status}: ${patchResponseText}`);
     }
-  };
+
+    // Шаг 3: PUT запрос - обновляем список участников события
+    console.log(`📝 Шаг 2: Обновляем список участников события...`);
+    
+    // Формируем обновленный список участников
+    let updatedUsersIds;
+    if (shouldJoin) {
+      // Добавляем пользователя, если его еще нет
+      updatedUsersIds = event.usersIds.includes(user.username) 
+        ? event.usersIds 
+        : [...event.usersIds, user.username];
+    } else {
+      // Удаляем пользователя из списка
+      updatedUsersIds = event.usersIds.filter(id => id !== user.username);
+    }
+
+    // Подготавливаем полные данные события для обновления
+    const updatedEventData = {
+      id: event.id,
+      eventType: event.eventType,
+      title: event.title,
+      description: event.description,
+      content: event.content,
+      author: event.author,
+      city: event.city,
+      location: {
+        x: event.location.x,
+        y: event.location.y
+      },
+      mediaUrl: Array.isArray(event.mediaUrl) ? event.mediaUrl : [event.mediaUrl].filter(Boolean),
+      score: Array.isArray(event.score) ? event.score : [],
+      dateTime: event.dateTime,
+      eventStatus: event.eventStatus,
+      tags: [...event.tags],
+      usersIds: updatedUsersIds, // Обновленный список участников
+      metadata: {
+        address: event.metadata?.address || '',
+        scheduledDate: event.metadata?.scheduledDate || event.dateTime,
+        createdAt: event.metadata?.createdAt || new Date().toISOString(),
+        isCommunity: event.metadata?.isCommunity || 'true'
+      },
+      comments: [...event.comments],
+      archived: event.archived || false
+    };
+
+    // Добавляем emergencyType если событие экстренное
+    if (event.eventType === 'EMERGENCY' && event.emergencyType) {
+      (updatedEventData as any).emergencyType = event.emergencyType;
+    }
+
+    console.log('🚀 Отправляем PUT запрос с обновленными участниками:', {
+      eventId: event.id,
+      oldParticipants: event.usersIds,
+      newParticipants: updatedUsersIds,
+      action: shouldJoin ? 'добавление' : 'удаление',
+      user: user.username
+    });
+
+    const putResponse = await fetch('http://localhost:8090/api/events/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
+      body: JSON.stringify(updatedEventData)
+    });
+
+    const putResponseText = await putResponse.text();
+    console.log('📥 PUT ответ (обновление события):', putResponse.status, putResponseText);
+
+    if (!putResponse.ok) {
+      console.error('Ошибка PUT запроса:', putResponse.status, putResponseText);
+      throw new Error(`PUT ошибка ${putResponse.status}: ${putResponseText}`);
+    }
+
+    // Шаг 4: Обновляем локальное состояние
+    let result;
+    try {
+      result = putResponseText ? JSON.parse(putResponseText) : updatedEventData;
+    } catch (e) {
+      console.warn(' Не удалось парсить ответ PUT запроса, используем локальные данные');
+      result = updatedEventData;
+    }
+
+    console.log(' Оба API вызова успешны! Обновляем UI...', {
+      previousParticipants: event.usersIds.length,
+      newParticipants: result.usersIds.length,
+      action: shouldJoin ? 'присоединение' : 'выход',
+      user: user.username
+    });
+
+    // Обновляем состояние в родительском компоненте
+    onEventUpdate(result);
+
+  } catch (error) {
+    console.error('💥 Ошибка изменения участия:', error);
+    alert(`Не удалось ${!isParticipant ? 'присоединиться к' : 'покинуть'} событие: ${error.message}`);
+  } finally {
+    setIsJoiningEvent(false);
+  }
+};
+
+// Также обновите функцию updateEvent для других операций
+const updateEvent = async (updates: Partial<BackendEventData>) => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    
+    // Создаем полную структуру данных для обновления
+    const updatedEventData = {
+      id: event.id,
+      eventType: event.eventType,
+      title: event.title,
+      description: event.description,
+      content: event.content,
+      author: event.author,
+      city: event.city,
+      location: {
+        x: event.location.x,
+        y: event.location.y
+      },
+      mediaUrl: Array.isArray(event.mediaUrl) ? event.mediaUrl : [event.mediaUrl].filter(Boolean),
+      score: Array.isArray(event.score) ? event.score : [],
+      dateTime: event.dateTime,
+      eventStatus: event.eventStatus,
+      tags: [...event.tags],
+      usersIds: [...event.usersIds],
+      metadata: {
+        address: event.metadata?.address || '',
+        scheduledDate: event.metadata?.scheduledDate || event.dateTime,
+        createdAt: event.metadata?.createdAt || new Date().toISOString(),
+        isCommunity: event.metadata?.isCommunity || 'true'
+      },
+      comments: [...event.comments],
+      archived: event.archived || false,
+      // Применяем обновления поверх базовых данных
+      ...updates
+    };
+
+    // Добавляем emergencyType если событие экстренное
+    if (event.eventType === 'EMERGENCY' && event.emergencyType) {
+      (updatedEventData as any).emergencyType = event.emergencyType;
+    }
+
+    console.log('🚀 PUT запрос обновления события:', JSON.stringify(updatedEventData, null, 2));
+
+    const response = await fetch('http://localhost:8090/api/events/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
+      body: JSON.stringify(updatedEventData)
+    });
+
+    const responseText = await response.text();
+    console.log('📥 Ответ сервера (обновление):', response.status, responseText);
+
+    if (!response.ok) {
+      console.error('Ошибка обновления:', response.status, responseText);
+      throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
+    }
+
+    let result;
+    try {
+      result = responseText ? JSON.parse(responseText) : updatedEventData;
+    } catch (e) {
+      console.warn(' Не удалось парсить ответ, используем отправленные данные');
+      result = updatedEventData;
+    }
+
+    console.log(' Событие обновлено:', result);
+    onEventUpdate(result);
+    return result;
+  } catch (error) {
+    console.error('💥 Ошибка обновления события:', error);
+    throw error;
+  }
+};
 
   // Добавление комментария
   const handleAddComment = async () => {
@@ -119,25 +302,22 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
 
     setIsSubmittingComment(true);
     try {
-      const newCommentId = `comment_${Date.now()}_${user.username}`;
       const newComment = {
+        id: `comment_${Date.now()}_${user.username}`,
         author: user.username,
         text: commentText.trim(),
         date: new Date().toISOString(),
         avatarUrl: ''
       };
 
-      console.log('Добавляем комментарий:', newComment);
+      console.log('💬 Добавляем комментарий:', newComment);
 
-      const updatedComments = {
-        ...event.comments,
-        [newCommentId]: newComment
-      };
+      const updatedComments = [...event.comments, newComment];
 
       await updateEvent({ comments: updatedComments });
       setCommentText('');
     } catch (error) {
-      console.error('Ошибка добавления комментария:', error);
+      console.error('💥 Ошибка добавления комментария:', error);
       alert('Не удалось добавить комментарий');
     } finally {
       setIsSubmittingComment(false);
@@ -151,58 +331,48 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
       return;
     }
 
-    console.log('Оцениваем событие:', rating);
+    console.log('⭐ Оцениваем событие:', rating, 'от пользователя:', user.username);
     setIsSubmittingRating(true);
     try {
-      // Преобразуем рейтинг из 1-5 в 0-1 шкалу для бэкенда
-      const normalizedScore = rating / 5;
-      await updateEvent({ score: normalizedScore });
+      const scores = getScores();
+      console.log(' Текущие оценки:', scores);
+      
+      // Ищем существующую оценку пользователя
+      const existingScoreIndex = scores.findIndex(score => {
+        return score.username === user.username || score[user.username] !== undefined;
+      });
+      
+      let updatedScores;
+      if (existingScoreIndex !== -1) {
+        // Обновляем существующую оценку пользователя
+        console.log('🔄 Обновляем существующую оценку пользователя');
+        updatedScores = [...scores];
+        updatedScores[existingScoreIndex] = { [user.username]: rating };
+      } else {
+        // Добавляем новую оценку
+        console.log('➕ Добавляем новую оценку пользователя');
+        updatedScores = [...scores, { [user.username]: rating }];
+      }
+
+      console.log(' Обновленные оценки:', updatedScores);
+
+      await updateEvent({ score: updatedScores });
       setUserRating(rating);
+      console.log(' Оценка успешно сохранена');
     } catch (error) {
-      console.error('Ошибка оценки события:', error);
+      console.error('💥 Ошибка оценки события:', error);
       alert('Не удалось оценить событие');
     } finally {
       setIsSubmittingRating(false);
     }
   };
 
-  // Присоединение к событию / покинуть событие
-  const handleToggleParticipation = async () => {
-    if (!user) {
-      console.log('Нет пользователя для участия');
-      return;
-    }
+  // Присоединение к событию / покинуть событие с использованием PATCH API
 
-    console.log('Текущий статус участия:', isParticipant);
-    console.log('Текущие участники:', event.usersIds);
-
-    setIsJoiningEvent(true);
-    try {
-      let updatedUsersIds;
-      if (isParticipant) {
-        // Покинуть событие
-        updatedUsersIds = event.usersIds.filter(id => id !== user.username);
-        console.log('Покидаем событие, новый список:', updatedUsersIds);
-      } else {
-        // Присоединиться к событию
-        updatedUsersIds = [...event.usersIds, user.username];
-        console.log('Присоединяемся к событию, новый список:', updatedUsersIds);
-      }
-
-      await updateEvent({ usersIds: updatedUsersIds });
-    } catch (error) {
-      console.error('Ошибка изменения участия:', error);
-      alert('Не удалось изменить участие в событии');
-    } finally {
-      setIsJoiningEvent(false);
-    }
-  };
 
   // Рендер звезд для оценки
   const renderRatingStars = () => {
     const stars = [];
-    // Преобразуем score из 0-1 шкалы в 1-5 для отображения
-    const displayRating = event.score ? Math.round(event.score * 5) : 0;
     
     for (let i = 1; i <= 5; i++) {
       stars.push(
@@ -215,7 +385,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
             border: 'none',
             fontSize: '1.5rem',
             cursor: isSubmittingRating ? 'not-allowed' : 'pointer',
-            color: i <= (userRating || displayRating) ? 'gold' : 'var(--light-gray)',
+            color: i <= userRating ? 'gold' : 'var(--light-gray)',
             transition: 'color 0.2s',
             padding: '2px'
           }}
@@ -226,7 +396,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
           }}
           onMouseLeave={(e) => {
             if (!isSubmittingRating) {
-              e.currentTarget.style.color = i <= (userRating || displayRating) ? 'gold' : 'var(--light-gray)';
+              e.currentTarget.style.color = i <= userRating ? 'gold' : 'var(--light-gray)';
             }
           }}
         >
@@ -247,6 +417,9 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
     );
   }
 
+  const averageScore = getAverageScore();
+  const scoresCount = getScores().length;
+
   return (
     <div className={styles.interactionsSection}>
       {/* Участие в событии */}
@@ -256,7 +429,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
           disabled={isJoiningEvent}
           className={`${styles.participationButton} ${isParticipant ? styles.leaveButton : styles.joinButton}`}
         >
-          {isJoiningEvent ? '...' : isParticipant ? '❌ Покинуть событие' : '✅ Участвовать в событии'}
+          {isJoiningEvent ? '...' : isParticipant ? 'Покинуть событие' : ' Участвовать в событии'}
         </button>
         <span className={styles.participantsCount}>
           {event.usersIds.length} участник{event.usersIds.length === 1 ? '' : event.usersIds.length < 5 ? 'а' : 'ов'}
@@ -269,9 +442,14 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
         <div className={styles.ratingStars}>
           {renderRatingStars()}
           <span className={styles.ratingText}>
-            ({event.score ? (event.score * 5).toFixed(1) : '0.0'})
+            Средняя: {averageScore > 0 ? averageScore.toFixed(1) : '0.0'} ({scoresCount} оценок)
           </span>
         </div>
+        {userRating > 0 && (
+          <p style={{ fontSize: '0.8rem', color: 'var(--primary-pink)', marginTop: '5px' }}>
+            Ваша оценка: {userRating} ★
+          </p>
+        )}
         {isSubmittingRating && <p style={{ fontSize: '0.8rem', color: 'var(--dark-gray)' }}>Сохранение оценки...</p>}
       </div>
 

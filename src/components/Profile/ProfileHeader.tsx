@@ -27,9 +27,9 @@ const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
 }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Подготавливаем данные для формы редактирования (теперь с username)
+  // Подготавливаем данные для формы редактирования
   const initialForm: ProfileFormData = {
-    username: currentProfile.username, // Добавили username
+    username: currentProfile.username,
     firstName: currentProfile.firstName || '',
     lastName: currentProfile.lastName || '',
     email: currentProfile.email,
@@ -38,7 +38,7 @@ const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
     currentPassword: '',
     newPassword: '',
     confirmNewPassword: '',
-    imageUrl: currentProfile.imageUrl || '',
+    imageUrl: currentProfile.imageUrl || undefined,
   };
 
   const handleSave = async (updatedProfile: FullProfile) => {
@@ -50,7 +50,7 @@ const ProfileHeader: React.FC<ExtendedProfileHeaderProps> = ({
     <div className={styles.profileHeader}>
       <Link to="/profile">
         <img
-          src={photoUrl || "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg"}
+          src={photoUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDwmG52pVI5JZfn04j9gdtsd8pAGbqjjLswg&s"}
           alt="Profile"
           className={styles.profilePhoto}
         />

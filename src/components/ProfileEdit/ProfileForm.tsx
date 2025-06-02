@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ProfileFormData } from '../../types/profile';
-import CitySelect from '../../components/CitySelect/CitySelect'; // Добавляем импорт CitySelect
+import CitySelect from '../../components/CitySelect/CitySelect';
 import styles from './ProfileForm.module.css';
 
 interface ProfileFormProps {
@@ -21,15 +21,48 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   const [formData, setFormData] = useState<ProfileFormData>(initialData);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
 
   // Обновляем форму при изменении initialData
   useEffect(() => {
     setFormData(initialData);
   }, [initialData]);
 
+  // Функция проверки доступности username
+  const checkUsernameAvailability = async (username: string): Promise<boolean> => {
+    if (!username.trim() || username === initialData.username) {
+      return true; // Пустой username или тот же что и был - не проверяем
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8090/api/users/get-by-username/${encodeURIComponent(username)}`);
+      
+      if (response.status === 404) {
+        // Пользователь не найден - username доступен
+        return true;
+      } else if (response.ok) {
+        // Пользователь найден - username занят
+        return false;
+      } else {
+        // Ошибка сервера - считаем что доступен
+        console.error('Ошибка при проверке username:', response.statusText);
+        return true;
+      }
+    } catch (error) {
+      console.error('Ошибка при проверке username:', error);
+      return true; // При ошибке сети считаем что доступен
+    }
+  };
+
   // Обработчик изменения полей
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    
+    // Ограничение для телефона
+    if (name === 'phoneNumber' && value.length > 12) {
+      return; // Не обновляем значение если превышает лимит
+    }
+    
     setFormData(prev => ({ ...prev, [name]: value }));
     
     // Очищаем ошибку для этого поля
@@ -64,8 +97,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         return !emailRegex.test(v) ? 'Некорректный формат email' : '';
       
       case 'phoneNumber':
-        if (v && !/^\+?[1-9]\d{10,14}$/.test(v.replace(/\s/g, ''))) {
-          return 'Некорректный формат телефона';
+        if (v && !/^\+77\d{9}$/.test(v)) {
+          return 'Формат: +77XXXXXXXXX (12 символов)';
         }
         return '';
       
@@ -89,8 +122,21 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     }
   };
 
-  const handleBlur = (field: string) => {
+  const handleBlur = async (field: string) => {
     const error = validateField(field, formData[field as keyof ProfileFormData]);
+    
+    // Специальная проверка для username
+    if (field === 'username' && !error && formData.username !== initialData.username) {
+      setIsCheckingUsername(true);
+      const isAvailable = await checkUsernameAvailability(formData.username);
+      setIsCheckingUsername(false);
+      
+      if (!isAvailable) {
+        setLocalErrors(prev => ({ ...prev, username: 'Этот username уже занят' }));
+        return;
+      }
+    }
+    
     setLocalErrors(prev => ({ ...prev, [field]: error }));
   };
 
@@ -108,6 +154,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     // Дополнительная проверка паролей
     if (formData.newPassword && !formData.currentPassword) {
       errors.currentPassword = 'Введите текущий пароль для смены';
+    }
+
+    // Проверяем username если он изменился
+    if (formData.username !== initialData.username && !errors.username) {
+      setIsCheckingUsername(true);
+      const isAvailable = await checkUsernameAvailability(formData.username);
+      setIsCheckingUsername(false);
+      
+      if (!isAvailable) {
+        errors.username = 'Этот username уже занят';
+      }
     }
 
     setLocalErrors(errors);
@@ -136,10 +193,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             onChange={handleChange}
             onBlur={() => handleBlur('username')}
             className={getFieldError('username') ? styles.inputError : ''}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isCheckingUsername}
             required
             placeholder="Уникальное имя пользователя"
           />
+          {isCheckingUsername && (
+            <span className={styles.checkingText}>Проверяем доступность...</span>
+          )}
           {getFieldError('username') && (
             <span className={styles.errorText}>{getFieldError('username')}</span>
           )}
@@ -207,13 +267,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             onChange={handleChange}
             onBlur={() => handleBlur('phoneNumber')}
             className={getFieldError('phoneNumber') ? styles.inputError : ''}
-            placeholder="+7 XXX XXX XX XX"
+            placeholder="+77712575704"
             disabled={isSubmitting}
+            maxLength={12}
           />
           {getFieldError('phoneNumber') && (
             <span className={styles.errorText}>{getFieldError('phoneNumber')}</span>
           )}
         </div>
+
         <div className={styles.formGroup}>
           <label htmlFor="city">Город</label>
           <CitySelect
@@ -306,7 +368,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           <button
             type="submit"
             className={styles.saveBtn}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isCheckingUsername}
           >
             {isSubmitting ? 'Сохранение...' : 'Сохранить изменения'}
           </button>

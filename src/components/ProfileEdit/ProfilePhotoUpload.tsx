@@ -38,7 +38,7 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({ photoUrl, onPho
     <div className={styles.profilePhoto}>
       <div className={styles.photoContainer}>
         <img 
-          src={photoUrl || "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg"} 
+          src={photoUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDwmG52pVI5JZfn04j9gdtsd8pAGbqjjLswg&s"} 
           alt="Фото профиля" 
         />
         <div 

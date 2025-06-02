@@ -274,3 +274,228 @@
 .manageButton:hover {
     background-color: #4f46e5;
 }
+
+.manageButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* === СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА === */
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+    padding: 24px 24px 0 24px;
+    text-align: center;
+    position: relative;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    color: #6b7280;
+}
+
+.closeBtn:hover {
+    background-color: #f3f4f6;
+}
+
+.closeBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.modalHeader h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #1f2937;
+}
+
+.modalHeader p {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.modalBody {
+    padding: 24px;
+}
+
+.subscriptionPrice {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.price {
+    font-size: 48px;
+    font-weight: 700;
+    color: #6366f1;
+}
+
+.currency {
+    font-size: 18px;
+    color: #6b7280;
+    margin-left: 8px;
+}
+
+.benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.benefitItem {
+    display: flex;
+    align-items: center;
+}
+
+.checkIcon {
+    width: 24px;
+    height: 24px;
+    background-color: #10b981;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.benefitItem span:nth-child(2) {
+    flex: 1;
+    font-size: 16px;
+    color: #374151;
+}
+
+.badgeHighlight {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.modalFooter {
+    padding: 0 24px 24px 24px;
+    text-align: center;
+}
+
+.subscribeBtn {
+    width: 100%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-bottom: 12px;
+}
+
+.subscribeBtn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.subscribeBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.loaderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    animation: spin 1s linear infinite;
+}
+
+.spinnerTrack {
+    opacity: 0.25;
+}
+
+.spinnerPath {
+    opacity: 0.75;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.modalFooter p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Дополнительные стили для состояний подписки */
+.subscribeBtn.cancelSubscription {
+    background: #ef4444;
+}
+
+.subscribeBtn.cancelSubscription:hover:not(:disabled) {
+    background: #dc2626;
+}
+
+/* Стили загрузки */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}

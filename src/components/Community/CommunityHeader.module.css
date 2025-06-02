@@ -1,71 +1,297 @@
+/* components/Community/CommunityHeader.module.css */
+
 .communityHeader {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 30px;
-  }
-  
-  .avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 15px;
-    overflow: hidden;
-    background-color: #e0e0e0;
-    flex-shrink: 0;
-  }
-  
-  .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .info {
-    flex: 1;
-  }
-  
-  .name {
-    font-size: 2rem;
-    color: #ff6b9d;
-    margin-bottom: 10px;
-  }
-  
-  .meta {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-    color: #8a8a8a;
-  }
-  
-  .meta div {
-    display: flex;
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.coverImage {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.coverImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.headerContent {
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 4px solid var(--white);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-top: -60px; /* Поднимаем аватар над обложкой */
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gray-dark);
+  margin: 0 0 15px 0;
+  line-height: 1.2;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gray-medium);
+  font-size: 14px;
+}
+
+.metaItem svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.description {
+  margin-bottom: 25px;
+}
+
+.description p {
+  color: var(--gray-dark);
+  line-height: 1.6;
+  margin: 0 0 10px 0;
+}
+
+.content {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--gray-light);
+}
+
+.content p {
+  color: var(--gray-medium);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Контейнер для всех кнопок действий */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Кнопки для автора */
+.authorActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.createEventButton {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.createEventButton:hover:not(:disabled) {
+  background: #38a169;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(56, 161, 105, 0.3);
+}
+
+.editCommunityButton {
+  background: var(--gray-medium);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editCommunityButton:hover:not(:disabled) {
+  background: #4a5568;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(74, 85, 104, 0.3);
+}
+
+/* Основная кнопка вступления */
+.joinButton {
+  background: var(--pink-primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.joinButton:hover:not(:disabled) {
+  background: var(--pink-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 152, 0.3);
+}
+
+.joinButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.memberButton {
+  background: var(--gray-medium);
+  color: white;
+}
+
+.memberButton:hover:not(:disabled) {
+  background: var(--danger);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.buttonLoading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
     align-items: center;
-    gap: 5px;
+    text-align: center;
+    padding: 15px;
   }
-  
-  .description {
-    line-height: 1.6;
-    margin-bottom: 20px;
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
   }
-  
+
+  .name {
+    font-size: 24px;
+  }
+
+  .meta {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .metaItem {
+    font-size: 13px;
+  }
+
+  .authorActions {
+    justify-content: center;
+  }
+
   .joinButton {
-    background-color: #ff6b9d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width: 160px;
+    font-size: 15px;
   }
-  
-  .joinButton:hover {
-    background-color: #e05a89;
+
+  .createEventButton,
+  .editCommunityButton {
+    font-size: 13px;
+    padding: 8px 12px;
   }
-  
-  @media (max-width: 768px) {
-    .communityHeader {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+}
+
+@media (max-width: 480px) {
+  .meta {
+    flex-direction: column;
+    gap: 10px;
   }
+
+  .coverImage {
+    height: 150px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+  }
+
+  .name {
+    font-size: 20px;
+  }
+
+  .authorActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .createEventButton,
+  .editCommunityButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .joinButton {
+    width: 100%;
+    min-width: auto;
+  }
+}

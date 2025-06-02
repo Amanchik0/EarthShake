@@ -6,12 +6,25 @@ import { EventDetails } from '../../types/event';
 
 interface EventCardProps {
   event: EventDetails;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, isSelected = false, onSelect }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
+    // Если есть обработчик выбора, используем его
+    if (onSelect) {
+      onSelect();
+    } else {
+      // Иначе переходим к детальной странице
+      navigate(`/events/${event.id}`);
+    }
+  };
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigate(`/events/${event.id}`);
   };
 
@@ -65,7 +78,8 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       'образование': '📚',
       'развлечения': '🎪',
       'искусство': '🎨',
-      'спорт': '⚽'
+      'спорт': '⚽',
+      'технологии': '💻'
     };
     
     const primaryTag = event.type || (event.tags && event.tags.length > 0 ? event.tags[0] : '');
@@ -77,8 +91,37 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     return event.usersIds.length;
   };
 
+  // Функция для получения средней оценки из массива оценок
+  const getAverageRating = () => {
+    if (!event.score) return 0;
+    
+    if (Array.isArray(event.score)) {
+      if (event.score.length === 0) return 0;
+      
+      const total = event.score.reduce((sum, scoreObj) => {
+        // Поддержка разных форматов: {username: rating} или {username: "name", rating: number}
+        const rating = Object.values(scoreObj).find(val => typeof val === 'number') || 0;
+        return sum + rating;
+      }, 0);
+      
+      return total / event.score.length;
+    }
+    
+    if (typeof event.score === 'number') {
+      return event.score;
+    }
+    
+    return 0;
+  };
+
+  const averageRating = getAverageRating();
+  const scoresCount = Array.isArray(event.score) ? event.score.length : 0;
+
   return (
-    <div className={styles.card} onClick={handleCardClick}>
+    <div 
+      className={`${styles.card} ${isSelected ? styles.selectedEvent : ''}`} 
+      onClick={handleCardClick}
+    >
       <div className={styles.image}>
         <img 
           src={getImageUrl()} 
@@ -124,12 +167,17 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         
         <div className={styles.footer}>
           <div className={styles.leftSection}>
-            {event.rating && event.rating > 0 && (
+            {averageRating > 0 && (
               <div className={styles.rating}>
                 <div className={styles.stars}>{renderStars()}</div>
                 <span className={styles.ratingNumber}>
-                  {event.rating.toFixed(1)}
+                  {averageRating.toFixed(1)}
                 </span>
+                {scoresCount > 0 && (
+                  <span className={styles.ratingCount}>
+                    ({scoresCount})
+                  </span>
+                )}
               </div>
             )}
             
@@ -155,12 +203,9 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             
             <button 
               className={styles.button}
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log('View event:', event.id);
-              }}
+              onClick={handleViewDetails}
             >
-              {getParticipantsCount() > 0 ? 'Присоединиться' : 'Подробнее'}
+              Подробнее
             </button>
           </div>
         </div>

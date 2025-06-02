@@ -25,6 +25,7 @@ const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // состояние бургера
 
   // Загружаем профиль пользователя для получения фотографии
   useEffect(() => {
@@ -82,7 +83,7 @@ const Header: React.FC = () => {
       return userProfile.imageUrl;
     }
     // Дефолтная картинка
-    return "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg";
+    return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDwmG52pVI5JZfn04j9gdtsd8pAGbqjjLswg&s";
   };
 
   return (
@@ -100,14 +101,22 @@ const Header: React.FC = () => {
             <span className={styles.headerLogoText}>CityVora</span>
           </Link>
 
-          <nav>
+          {/* Бургер кнопка */}
+          <button className={styles.burgerButton} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <span className={styles.burgerLine}></span>
+            <span className={styles.burgerLine}></span>
+            <span className={styles.burgerLine}></span>
+          </button>
+
+          <nav className={`${styles.headerNav} ${isMenuOpen ? styles.menuOpen : ''}`}>
             <ul className={styles.headerNavMenu}>
-              {['/', '/events', '/communities', '/reference', '/support'].map((path, idx) => {
-                const labels = ['Главная', 'События', 'Сообщества', 'Гайдлайны', 'Поддержка'];
+              {['/', '/events', '/communities', '/news', '/support'].map((path, idx) => {
+                const labels = ['Главная', 'События', 'Сообщества', 'Новости', 'Поддержка'];
                 return (
                   <li key={path} className={styles.headerNavItem}>
                     <NavLink
                       to={path}
+                      onClick={() => setIsMenuOpen(false)}
                       className={({ isActive }) =>
                         isActive
                           ? `${styles.headerNavLink} ${styles.headerNavLinkActive}`
@@ -135,8 +144,7 @@ const Header: React.FC = () => {
                         alt="Profile"
                         className={styles.headerProfileAvatar}
                         onError={(e) => {
-                          // Fallback если изображение не загрузилось
-                          e.currentTarget.src = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg";
+                          e.currentTarget.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDwmG52pVI5JZfn04j9gdtsd8pAGbqjjLswg&s";
                         }}
                       />
                     )}

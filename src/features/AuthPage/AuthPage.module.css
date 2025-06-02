@@ -258,3 +258,88 @@
         gap: 0;
     }
 }
+.inputChecking {
+    border-color: var(--pink-primary);
+    background-color: rgba(255, 107, 152, 0.05);
+}
+
+.inputValid {
+    border-color: var(--success);
+    background-color: rgba(52, 199, 89, 0.05);
+}
+
+.inputInvalid {
+    border-color: var(--error);
+    background-color: rgba(255, 59, 48, 0.05);
+}
+
+/* Индикаторы проверки */
+.checkingIndicator,
+.availabilityIndicator {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.checkIcon,
+.crossIcon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Сообщение об успешной проверке */
+.successMessage {
+    color: var(--success);
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Обновление для inputWithIcon чтобы учесть индикаторы */
+.inputWithIcon {
+    position: relative;
+}
+
+.inputWithIcon .input {
+    padding-left: 45px;
+    padding-right: 45px; /* Добавляем место для индикаторов справа */
+}
+
+/* Обновление для password input */
+.passwordInput .input {
+    padding-right: 45px;
+}
+
+/* Медиа запросы для мобильных устройств */
+@media (max-width: 480px) {
+    .inputWithIcon .input {
+        padding-right: 40px;
+    }
+    
+    .passwordInput .input {
+        padding-right: 40px;
+    }
+    
+    .checkingIndicator,
+    .availabilityIndicator {
+        right: 12px;
+    }
+}

@@ -26,14 +26,12 @@ const CitySelect: React.FC<CitySelectProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  // Обновляем список городов при изменении поискового запроса
   useEffect(() => {
     const filtered = searchCities(searchQuery);
     setFilteredCities(filtered);
     setHighlightedIndex(-1);
   }, [searchQuery]);
 
-  // Закрываем список при клике вне компонента
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -55,7 +53,6 @@ const CitySelect: React.FC<CitySelectProps> = ({
     const query = e.target.value;
     setSearchQuery(query);
     
-    // Если пользователь очистил поле, сбрасываем значение
     if (!query) {
       onChange('');
     }
@@ -107,7 +104,6 @@ const CitySelect: React.FC<CitySelectProps> = ({
     }
   };
 
-  // Скроллим к выделенному элементу
   useEffect(() => {
     if (highlightedIndex >= 0 && listRef.current) {
       const highlightedElement = listRef.current.children[highlightedIndex] as HTMLElement;
@@ -122,10 +118,7 @@ const CitySelect: React.FC<CitySelectProps> = ({
   return (
     <div className={styles.citySelect} ref={containerRef}>
       <div className={styles.inputWrapper}>
-        {/* <svg className={styles.inputIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7A7A7A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg> */}
+
         <input
           ref={inputRef}
           type="text"

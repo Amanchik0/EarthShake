@@ -1,7 +1,7 @@
 import React from 'react';
 import HeroSection from '../../components/Support/HeroSection';
 import SupportGrid from '../../components/Support/SupportGrid';
-import FAQSection from '../../components/Support/FAQSection';
+// import FAQSection from '../../components/Support/FAQSection';
 import styles from './SupportPage.module.css';
 
 const SupportPage: React.FC = () => {
@@ -10,7 +10,7 @@ const SupportPage: React.FC = () => {
       <HeroSection styles={styles} />
       <main className={styles.container}>
         <SupportGrid styles={styles} />
-        <FAQSection styles={styles} />
+        {/* <FAQSection styles={styles} /> */}
       </main>
     </div>
   );

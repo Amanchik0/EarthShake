@@ -118,3 +118,30 @@
   .footerBottomLink:hover {
     color: white;
   }
+  @media (max-width: 768px) {
+    .footerContent {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  
+    .footerLogo {
+      justify-content: center;
+    }
+  
+    .footerDescription {
+      text-align: center;
+    }
+  
+    .footerSocialLinks {
+      justify-content: center;
+    }
+  
+    .footerBottom {
+      align-items: center;
+      text-align: center;
+    }
+  
+    .footerBottomLinks {
+      justify-content: center;
+    }
+  }

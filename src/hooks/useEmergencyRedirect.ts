@@ -8,7 +8,7 @@ export function useEmergencyRedirect() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const data = { emergency: false }; // В будущем можно заменить на fetch('/emergency')
+      const data = { emergency: false }; 
       setIsEmergency(data.emergency);
 
       const allowed = ['/emergency', '/reference', '/evacuation', '/support'];

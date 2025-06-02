@@ -1,251 +1,408 @@
-:root {
-  --alert-red: #ff3b30;
-  --alert-red-light: #ff6b61;
-  --alert-red-dark: #d32f2f;
-  --alert-yellow: #ffcc00;
-  --alert-green: #34c759;
-  --dark-text: #1a1a1a;
-  --light-text: #ffffff;
-  --border-color: #ff6b61;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
-}
-
+/* src/features/Emergency/EmergencyNotification.module.css */
 .alertContainer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  background-color: var(--alert-red);
-  color: var(--light-text);
-  animation: pulse 2s infinite alternate;
-  overflow: hidden;
-}
-
-@keyframes pulse {
-  0% {
-    background-color: var(--alert-red);
-  }
-  100% {
-    background-color: var(--alert-red-dark);
-  }
+  padding: 20px;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .alertHeader {
   text-align: center;
-  margin-bottom: 20px;
-  width: 90%;
+  margin-bottom: 40px;
+  border-top: 6px solid #dc2626;
+  padding-top: 30px;
   max-width: 800px;
+  width: 100%;
 }
 
 .alertIcon {
-  width: 45px;
-  height: 45px;
-  margin: 0 auto 8px;
-  animation: blink 1s infinite alternate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
 }
 
-@keyframes blink {
-  0% {
-    opacity: 0.7;
-  }
-  100% {
-    opacity: 1;
-  }
+.emergencyIcon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+}
+
+.alertIcon svg {
+  width: 64px;
+  height: 64px;
+  color: #dc2626;
+  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.3));
 }
 
 .alertTitle {
-  font-size: 1.65rem;
+  font-size: 2.5rem;
   font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0 0 15px 0;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
 }
 
 .alertSubtitle {
-  font-size: 1.1rem;
-  margin-bottom: 6px;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 0 0 20px 0;
+  color: #e5e5e5;
+  line-height: 1.4;
 }
 
 .alertTime {
-  font-size: 0.9rem;
-  color: var(--alert-yellow);
+  font-size: 1rem;
+  color: #b0b0b0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.alertLocation {
+  font-size: 1rem;
+  color: #fbbf24;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-top: 10px;
 }
 
 .alertContent {
-  background-color: rgba(255, 255, 255, 0.15);
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 40px;
   backdrop-filter: blur(10px);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 15px;
-  width: 90%;
-  max-width: 550px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .alertMessage {
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin-bottom: 16px;
+  margin-bottom: 30px;
 }
 
 .alertMessage p {
-  margin-bottom: 8px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #e5e5e5;
 }
 
 .guidelines {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 30px;
 }
 
 .guidelines h3 {
-  font-size: 1rem;
-  margin-bottom: 10px;
-  color: var(--alert-yellow);
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-weight: 700;
+  border-bottom: 2px solid #dc2626;
+  padding-bottom: 8px;
 }
 
 .guidelines ul {
-  list-style-type: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .guidelines li {
-  margin-bottom: 6px;
-  padding-left: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  line-height: 1.4;
+  border-left: 4px solid #dc2626;
+  color: #e5e5e5;
   position: relative;
-  font-size: 0.85rem;
 }
 
-.guidelines li:before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: var(--alert-yellow);
+.guidelines li::before {
+  content: "•";
+  color: #dc2626;
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.contacts {
+  margin-bottom: 30px;
+}
+
+.contacts h3 {
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-weight: 700;
+  border-bottom: 2px solid #059669;
+  padding-bottom: 8px;
+}
+
+.contactsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contactLink {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.contactLink:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+}
+
+.evacuationInfo {
+  margin-bottom: 30px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.evacuationInfo h3 {
+  color: #60a5fa;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.evacuationInfo p {
+  color: #e5e5e5;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .actionButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 30px;
 }
 
 .actionButton {
-  border: none;
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.actionButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.actionButton:active {
+  transform: translateY(-1px);
+}
+
+.referenceBtn {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.referenceBtn:hover {
+  background: linear-gradient(135deg, #5b21b6, #4c1d95);
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+}
+
+.evacuationBtn {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-color: rgba(220, 38, 38, 0.5);
+}
+
+.evacuationBtn:hover {
+  background: linear-gradient(135deg, #991b1b, #7f1d1d);
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+}
+
+.supportBtn {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: rgba(5, 150, 105, 0.5);
+}
+
+.supportBtn:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+}
+
+.actionButton span {
+  flex: 1;
   text-align: left;
 }
 
-.actionButton svg {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  flex-shrink: 0;
+.arrow {
+  width: 24px;
+  height: 24px;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
 }
 
-.actionButton .arrow {
-  width: 20px;
-  height: 20px;
-  margin-left: 8px;
-  flex-shrink: 0;
-}
-
-.evacuationMapBtn {
-  background-color: var(--alert-yellow);
-  color: var(--dark-text);
-}
-
-.evacuationMapBtn:hover {
-  background-color: #ffd633;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.evacuationPointsBtn {
-  background-color: var(--alert-green);
-  color: var(--dark-text);
-}
-
-.evacuationPointsBtn:hover {
-  background-color: #40d366;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+.actionButton:hover .arrow {
+  transform: translateX(4px);
 }
 
 .footer {
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
+  margin-top: 40px;
+  text-align: center;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #9ca3af;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  max-width: 900px;
+  width: 100%;
 }
 
+.footer p {
+  margin: 5px 0;
+}
+
+.dataInfo {
+  font-size: 0.8rem;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Анимации */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alertContent {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.actionButton {
+  animation: slideInUp 0.8s ease-out;
+}
+
+.actionButton:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.actionButton:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+/* Мобильная адаптация */
 @media (max-width: 768px) {
+  .alertContainer {
+    padding: 15px;
+  }
+
   .alertTitle {
-    font-size: 1.3rem;
+    font-size: 2rem;
   }
-  
+
   .alertSubtitle {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
-  
-  .alertIcon {
-    width: 40px;
-    height: 40px;
-  }
-  
+
   .alertContent {
-    padding: 12px;
+    padding: 25px 20px;
   }
-  
+
   .actionButtons {
-    flex-direction: column;
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
-  
+
   .actionButton {
-    width: 100%;
-    padding: 8px 12px;
-    font-size: 0.85rem;
+    padding: 16px 20px;
+    font-size: 1rem;
   }
-  
-  .alertMessage {
-    font-size: 0.85rem;
+
+  .contactsList {
+    flex-direction: column;
   }
-  
-  .guidelines h3 {
-    font-size: 0.9rem;
+
+  .emergencyIcon {
+    font-size: 36px;
   }
-  
+
+  .alertIcon svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .alertTitle {
+    font-size: 1.7rem;
+  }
+
+  .alertSubtitle {
+    font-size: 1rem;
+  }
+
+  .alertContent {
+    padding: 20px 15px;
+  }
+
   .guidelines li {
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-    padding-left: 12px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .actionButton {
+    padding: 14px 16px;
+    font-size: 0.95rem;
   }
 }

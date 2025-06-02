@@ -189,33 +189,57 @@
   align-items: center;
   gap: 16px;
 }
+.burgerButton {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 11;
+}
 
-/* Адаптивность */
+.burgerLine {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
 @media (max-width: 768px) {
+  .burgerButton {
+    display: flex;
+  }
+
+  .headerNav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 10;
+    padding: 20px 0;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid #eee;
+  }
+
+  .menuOpen {
+    display: flex;
+  }
+
   .headerNavMenu {
-    display: none;
+    flex-direction: column;
+    gap: 10px;
   }
-  
-  .headerUserInfo {
-    display: none;
-  }
-  
-  .headerLogoutButton {
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-  
-  .headerLogoutButton span {
-    display: none;
-  }
-  
-  .headerProfileAvatar {
-    width: 32px;
-    height: 32px;
-  }
-  
-  .headerAvatarSkeleton {
-    width: 32px;
-    height: 32px;
+
+  .headerActions {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
   }
 }

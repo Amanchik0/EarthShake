@@ -1,603 +1,865 @@
-:root {
-  --primary: #e11d48;
-  --primary-light: #fecdd3;
-  --secondary: #a1a1aa;
-  --dark-gray: #4b5563;
-  --light-gray: #f3f4f6;
-  --white: #ffffff;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --safe: #10b981;
-}
-
+/* src/features/Evacuation/EvacuationPage.module.css */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   padding: 20px;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 0;
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--primary-light);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 24px;
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 20px 0;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .alertStatus {
   display: flex;
   align-items: center;
-  text-align: center;
-  gap: 8px;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  padding: 8px 16px;
-  border-radius: 24px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.active {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: var(--danger);
-}
-
-.nav {
-  display: flex;
-  gap: 32px;
-}
-
-.navLink {
-  color: var(--dark-gray);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.navLink:hover, .activeNavLink {
-  color: var(--primary);
-}
-
-.pageTitle {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: var(--dark-gray);
-}
-
-.pageDescription {
-  font-size: 16px;
-  color: var(--secondary);
-  max-width: 800px;
-  margin-bottom: 32px;
-  line-height: 1.6;
-}
-
-.emergencyBanner {
-  background: linear-gradient(to right, var(--primary), #be123c);
-  color: white;
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.emergencyBannerContent {
-  flex: 1;
-}
-
-.emergencyBanner h2 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.emergencyBanner p {
-  max-width: 600px;
-  opacity: 0.9;
-}
-
-.emergencyNumber {
-  display: flex;
-  align-items: center;
+  justify-content: center;
   gap: 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 12px 20px;
-  border-radius: 8px;
-}
-
-.emergencyNumberLabel {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.emergencyNumberValue {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.mapContainer {
-  background-color: var(--white);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 24px;
-  margin-bottom: 32px;
-}
-
-.mapHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.mapTitle {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.mapActions {
-  display: flex;
-  gap: 8px;
-}
-
-.actionBtn {
-  background-color: var(--white);
-  border: 1px solid var(--light-gray);
-  color: var(--dark-gray);
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.actionBtn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.primaryBtn {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.primaryBtn:hover {
-  background-color: #be123c;
-}
-
-.mapArea {
-  height: 400px;
-  background-color: #eee;
+  padding: 16px 24px;
   border-radius: 12px;
-  position: relative;
-  overflow: hidden;
+  margin: 20px auto;
+  max-width: 800px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: pulse 2s infinite;
 }
 
-.mapArea img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.mapMarker {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  transform: translate(-50%, -100%);
-}
-
-.shelterMarker {
-  color: var(--safe);
-}
-
-.medicalMarker {
-  color: var(--primary);
-}
-
-.foodMarker {
-  color: var(--warning);
-}
-
-.mapLegend {
-  display: flex;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--dark-gray);
-}
-
-.legendColor {
+.alertStatus span:first-child {
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  animation: blink 1.5s infinite;
 }
 
-.shelterColor {
-  background-color: var(--safe);
+.emergencyType {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-.medicalColor {
-  background-color: var(--primary);
+/* Уровни опасности */
+.high {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  border: 2px solid #7f1d1d;
 }
 
-.foodColor {
-  background-color: var(--warning);
+.high span:first-child {
+  background: #fee2e2;
+}
+
+.medium {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: 2px solid #92400e;
+}
+
+.medium span:first-child {
+  background: #fef3c7;
+}
+
+.low {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  border: 2px solid #065f46;
+}
+
+.low span:first-child {
+  background: #d1fae5;
+}
+
+.pageDescription {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #64748b;
+  margin: 0 auto 30px auto;
+  max-width: 800px;
+  line-height: 1.6;
 }
 
 .gridContainer {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 24px;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .evacuationList {
-  background-color: var(--white);
+  background: white;
   border-radius: 16px;
-  box-shadow: var(--shadow);
   padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
 }
 
 .evacuationHeader {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .evacuationTitle {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 .evacuationSearch {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background-color: var(--light-gray);
-  border-radius: 8px;
-  padding: 0 12px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  gap: 12px;
+  min-width: 300px;
+  transition: border-color 0.3s ease;
+}
+
+.evacuationSearch:focus-within {
+  border-color: #3b82f6;
 }
 
 .evacuationSearch input {
-  background: transparent;
   border: none;
+  background: transparent;
   outline: none;
-  padding: 12px 8px;
-  width: 200px;
-  color: var(--dark-gray);
+  flex: 1;
+  font-size: 1rem;
+  color: #475569;
+}
+
+.evacuationSearch input::placeholder {
+  color: #94a3b8;
+}
+
+.sectionHeader {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid #7f1d1d;
+}
+
+.sectionHeader h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.sectionHeader p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
 }
 
 .locationCards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
-}
-
-.locationCard {
-  border: 1px solid var(--light-gray);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.locationCard:hover {
-  box-shadow: var(--shadow);
-  transform: translateY(-4px);
-}
-
-.locationType {
-  padding: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.shelterType {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: var(--safe);
-}
-
-.medicalType {
-  background-color: rgba(225, 29, 72, 0.1);
-  color: var(--primary);
-}
-
-.foodType {
-  background-color: rgba(245, 158, 11, 0.1);
-  color: var(--warning);
-}
-
-.locationBadge {
-  background-color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.locationInfo {
-  padding: 16px;
-}
-
-.locationName {
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.locationAddress {
-  color: var(--secondary);
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.locationStatus {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-.statusIndicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.openStatus {
-  background-color: var(--safe);
-}
-
-.fullStatus {
-  background-color: var(--danger);
-}
-
-.limitedStatus {
-  background-color: var(--warning);
-}
-
-.locationCapacity {
-  font-size: 13px;
-  color: var(--secondary);
-  margin-bottom: 16px;
-}
-
-.capacityBar {
-  width: 100%;
-  height: 6px;
-  background-color: var(--light-gray);
-  border-radius: 3px;
-  margin-top: 4px;
-  overflow: hidden;
-}
-
-.capacityProgress {
-  height: 100%;
-  border-radius: 3px;
-}
-
-.lowCapacity {
-  background-color: var(--safe);
-  width: 30%;
-}
-
-.mediumCapacity {
-  background-color: var(--warning);
-  width: 65%;
-}
-
-.highCapacity {
-  background-color: var(--danger);
-  width: 90%;
-}
-
-.locationActions {
-  display: flex;
-  gap: 8px;
-}
-
-.sidebarCard {
-  background-color: var(--white);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.sidebarTitle {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.infoList {
-  list-style: none;
-}
-
-.infoItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.infoItem:last-child {
-  border-bottom: none;
-}
-
-.infoIcon {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.infoContent {
-  flex: 1;
-}
-
-.infoTitle {
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.infoText {
-  font-size: 14px;
-  color: var(--secondary);
-}
-
-.checklistItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.checklistItem:last-child {
-  border-bottom: none;
-}
-
-.checklistCheckbox {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--primary-light);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  cursor: pointer;
-}
-
-.checklistText {
-  flex: 1;
-}
-
-.notificationItem {
-  display: flex;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.notificationItem:last-child {
-  border-bottom: none;
-}
-
-.notificationIcon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.notificationContent {
-  flex: 1;
-}
-
-.notificationTitle {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.notificationText {
-  font-size: 14px;
-  color: var(--secondary);
-  margin-bottom: 8px;
-}
-
-.notificationTime {
-  font-size: 12px;
-  color: var(--secondary);
-}
-
-.backButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--dark-gray);
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.eventTag {
-  padding: 6px 12px;
-  border-radius: 16px;
-  background-color: var(--secondary);
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.emergencyTag {
-  background-color: var(--danger);
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
+  gap: 24px;
 }
 
-@media (max-width: 992px) {
+.emergencyContacts {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.emergencyContacts h3 {
+  color: #dc2626;
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emergencyContacts h3::before {
+  content: "🚨";
+  font-size: 1.1rem;
+}
+
+.contactsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contactLink {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  text-decoration: none;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.contactLink:hover {
+  background: linear-gradient(135deg, #991b1b, #7f1d1d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+}
+
+/* Анимации */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 1024px) {
   .gridContainer {
     grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .evacuationHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .evacuationSearch {
+    min-width: auto;
   }
 }
 
 @media (max-width: 768px) {
-  .locationCards {
-    grid-template-columns: 1fr;
+  .container {
+    padding: 15px;
   }
   
-  .emergencyBanner {
+  .pageTitle {
+    font-size: 2rem;
+  }
+  
+  .evacuationList,
+  .emergencyContacts {
+    padding: 20px;
+  }
+  
+  .alertStatus {
     flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
+    text-align: center;
+    gap: 8px;
   }
   
-  .nav {
-    display: none;
+  .evacuationTitle {
+    font-size: 1.3rem;
   }
 }
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 1.7rem;
+  }
+  
+  .evacuationList,
+  .emergencyContacts {
+    padding: 16px;
+  }
+  
+  .evacuationSearch {
+    padding: 10px 14px;
+  }
+  
+  .contactLink {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+/* src/components/Evacuation/EmergencyBanner.module.css */
+.banner {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.critical {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-color: #7f1d1d;
+  animation: criticalPulse 2s infinite;
+}
+
+.high {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #92400e;
+}
+
+.medium {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #1d4ed8;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.iconContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  font-size: 3rem;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  position: relative;
+  z-index: 2;
+}
+
+.pulse {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  animation: pulse 2s infinite;
+  z-index: 1;
+}
+
+.text {
+  flex: 1;
+}
+
+.text h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.text p {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.location,
+.time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.actionBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  animation: progressSlide 3s ease-in-out infinite;
+}
+
+/* Анимации */
+@keyframes criticalPulse {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 12px 48px rgba(220, 38, 38, 0.4);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .banner {
+    padding: 20px;
+  }
+  
+  .content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .text h3 {
+    font-size: 1.3rem;
+  }
+  
+  .meta {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .icon {
+    font-size: 2.5rem;
+  }
+  
+  .pulse {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner {
+    padding: 16px;
+    margin: 16px 0;
+  }
+  
+  .text h3 {
+    font-size: 1.2rem;
+  }
+  
+  .text p {
+    font-size: 0.95rem;
+  }
+  
+  .meta {
+    font-size: 0.85rem;
+    gap: 12px;
+  }
+  
+  .actionBtn {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .icon {
+    font-size: 2rem;
+  }
+  
+  .pulse {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Режим высокого контраста */
+@media (prefers-contrast: high) {
+  .banner {
+    border: 2px solid white;
+  }
+  
+  .actionBtn {
+    border: 2px solid white;
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Режим пониженного движения */
+@media (prefers-reduced-motion: reduce) {
+  .critical {
+    animation: none;
+  }
+  
+  .pulse {
+    animation: none;
+    opacity: 0.3;
+  }
+  
+  .progressBar {
+    animation: none;
+  }
+  
+  .actionBtn:hover {
+    transform: none;
+  }
+}
+/* src/components/Evacuation/LocationCard.module.css */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.emergencyCard {
+  border: 2px solid #dc2626;
+  background: linear-gradient(135deg, #fff, #fef2f2);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.emergencyCard:hover {
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+}
+
+.emergencyBadge {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  animation: emergencyPulse 2s infinite;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.typeIcon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+}
+
+.info {
+  flex: 1;
+}
+
+.name {
+  margin: 0 0 4px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.type {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 80px;
+}
+
+.details {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address,
+.hours,
+.capacity,
+.phone,
+.coordinates {
+  font-size: 0.9rem;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.directionsBtn,
+.callBtn,
+.infoBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.directionsBtn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  flex: 1;
+}
+
+.directionsBtn:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.callBtn {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+}
+
+.callBtn:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  transform: translateY(-1px);
+}
+
+.infoBtn {
+  background: #f8fafc;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+.infoBtn:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.emergencyNote {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #991b1b;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Анимации */
+@keyframes emergencyPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .card {
+    padding: 16px;
+  }
+  
+  .header {
+    gap: 10px;
+  }
+  
+  .typeIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+  
+  .name {
+    font-size: 1.1rem;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .directionsBtn,
+  .callBtn,
+  .infoBtn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 14px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .info {
+    order: -1;
+  }
+  
+  .name {
+    font-size: 1rem;
+  }
+  
+  .type {
+    font-size: 0.85rem;
+  }
+  
+  .details {
+    gap: 6px;
+  }
+  
+  .address,
+  .hours,
+  .capacity,
+  .phone,
+  .coordinates {
+    font-size: 0.85rem;
+  }
+  
+  .emergencyBadge {
+    position: static;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+}
+
+/* Режим высокого контраста */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid #000;
+  }
+  
+  .emergencyCard {
+    border: 3px solid #dc2626;
+  }
+  
+  .status {
+    border: 1px solid #000;
+  }
+}
+
+/* Режим пониженного движения */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
+  
+  .emergencyBadge {
+    animation: none;
+  }
+  
+  .directionsBtn:hover,
+  .callBtn:hover {
+    transform: none;
+  }
+}
+

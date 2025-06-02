@@ -15,7 +15,6 @@ import styles from './EventEditPage.module.css';
 import { BackendEventData, EventUpdateData } from '../../../types/event';
 
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiYW56b24iLCJhIjoiY202cWFhNW5qMGViaDJtc2J2eXhtZTdraCJ9.V7DT16ZhFkjt88aEWYRNiw';
-const TWOGIS_API_KEY = '8b4cc23d-1ab4-4868-a785-3c14a80ead0c';
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -38,16 +37,7 @@ const EventEditPage: React.FC = () => {
   const { id: eventId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { 
-    loading, 
-    error, 
-    loadEvent, 
-    updateEvent, 
-    deleteEvent, 
-    uploadMedia, 
-    deleteMedia, 
-    clearError 
-  } = useEventAPI();
+  const { loading, error, loadEvent, updateEvent, uploadMedia, clearError } = useEventAPI();
 
   // Карта
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -67,12 +57,12 @@ const EventEditPage: React.FC = () => {
     eventTime: '',
     location: '',
     city: '',
-    coordinates: { x: 76.886, y: 43.238 }, // Алматы по умолчанию
+    coordinates: { x: 76.9050, y: 43.2370 }, // Алматы по умолчанию
     tags: [],
     mediaUrl: ''
   });
 
-  // Cleanup при размонтировании
+  // Cleanup карты при размонтировании
   useEffect(() => {
     return () => {
       if (mapRef.current) {
@@ -85,52 +75,54 @@ const EventEditPage: React.FC = () => {
   // Загрузка данных события
   useEffect(() => {
     if (eventId) {
-      console.log('🔄 useEffect: загружаем событие с ID:', eventId);
+      console.log('🔄 Загружаем событие с ID:', eventId);
       loadEventData(eventId);
     }
   }, [eventId]);
 
-  // Отслеживаем изменения formData для отладки
+  // Отслеживаем загрузку события для инициализации карты
   useEffect(() => {
-    console.log('📝 formData изменились:', formData);
-  }, [formData]);
+    if (originalEvent && formData.coordinates.x && formData.coordinates.y) {
+      console.log('🗺️ Данные события загружены, инициализируем карту');
+      // Небольшая задержка для того чтобы DOM элемент успел создаться
+      setTimeout(() => {
+        initializeMap();
+      }, 100);
+    }
+  }, [originalEvent]);
 
   const loadEventData = async (id: string) => {
     console.log('🔍 Загружаем событие с ID:', id);
     const eventData = await loadEvent(id);
     
     if (eventData) {
-      console.log('✅ Полученные данные события:', eventData);
+      console.log(' Данные события получены:', eventData);
       
-      // Проверяем, является ли текущий пользователь автором события
+      // Проверяем авторство
       const currentUser = user?.username || 'anonymous';
-      console.log('👤 Текущий пользователь:', currentUser);
-      console.log('✍️ Автор события:', eventData.author);
-      
       if (eventData.author !== currentUser) {
-        console.warn('❌ Пользователь не является автором события');
+        console.warn('Пользователь не является автором события');
         navigate('/events', { replace: true });
         return;
       }
 
       setOriginalEvent(eventData);
       
-      // Преобразуем данные с бэкенда в формат формы
+      // Преобразуем данные в формат формы
       const scheduledDate = eventData.metadata?.scheduledDate 
         ? new Date(eventData.metadata.scheduledDate) 
         : new Date(eventData.dateTime);
       
-      console.log('📅 Дата события:', scheduledDate);
-      console.log('📍 Координаты:', eventData.location);
-      console.log('🏙️ Город:', eventData.city);
-      console.log('🖼️ MediaUrl:', eventData.mediaUrl);
+      const imageUrl = Array.isArray(eventData.mediaUrl) 
+        ? (eventData.mediaUrl[0] || '') 
+        : (eventData.mediaUrl || '');
       
-      const formDataToSet = {
+      const formDataToSet: EventFormData = {
         eventName: eventData.title,
         description: eventData.description,
         content: eventData.content,
         eventType: eventData.eventType,
-        emergencyType: eventData.emergencyType,
+        emergencyType: eventData.emergencyType || null,
         eventDate: scheduledDate.toISOString().split('T')[0],
         eventTime: scheduledDate.toTimeString().slice(0, 5),
         location: eventData.metadata?.address || '',
@@ -139,201 +131,87 @@ const EventEditPage: React.FC = () => {
           x: eventData.location.x,
           y: eventData.location.y
         },
-        tags: eventData.tags,
-        mediaUrl: Array.isArray(eventData.mediaUrl) ? eventData.mediaUrl[0] || '' : eventData.mediaUrl || ''
+        tags: eventData.tags || [],
+        mediaUrl: imageUrl
       };
       
-      console.log('📝 Данные формы после преобразования:', formDataToSet);
+      console.log('📝 Устанавливаем данные формы:', formDataToSet);
       setFormData(formDataToSet);
     } else {
-      console.error('❌ Не удалось загрузить данные события');
+      console.error('Не удалось загрузить данные события');
     }
   };
 
-  // Callback ref для карты
-  const mapCallbackRef = React.useCallback((node: HTMLDivElement | null) => {
-    console.log('🗺️ Callback карты вызван:', { node: !!node, mapExists: !!mapRef.current, eventLoaded: !!originalEvent });
-    if (node && !mapRef.current && formData.coordinates.x && formData.coordinates.y) {
-      console.log('🗺️ Инициализируем карту с координатами:', formData.coordinates);
-      setTimeout(() => {
-        initializeMapFromCallback(node);
-      }, 100);
-    }
-  }, [formData.coordinates, originalEvent]);
-
   // Инициализация карты
-  const initializeMapFromCallback = (container: HTMLDivElement) => {
-    if (mapRef.current) return;
+  const initializeMap = () => {
+    if (mapRef.current || !formData.coordinates.x || !formData.coordinates.y) return;
+
+    const mapContainer = document.getElementById('event-edit-map');
+    if (!mapContainer) {
+      console.error('Контейнер карты не найден');
+      return;
+    }
 
     try {
-      console.log('🗺️ Начинаем инициализацию карты...');
-      console.log('🗺️ Координаты для карты:', formData.coordinates);
+      console.log('🗺️ Инициализируем карту с координатами:', formData.coordinates);
       
-      container.style.width = '100%';
-      container.style.height = '350px';
-      container.style.minHeight = '350px';
-      container.style.display = 'block';
-
-      const rect = container.getBoundingClientRect();
-      console.log('🗺️ Размеры контейнера:', rect);
-      
-      if (rect.width === 0 || rect.height === 0) {
-        setMapError('Контейнер карты имеет нулевые размеры');
-        setMapLoading(false);
-        return;
-      }
-
       mapRef.current = new mapboxgl.Map({
-        container: container,
+        container: mapContainer,
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [formData.coordinates.x, formData.coordinates.y],
         zoom: 12,
         attributionControl: false
       });
 
-      console.log('🗺️ Карта создана, настраиваем обработчики...');
-      setupMapHandlers();
-      
+      mapRef.current.on('load', () => {
+        console.log(' Карта загружена');
+        setMapError('');
+        setMapLoading(false);
+      });
+
+      mapRef.current.on('error', (e) => {
+        console.error('Ошибка карты:', e);
+        setMapError('Ошибка загрузки карты');
+        setMapLoading(false);
+      });
+
+      // Добавляем элементы управления
+      mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Создаем маркер
+      markerRef.current = new mapboxgl.Marker({ 
+        draggable: true,
+        color: '#FF6B98'
+      })
+        .setLngLat([formData.coordinates.x, formData.coordinates.y])
+        .addTo(mapRef.current);
+
+      // Обработчик перетаскивания маркера
+      markerRef.current.on('dragend', async () => {
+        if (markerRef.current) {
+          const lngLat = markerRef.current.getLngLat();
+          console.log('🗺️ Маркер перетащен:', lngLat);
+          await updateLocationFromCoordinates(lngLat.lng, lngLat.lat);
+        }
+      });
+
+      // Обработчик клика по карте
+      mapRef.current.on('click', async (e) => {
+        if (markerRef.current) {
+          console.log('🗺️ Клик по карте:', e.lngLat);
+          markerRef.current.setLngLat([e.lngLat.lng, e.lngLat.lat]);
+          await updateLocationFromCoordinates(e.lngLat.lng, e.lngLat.lat);
+        }
+      });
+
     } catch (error) {
-      console.error('❌ Ошибка инициализации карты:', error);
-      setMapError(`Ошибка карты: ${error instanceof Error ? error.message : String(error)}`);
+      console.error('Ошибка инициализации карты:', error);
+      setMapError('Ошибка инициализации карты');
       setMapLoading(false);
     }
   };
 
-  const setupMapHandlers = () => {
-    if (!mapRef.current) return;
-
-    console.log('🗺️ Настраиваем обработчики карты...');
-
-    mapRef.current.on('load', () => {
-      console.log('✅ Карта загружена успешно');
-      setMapError('');
-      setMapLoading(false);
-    });
-
-    mapRef.current.on('error', (e) => {
-      console.error('❌ Ошибка карты:', e);
-      setMapError(`Ошибка карты: ${e.error?.message || 'Неизвестная ошибка'}`);
-      setMapLoading(false);
-    });
-
-    mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-    console.log('🗺️ Создаем маркер на координатах:', [formData.coordinates.x, formData.coordinates.y]);
-    markerRef.current = new mapboxgl.Marker({ 
-      draggable: true,
-      color: '#FF6B98'
-    })
-      .setLngLat([formData.coordinates.x, formData.coordinates.y])
-      .addTo(mapRef.current);
-
-    markerRef.current.on('dragend', async () => {
-      if (markerRef.current) {
-        const lngLat = markerRef.current.getLngLat();
-        console.log('🗺️ Маркер перетащен на:', lngLat);
-        await updateLocationFromCoordinates(lngLat.lng, lngLat.lat);
-      }
-    });
-
-    mapRef.current.on('click', async (e) => {
-      if (markerRef.current) {
-        console.log('🗺️ Клик по карте:', e.lngLat);
-        markerRef.current.setLngLat([e.lngLat.lng, e.lngLat.lat]);
-        await updateLocationFromCoordinates(e.lngLat.lng, e.lngLat.lat);
-      }
-    });
-  };
-
-  // Обратное геокодирование через 2GIS
-  const reverseGeocode2GIS = async (lng: number, lat: number): Promise<string> => {
-    try {
-      const response = await fetch(
-        `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lng}&key=${TWOGIS_API_KEY}&fields=items.address_name,items.full_name,items.point&radius=1000`
-      );
-      
-      if (!response.ok) {
-        throw new Error(`2GIS API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-
-      if (data.result && data.result.items && data.result.items.length > 0) {
-        const item = data.result.items[0];
-        let address = '';
-        if (item.address_name) {
-          address = item.address_name;
-        } else if (item.full_name) {
-          address = item.full_name;
-        } else if (item.name) {
-          address = item.name;
-        }
-        
-        if (address) {
-          return address;
-        }
-      }
-      
-      throw new Error('No address found in 2GIS response');
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // Fallback через Mapbox
-  const reverseGeocodeMapbox = async (lng: number, lat: number): Promise<string> => {
-    try {
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&language=ru&types=address,poi,place,locality,neighborhood&limit=1&country=KZ`
-      );
-      
-      if (!response.ok) {
-        throw new Error(`Mapbox API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-
-      if (data.features && data.features.length > 0) {
-        const feature = data.features[0];
-        let addressParts: string[] = [];
-        
-        if (feature.address && feature.text) {
-          addressParts.push(`${feature.text}, ${feature.address}`);
-        } else if (feature.text) {
-          addressParts.push(feature.text);
-        }
-        
-        if (feature.context && Array.isArray(feature.context)) {
-          const city = feature.context.find((ctx: any) => ctx.id && ctx.id.includes('place'));
-          if (city && city.text) {
-            addressParts.push(city.text);
-          }
-        }
-        
-        const uniqueAddressParts = [...new Set(addressParts)];
-        return uniqueAddressParts.join(', ') || `Координаты: ${lng.toFixed(6)}, ${lat.toFixed(6)}`;
-      }
-      
-      throw new Error('No address found in Mapbox response');
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // Основная функция обратного геокодирования
-  const reverseGeocode = async (lng: number, lat: number): Promise<string> => {
-    try {
-      return await reverseGeocode2GIS(lng, lat);
-    } catch (error) {
-      try {
-        return await reverseGeocodeMapbox(lng, lat);
-      } catch (fallbackError) {
-        return `Координаты: ${lng.toFixed(6)}, ${lat.toFixed(6)}`;
-      }
-    }
-  };
-
-  // Обновление локации с получением адреса
+  // Обновление координат с получением адреса
   const updateLocationFromCoordinates = async (lng: number, lat: number) => {
     setFormData(prev => ({
       ...prev,
@@ -342,22 +220,41 @@ const EventEditPage: React.FC = () => {
     }));
     
     try {
-      const address = await reverseGeocode(lng, lat);
+      // Простое обратное геокодирование через Mapbox
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MAPBOX_TOKEN}&language=ru&limit=1&country=KZ`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.features && data.features.length > 0) {
+          const address = data.features[0].place_name || `${lng.toFixed(6)}, ${lat.toFixed(6)}`;
+          setFormData(prev => ({
+            ...prev,
+            coordinates: { x: lng, y: lat },
+            location: address
+          }));
+          return;
+        }
+      }
+      
+      // Fallback - показываем координаты
       setFormData(prev => ({
         ...prev,
         coordinates: { x: lng, y: lat },
-        location: address
+        location: `${lng.toFixed(6)}, ${lat.toFixed(6)}`
       }));
     } catch (error) {
-      console.error('Ошибка получения адреса:', error);
+      console.error('Ошибка геокодирования:', error);
       setFormData(prev => ({
         ...prev,
         coordinates: { x: lng, y: lat },
-        location: `Координаты: ${lng.toFixed(6)}, ${lat.toFixed(6)}`
+        location: `${lng.toFixed(6)}, ${lat.toFixed(6)}`
       }));
     }
   };
 
+  // Обработчики изменений формы
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -375,37 +272,53 @@ const EventEditPage: React.FC = () => {
     }));
   };
 
-  // Обработчик изменения города с геокодированием
+  // Обработчик изменения города
   const handleCityChange = (cityName: string) => {
     setFormData(prev => ({ ...prev, city: cityName }));
+    
     if (cityName) {
+      // Используем геокодирование Mapbox для получения координат города
       geocodeCity(cityName);
     }
   };
 
-  // Геокодирование города
-  const geocodeCity = async (city: string) => {
+  // Геокодирование города через Mapbox API
+  const geocodeCity = async (cityName: string) => {
     try {
+      console.log('🌍 Геокодирование города:', cityName);
+      
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(city)}.json?access_token=${MAPBOX_TOKEN}&limit=1&country=KZ`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(cityName)}.json?access_token=${MAPBOX_TOKEN}&limit=1&country=KZ&language=ru`
       );
+      
+      if (!response.ok) {
+        throw new Error(`Ошибка геокодирования: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.features && data.features.length > 0) {
         const [lng, lat] = data.features[0].center;
+        console.log('📍 Найдены координаты:', { lng, lat });
 
+        // Обновляем карту
         if (mapRef.current) {
           mapRef.current.flyTo({
             center: [lng, lat],
-            zoom: 12
+            zoom: 12,
+            duration: 2000
           });
         }
 
+        // Перемещаем маркер
         if (markerRef.current) {
           markerRef.current.setLngLat([lng, lat]);
         }
 
+        // Обновляем координаты и получаем адрес
         await updateLocationFromCoordinates(lng, lat);
+      } else {
+        console.warn('🤷 Город не найден через геокодирование');
       }
     } catch (error) {
       console.error('Ошибка геокодирования города:', error);
@@ -415,112 +328,103 @@ const EventEditPage: React.FC = () => {
   // Загрузка фото
   const handlePhotoUpload = async (file: File) => {
     setUploading(true);
-    const mediaUrl = await uploadMedia(file);
-    setUploading(false);
-    
-    if (mediaUrl) {
-      setFormData(prev => ({
-        ...prev,
-        mediaUrl
-      }));
+    try {
+      const mediaUrl = await uploadMedia(file);
+      if (mediaUrl) {
+        setFormData(prev => ({
+          ...prev,
+          mediaUrl
+        }));
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки фото:', error);
+    } finally {
+      setUploading(false);
     }
   };
 
-  // Удаление фото
+  // Удаление фото (простое - просто очищаем поле)
   const handlePhotoDelete = async () => {
-    if (!formData.mediaUrl) return;
-
-    // Извлекаем имя файла из URL
-    const fileName = formData.mediaUrl.split('/').pop();
-    if (!fileName) return;
-
-    const success = await deleteMedia(fileName);
-    if (success) {
-      setFormData(prev => ({
-        ...prev,
-        mediaUrl: ''
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      mediaUrl: ''
+    }));
   };
 
   // Сохранение события
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!originalEvent || !eventId) {
-      console.error('❌ Отсутствуют данные события или ID');
-      return;
-    }
-    
-    console.log('📤 Начинаем сохранение события...');
-    console.log('📋 Исходные данные события:', originalEvent);
-    console.log('📝 Данные формы:', formData);
-    
-    // Создаем дату и время события
-    const eventDateTime = new Date(`${formData.eventDate}T${formData.eventTime}`);
-    console.log('📅 Созданная дата/время:', eventDateTime.toISOString());
-    
-    // Формируем ПОЛНЫЙ объект с сохранением всех оригинальных данных
-    const updateData: EventUpdateData = {
-      // Берем все из оригинального события
-      id: originalEvent.id,
-      author: originalEvent.author,
-      score: originalEvent.score,
-      eventStatus: originalEvent.eventStatus,
-      usersIds: originalEvent.usersIds || [],
-      comments: originalEvent.comments || [],
-      archived: originalEvent.archived,
-      // Перезаписываем только изменяемые поля
-      eventType: formData.eventType,
-      emergencyType: formData.emergencyType,
-      title: formData.eventName,
-      description: formData.description,
-      content: formData.content,
-      city: formData.city,
-      location: {
-        x: formData.coordinates.x,
-        y: formData.coordinates.y
-      },
-      mediaUrl: formData.mediaUrl || '', // Обеспечиваем строку
-      dateTime: eventDateTime.toISOString(),
-      tags: formData.tags,
-      metadata: {
-        ...originalEvent.metadata,
-        address: formData.location,
-        scheduledDate: eventDateTime.toISOString()
-      }
-    };
+// Исправленный метод handleSubmit в EventEditPage.tsx
 
-    console.log('📤 Отправляем ПОЛНЫЕ данные для обновления события:', JSON.stringify(updateData, null, 2));
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (!originalEvent || !eventId) {
+    console.error('Отсутствуют данные события');
+    return;
+  }
+  
+  // Создаем дату события в правильном формате
+  const eventDateTime = new Date(`${formData.eventDate}T${formData.eventTime}`);
+  
+  // Формируем данные для обновления в соответствии со схемой API
+  const updateData: EventUpdateData = {
+    // Обязательные поля
+    eventType: formData.eventType,
+    emergencyType: formData.emergencyType,
+    title: formData.eventName,
+    description: formData.description,
+    content: formData.content,
+    author: originalEvent.author,
+    city: formData.city,
+    location: {
+      x: formData.coordinates.x,
+      y: formData.coordinates.y
+    },
+    mediaUrl: formData.mediaUrl ? [formData.mediaUrl] : [],
+    dateTime: eventDateTime.toISOString(),
+    tags: formData.tags,
+    usersIds: originalEvent.usersIds || [],
     
-    const success = await updateEvent(updateData);
-    if (success) {
-      console.log('✅ Событие успешно обновлено');
-      navigate(`/events/${eventId}`);
-    } else {
-      console.error('❌ Не удалось обновить событие');
-    }
+    // Дополнительные поля из оригинального события
+    score: originalEvent.score || [],
+    eventStatus: originalEvent.eventStatus || null,
+    metadata: {
+      address: formData.location,
+      scheduledDate: eventDateTime.toISOString(),
+      createdAt: originalEvent.metadata?.createdAt || new Date().toISOString(),
+      isCommunity: originalEvent.metadata?.isCommunity || "false",
+      // Сохраняем другие поля metadata
+      ...originalEvent.metadata
+    },
+    comments: originalEvent.comments || [],
+    archived: originalEvent.archived || false
   };
 
-  // Удаление события
+  console.log('📤 Отправляем данные обновления:', updateData);
+  
+  // Передаем eventId как первый параметр
+  const success = await updateEvent(eventId, updateData);
+  if (success) {
+    console.log(' Событие обновлено');
+    navigate(`/events/${eventId}`);
+  }
+};
+
+  // Удаление события (заглушка)
   const handleDelete = async () => {
     if (!window.confirm('Вы уверены, что хотите удалить это событие?')) {
       return;
     }
-
-    if (!eventId) return;
     
-    const success = await deleteEvent(eventId);
-    if (success) {
-      navigate('/events');
-    }
+    // Поскольку у нас нет API для удаления, просто переходим к списку
+    console.log('🗑️ Удаление события (заглушка)');
+    navigate('/events');
   };
 
   const handleCancel = () => {
-    navigate(-1); // Возвращаемся назад
+    navigate(-1);
   };
 
-  // Проверяем наличие eventId и авторизации
+  // Проверки
   if (!eventId) {
     return (
       <div className={styles.eventEditPage}>
@@ -540,7 +444,7 @@ const EventEditPage: React.FC = () => {
       <div className={styles.eventEditPage}>
         <div className={styles.mainContainer}>
           <div className={styles.error}>
-            <h2>Ошибка</h2>
+            <h2>Требуется авторизация</h2>
             <p>Для редактирования события необходимо войти в систему</p>
             <button onClick={() => navigate('/login')}>Войти</button>
           </div>
@@ -549,11 +453,14 @@ const EventEditPage: React.FC = () => {
     );
   }
 
-  if (loading) {
+  if (loading && !originalEvent) {
     return (
       <div className={styles.eventEditPage}>
         <div className={styles.mainContainer}>
-          <div className={styles.loading}>Загрузка...</div>
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <p>Загрузка события...</p>
+          </div>
         </div>
       </div>
     );
@@ -578,14 +485,16 @@ const EventEditPage: React.FC = () => {
       <div className={styles.mainContainer}>
         <PageHeader 
           title="Редактирование события" 
-          subtitle="Заполните все поля для обновления информации о событии" 
+          subtitle="Обновите информацию о вашем событии" 
         />
 
         <div className={styles.eventFormContainer}>
-          <form className="event-form" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
+            
+            {/* Основная информация */}
             <FormSection title="Основная информация">
               <FormGroup fullWidth>
-                <label htmlFor="eventName">Название события</label>
+                <label htmlFor="eventName">Название события *</label>
                 <input 
                   type="text" 
                   id="eventName" 
@@ -593,8 +502,9 @@ const EventEditPage: React.FC = () => {
                   value={formData.eventName} 
                   onChange={handleChange}
                   required 
+                  className={styles.input}
                 />
-                <div className={styles.hints}>Укажите краткое и информативное название</div>
+                <div className={styles.hints}>Краткое и понятное название события</div>
               </FormGroup>
               
               <EventPhoto 
@@ -605,7 +515,7 @@ const EventEditPage: React.FC = () => {
               />
               
               <FormGroup fullWidth>
-                <label htmlFor="description">Краткое описание</label>
+                <label htmlFor="description">Краткое описание *</label>
                 <textarea 
                   id="description" 
                   name="description" 
@@ -613,24 +523,27 @@ const EventEditPage: React.FC = () => {
                   value={formData.description} 
                   onChange={handleChange}
                   required 
+                  className={styles.textarea}
                 />
-                <div className={styles.hints}>Краткое описание события для предварительного просмотра</div>
+                <div className={styles.hints}>Краткое описание для карточки события</div>
               </FormGroup>
 
               <FormGroup fullWidth>
-                <label htmlFor="content">Подробное описание</label>
+                <label htmlFor="content">Подробное описание *</label>
                 <textarea 
                   id="content" 
                   name="content" 
-                  rows={5} 
+                  rows={6} 
                   value={formData.content} 
                   onChange={handleChange}
                   required 
+                  className={styles.textarea}
                 />
-                <div className={styles.hints}>Подробно опишите событие: что будет происходить, для кого оно предназначено</div>
+                <div className={styles.hints}>Детальное описание: программа, правила, требования</div>
               </FormGroup>
             </FormSection>
 
+            {/* Детали события */}
             <FormSection title="Детали события">
               <FormRow>
                 <FormGroup>
@@ -640,6 +553,7 @@ const EventEditPage: React.FC = () => {
                     name="eventType" 
                     value={formData.eventType} 
                     onChange={handleChange}
+                    className={styles.select}
                   >
                     <option value="REGULAR">Обычное</option>
                     <option value="EMERGENCY">Экстренное</option>
@@ -647,7 +561,7 @@ const EventEditPage: React.FC = () => {
                 </FormGroup>
                 
                 <FormGroup>
-                  <label htmlFor="city">Город</label>
+                  <label htmlFor="city">Город *</label>
                   <CitySelect
                     value={formData.city}
                     onChange={handleCityChange}
@@ -659,7 +573,7 @@ const EventEditPage: React.FC = () => {
               
               <FormRow>
                 <FormGroup>
-                  <label htmlFor="eventDate">Дата</label>
+                  <label htmlFor="eventDate">Дата *</label>
                   <input 
                     type="date" 
                     id="eventDate" 
@@ -667,11 +581,12 @@ const EventEditPage: React.FC = () => {
                     value={formData.eventDate} 
                     onChange={handleChange}
                     required 
+                    className={styles.input}
                   />
                 </FormGroup>
                 
                 <FormGroup>
-                  <label htmlFor="eventTime">Время начала</label>
+                  <label htmlFor="eventTime">Время *</label>
                   <input 
                     type="time" 
                     id="eventTime" 
@@ -679,6 +594,7 @@ const EventEditPage: React.FC = () => {
                     value={formData.eventTime} 
                     onChange={handleChange}
                     required 
+                    className={styles.input}
                   />
                 </FormGroup>
               </FormRow>
@@ -691,14 +607,17 @@ const EventEditPage: React.FC = () => {
                   name="tags" 
                   value={formData.tags.join(', ')} 
                   onChange={handleTagsChange}
+                  className={styles.input}
+                  placeholder="спорт, футбол, командная игра"
                 />
-                <div className={styles.hints}>Введите теги через запятую (например: музыка, развлечения, концерт)</div>
+                <div className={styles.hints}>Теги через запятую для поиска и фильтрации</div>
               </FormGroup>
             </FormSection>
 
-            <FormSection title="Локация">
+            {/* Локация */}
+            <FormSection title="Место проведения">
               <FormGroup fullWidth>
-                <label htmlFor="location">Адрес</label>
+                <label htmlFor="location">Адрес *</label>
                 <input 
                   type="text" 
                   id="location" 
@@ -706,21 +625,16 @@ const EventEditPage: React.FC = () => {
                   value={formData.location} 
                   onChange={handleChange}
                   required 
+                  className={styles.input}
+                  placeholder="Укажите точный адрес"
                 />
+                <div className={styles.hints}>Точный адрес поможет участникам найти место</div>
               </FormGroup>
               
               {/* Карта */}
               <div className={styles.mapSection}>
-                <label className={styles.label}>Место проведения события</label>
+                <label className={styles.label}>Расположение на карте</label>
                 
-                {/* Отладочная информация */}
-                <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
-                  Debug: Координаты X={formData.coordinates.x}, Y={formData.coordinates.y}, 
-                  Event loaded: {originalEvent ? 'да' : 'нет'}, 
-                  Map loading: {mapLoading ? 'да' : 'нет'}
-                </div>
-                
-                {/* Индикатор загрузки карты */}
                 {mapLoading && !mapError && (
                   <div className={styles.mapLoading}>
                     <div className={styles.spinner}></div>
@@ -728,9 +642,8 @@ const EventEditPage: React.FC = () => {
                   </div>
                 )}
                 
-                {/* Контейнер карты */}
                 <div
-                  ref={mapCallbackRef}
+                  id="event-edit-map"
                   className={styles.mapContainer}
                   style={{ 
                     display: mapError ? 'none' : 'block',
@@ -738,44 +651,18 @@ const EventEditPage: React.FC = () => {
                   }}
                 />
                 
-                {/* Ошибка карты */}
                 {mapError && (
                   <div className={styles.mapError}>
                     <p>🗺️ {mapError}</p>
-                    <p>Координаты можно ввести вручную:</p>
-                    <div className={styles.coordinatesInput}>
-                      <input
-                        type="number"
-                        placeholder="Долгота (lng)"
-                        step="any"
-                        value={formData.coordinates.x}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          coordinates: { ...prev.coordinates, x: parseFloat(e.target.value) || 0 }
-                        }))}
-                        className={styles.input}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Широта (lat)"
-                        step="any"
-                        value={formData.coordinates.y}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          coordinates: { ...prev.coordinates, y: parseFloat(e.target.value) || 0 }
-                        }))}
-                        className={styles.input}
-                      />
-                    </div>
+                    <p>Координаты: {formData.coordinates.x.toFixed(6)}, {formData.coordinates.y.toFixed(6)}</p>
                   </div>
                 )}
                 
-                {/* Выбранный адрес */}
-                {formData.location && (
-                  <div className={styles.selectedAddress}>
-                    📍 {formData.location}
-                  </div>
-                )}
+                <div className={styles.mapHints}>
+                  • Кликните по карте или перетащите маркер для выбора точного места
+                  <br />
+                  • Выбор города автоматически обновит положение карты
+                </div>
               </div>
             </FormSection>
 

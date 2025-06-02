@@ -1,9 +1,13 @@
 // features/Events/EventsListPage/EventsListPage.tsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import EventCard from '../../../components/EventList/EventCard';
 import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import ViewToggle from '../../../components/EventList/ViewToggle';
 import MapView from '../../../components/EventList/MapView';
+import CitySelect from '../../../components/CitySelect/CitySelect';
+import SubscriptionCheckModal from '../../../components/Modal/SubscriptionCheckModal';
+import { useSubscriptionCheck } from '../../../hooks/useSubscriptionCheck';
 import styles from './EventsListPage.module.css';
 import { EventDetails, BackendEventData, EventComment } from '../../../types/event';
 
@@ -58,12 +62,17 @@ const isThisMonth = (date: Date): boolean => {
 };
 
 const EventsListPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { isModalOpen, pendingNavigation, checkSubscriptionAndNavigate, closeModal } = useSubscriptionCheck();
+  
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
   const [isFullMap, setIsFullMap] = useState(false);
   const [events, setEvents] = useState<EventDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
+  // Конфигурация фильтров (без location - его заменим на CitySelect)
   const filterConfigs: FilterConfig[] = [
     {
       label: 'category',
@@ -75,6 +84,7 @@ const EventsListPage: React.FC = () => {
         { value: 'образование', label: 'Образование' },
         { value: 'развлечения', label: 'Развлечения' },
         { value: 'искусство', label: 'Искусство' },
+        { value: 'технологии', label: 'Технологии' },
       ],
     },
     {
@@ -86,21 +96,12 @@ const EventsListPage: React.FC = () => {
         { value: 'month', label: 'В этом месяце' },
       ],
     },
-    {
-      label: 'location',
-      options: [
-        { value: '', label: 'Все локации' },
-        { value: 'Almaty', label: 'Алматы' },
-        { value: 'Алматы', label: 'Алматы' },
-        { value: 'Astana', label: 'Астана' },
-      ],
-    },
   ];
 
   const [filters, setFilters] = useState<Record<string, string>>({
     category: '',
     date: '',
-    location: '',
+    location: '', // Отдельно храним выбранный город
   });
 
   // Transform backend event data to frontend format
@@ -109,13 +110,20 @@ const EventsListPage: React.FC = () => {
     const formattedDate = formatDate(backendEvent.dateTime);
     
     // Get coordinates
-    const lng = backendEvent.location.coordinates[0];
-    const lat = backendEvent.location.coordinates[1];
+    const lng = backendEvent.location.x || backendEvent.location.coordinates?.[0] || 76.9050;
+    const lat = backendEvent.location.y || backendEvent.location.coordinates?.[1] || 43.2370;
 
-    // Calculate rating from score (0-1 to 1-5 scale)
-    const rating = backendEvent.score && backendEvent.score > 0 
-      ? Math.min(5, Math.max(1, backendEvent.score * 5)) 
-      : 0;
+    // Calculate rating from score array if it exists
+    let rating = 0;
+    if (Array.isArray(backendEvent.score) && backendEvent.score.length > 0) {
+      const total = backendEvent.score.reduce((sum, scoreObj) => {
+        const scoreValue = Object.values(scoreObj).find(val => typeof val === 'number') || 0;
+        return sum + scoreValue;
+      }, 0);
+      rating = total / backendEvent.score.length;
+    } else if (typeof backendEvent.score === 'number') {
+      rating = backendEvent.score;
+    }
     
     // Transform comments from array to object format for frontend
     const transformedComments: Record<string, EventComment> = {};
@@ -128,13 +136,18 @@ const EventsListPage: React.FC = () => {
         avatarUrl: comment.avatarUrl
       };
     });
+
+    // Get first media URL
+    const imageUrl = Array.isArray(backendEvent.mediaUrl) 
+      ? backendEvent.mediaUrl[0] || '/api/placeholder/600/400'
+      : backendEvent.mediaUrl || '/api/placeholder/600/400';
     
     return {
       id: backendEvent.id,
       title: backendEvent.title,
       date: formattedDate,
       description: backendEvent.description,
-      imageUrl: backendEvent.mediaUrl,
+      imageUrl: imageUrl,
       city: backendEvent.city,
       type: backendEvent.tags?.[0] || 'general',
       rating: rating,
@@ -150,6 +163,7 @@ const EventsListPage: React.FC = () => {
       lat: lat,
       lng: lng,
       score: backendEvent.score,
+      mediaUrl: backendEvent.mediaUrl,
       dateTime: backendEvent.dateTime,
       content: backendEvent.content,
       location: {
@@ -180,14 +194,16 @@ const EventsListPage: React.FC = () => {
       const transformedEvents = data.content.map(transformEvent);
       setEvents(transformedEvents);
       
+      console.log(' События загружены:', transformedEvents.length);
+      
     } catch (err) {
-      console.error('Error fetching events:', err);
+      console.error('Ошибка загрузки событий:', err);
       setError('Не удалось загрузить события');
     } finally {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -197,6 +213,21 @@ const EventsListPage: React.FC = () => {
       ...prev,
       [filterName]: value,
     }));
+    console.log(`🔍 Фильтр изменен: ${filterName} = ${value}`);
+  };
+
+  // Обработчик изменения города через CitySelect
+  const handleCityChange = (cityName: string) => {
+    setFilters(prev => ({
+      ...prev,
+      location: cityName,
+    }));
+    console.log('🏙️ Выбран город:', cityName);
+  };
+
+  // Обработчик создания события с проверкой подписки
+  const handleCreateEvent = () => {
+    checkSubscriptionAndNavigate('event', '/events/create', navigate);
   };
 
   const toggleFullMap = () => {
@@ -208,6 +239,12 @@ const EventsListPage: React.FC = () => {
     }
   };
 
+  // Обработка выбора события
+  const handleEventSelect = (eventId: string | null) => {
+    setSelectedEventId(eventId);
+    console.log('📍 Событие выбрано:', eventId);
+  };
+
   // Apply filters
   const filteredEvents = events.filter(event => {
     // Category filter
@@ -217,8 +254,25 @@ const EventsListPage: React.FC = () => {
       if (!hasCategory) return false;
     }
     
-    // Location filter
-    if (filters.location && event.city !== filters.location) return false;
+    // Location filter (поддерживаем разные варианты названий городов)
+    if (filters.location) {
+      const cityVariants = [
+        event.city,
+        event.city?.toLowerCase(),
+        event.city === 'Алматы' ? 'Almaty' : '',
+        event.city === 'Almaty' ? 'Алматы' : '',
+        event.city === 'Астана' ? 'Astana' : '',
+        event.city === 'Astana' ? 'Астана' : '',
+        event.city === 'Астана' ? 'Нур-Султан' : '',
+      ].filter(Boolean);
+      
+      const hasMatchingCity = cityVariants.some(variant => 
+        variant.toLowerCase().includes(filters.location.toLowerCase()) ||
+        filters.location.toLowerCase().includes(variant.toLowerCase())
+      );
+      
+      if (!hasMatchingCity) return false;
+    }
     
     // Date filter
     if (filters.date) {
@@ -239,6 +293,17 @@ const EventsListPage: React.FC = () => {
     
     return true;
   });
+
+  // Очистка всех фильтров
+  const clearFilters = () => {
+    setFilters({
+      category: '',
+      date: '',
+      location: '',
+    });
+    setSelectedEventId(null);
+    console.log('🧹 Фильтры очищены');
+  };
 
   // Loading state
   if (loading) {
@@ -270,39 +335,93 @@ const EventsListPage: React.FC = () => {
     );
   }
 
+  // Найти выбранное событие для отображения
+  const selectedEvent = selectedEventId ? events.find(e => e.id === selectedEventId) : null;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>События</h1>
-        <p className={styles.subtitle}>
-          Найдено {filteredEvents.length} из {events.length} событий
-        </p>
+        <div className={styles.headerContent}>
+          <div className={styles.headerText}>
+            <h1>События</h1>
+            <p className={styles.subtitle}>
+              Найдено {filteredEvents.length} из {events.length} событий
+            </p>
+          </div>
+          <button 
+            className={styles.createEventButton}
+            onClick={handleCreateEvent}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Создать событие
+          </button>
+        </div>
       </div>
       
       <div className={styles.filterSection}>
         <div className={styles.filters}>
+          {/* Обычные фильтры */}
           {filterConfigs.map((filter) => (
             <FilterDropdown
               key={filter.label}
-              label={filter.label === 'category' ? 'Категория' : 
-                    filter.label === 'date' ? 'Дата' : 'Локация'}
+              label={filter.label === 'category' ? 'Категория' : 'Дата'}
               options={filter.options}
               value={filters[filter.label] || ''}
               onChange={(value) => handleFilterChange(filter.label, value)}
             />
           ))}
+          
+          {/* CitySelect для выбора города */}
+          <div className={styles.cityFilter}>
+            <label className={styles.filterLabel}>Город</label>
+            <CitySelect
+              value={filters.location}
+              onChange={handleCityChange}
+              placeholder="Выберите город"
+            />
+          </div>
         </div>
         
         {/* Clear filters button */}
         {Object.values(filters).some(filter => filter !== '') && (
           <button 
             className={styles.clearFilters}
-            onClick={() => setFilters({ category: '', date: '', location: '' })}
+            onClick={clearFilters}
           >
             Очистить фильтры
           </button>
         )}
       </div>
+
+      {/* Показываем информацию о выбранном событии */}
+      {selectedEvent && (
+        <div className={styles.selectedEventInfo}>
+          <div className={styles.selectedEventBanner}>
+            <span className={styles.eventTitle}>
+              📍 Выбрано: {selectedEvent.title}
+            </span>
+            <span className={styles.eventLocation}>
+              {selectedEvent.city}
+            </span>
+            <button 
+              onClick={() => window.location.href = `/events/${selectedEventId}`}
+              className={styles.viewEventButton}
+            >
+              Подробнее
+            </button>
+            <button 
+              onClick={() => handleEventSelect(null)}
+              className={styles.clearSelectionButton}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
       
       <ViewToggle currentMode={viewMode} onChange={setViewMode} />
       
@@ -316,13 +435,32 @@ const EventsListPage: React.FC = () => {
             filteredEvents.map((event) => (
               <EventCard 
                 key={event.id} 
-                event={event} 
+                event={event}
+                isSelected={event.id === selectedEventId}
+                onSelect={() => handleEventSelect(event.id)}
               />
             ))
           ) : (
             <div className={styles.noResults}>
               <h3>Событий не найдено</h3>
               <p>Попробуйте изменить параметры фильтра или очистить все фильтры</p>
+              {Object.values(filters).some(filter => filter !== '') && (
+                <button 
+                  className={styles.clearFiltersButton}
+                  onClick={clearFilters}
+                >
+                  Очистить фильтры
+                </button>
+              )}
+              <div className={styles.createEventPrompt}>
+                <p>Или создайте свое событие!</p>
+                <button 
+                  className={styles.createEventButtonSecondary}
+                  onClick={handleCreateEvent}
+                >
+                  Создать событие
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -338,9 +476,21 @@ const EventsListPage: React.FC = () => {
               tag: event.tag as 'regular' | 'emergency',
               city: event.city || '',
             }))}
+            selectedEventId={selectedEventId}
+            onEventSelect={handleEventSelect}
           />
         )}
       </div>
+
+      {/* Модальное окно проверки подписки */}
+      {pendingNavigation && (
+        <SubscriptionCheckModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          feature={pendingNavigation.feature}
+          targetPath={pendingNavigation.targetPath}
+        />
+      )}
     </div>
   );
 };

@@ -1,308 +1,754 @@
-.alertContainer {
+/* src/features/Evacuation/EvacuationPage.module.css */
+.container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   padding: 20px;
-  color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.alertHeader {
+.pageTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 20px 0;
   text-align: center;
-  margin-bottom: 40px;
-  border-top: 6px solid #dc2626;
-  padding-top: 30px;
-  max-width: 800px;
-  width: 100%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.alertIcon {
+.alertStatus {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin: 20px auto;
+  max-width: 800px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   animation: pulse 2s infinite;
 }
 
-.emergencyIcon {
-  font-size: 48px;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+.alertStatus span:first-child {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
 }
 
-.alertIcon svg {
-  width: 64px;
-  height: 64px;
-  color: #dc2626;
-  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.3));
-}
-
-.alertTitle {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin: 0 0 15px 0;
-  color: #ffffff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  line-height: 1.2;
-}
-
-.alertSubtitle {
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin: 0 0 20px 0;
-  color: #e5e5e5;
-  line-height: 1.4;
-}
-
-.alertTime {
-  font-size: 1rem;
-  color: #b0b0b0;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
+.emergencyType {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 12px;
   border-radius: 20px;
-  display: inline-block;
-  margin-bottom: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-.alertLocation {
-  font-size: 1rem;
-  color: #fbbf24;
-  font-weight: 600;
-  margin-top: 10px;
+/* Уровни опасности */
+.high {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  border: 2px solid #7f1d1d;
 }
 
-.alertContent {
-  max-width: 900px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 40px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+.high span:first-child {
+  background: #fee2e2;
 }
 
-.alertMessage {
-  margin-bottom: 30px;
+.medium {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: 2px solid #92400e;
 }
 
-.alertMessage p {
+.medium span:first-child {
+  background: #fef3c7;
+}
+
+.low {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  border: 2px solid #065f46;
+}
+
+.low span:first-child {
+  background: #d1fae5;
+}
+
+.pageDescription {
+  text-align: center;
   font-size: 1.1rem;
+  color: #64748b;
+  margin: 0 auto 30px auto;
+  max-width: 800px;
   line-height: 1.6;
-  margin-bottom: 15px;
-  color: #e5e5e5;
 }
 
-.guidelines {
-  margin-bottom: 30px;
+.gridContainer {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.guidelines h3 {
-  font-size: 1.4rem;
-  color: #ffffff;
-  margin-bottom: 15px;
+.evacuationList {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.evacuationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.evacuationTitle {
+  font-size: 1.5rem;
   font-weight: 700;
-  border-bottom: 2px solid #dc2626;
-  padding-bottom: 8px;
+  color: #1e293b;
 }
 
-.guidelines ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.guidelines li {
-  background: rgba(255, 255, 255, 0.08);
-  margin-bottom: 8px;
+.evacuationSearch {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
   padding: 12px 16px;
-  border-radius: 8px;
+  gap: 12px;
+  min-width: 300px;
+  transition: border-color 0.3s ease;
+}
+
+.evacuationSearch:focus-within {
+  border-color: #3b82f6;
+}
+
+.evacuationSearch input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
   font-size: 1rem;
-  line-height: 1.4;
-  border-left: 4px solid #dc2626;
-  color: #e5e5e5;
-  position: relative;
+  color: #475569;
 }
 
-.guidelines li::before {
-  content: "•";
-  color: #dc2626;
-  font-weight: bold;
-  margin-right: 10px;
+.evacuationSearch input::placeholder {
+  color: #94a3b8;
+}
+
+.sectionHeader {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid #7f1d1d;
+}
+
+.sectionHeader h3 {
+  margin: 0 0 8px 0;
   font-size: 1.2rem;
+  font-weight: 600;
 }
 
-.contacts {
-  margin-bottom: 30px;
+.sectionHeader p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
 }
 
-.contacts h3 {
-  font-size: 1.4rem;
-  color: #ffffff;
-  margin-bottom: 15px;
+.locationCards {
+  display: grid;
+  gap: 16px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.emergencyContacts {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.emergencyContacts h3 {
+  color: #dc2626;
+  margin: 0 0 16px 0;
+  font-size: 1.3rem;
   font-weight: 700;
-  border-bottom: 2px solid #059669;
-  padding-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emergencyContacts h3::before {
+  content: "🚨";
+  font-size: 1.1rem;
 }
 
 .contactsList {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
 }
 
 .contactLink {
-  background: linear-gradient(135deg, #059669, #047857);
+  background: linear-gradient(135deg, #dc2626, #991b1b);
   color: white;
   text-decoration: none;
-  padding: 12px 20px;
-  border-radius: 8px;
+  padding: 14px 18px;
+  border-radius: 10px;
   font-weight: 600;
   transition: all 0.3s ease;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
 .contactLink:hover {
-  background: linear-gradient(135deg, #047857, #065f46);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
-}
-
-.evacuationInfo {
-  margin-bottom: 30px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.evacuationInfo h3 {
-  color: #60a5fa;
-  margin-bottom: 10px;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.evacuationInfo p {
-  color: #e5e5e5;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.actionButtons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin-top: 30px;
-}
-
-.actionButton {
-  background: linear-gradient(135deg, #374151, #4b5563);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 20px 24px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-}
-
-.actionButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.actionButton:active {
-  transform: translateY(-1px);
-}
-
-.referenceBtn {
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
-  border-color: rgba(124, 58, 237, 0.5);
-}
-
-.referenceBtn:hover {
-  background: linear-gradient(135deg, #5b21b6, #4c1d95);
-  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
-}
-
-.evacuationBtn {
-  background: linear-gradient(135deg, #dc2626, #991b1b);
-  border-color: rgba(220, 38, 38, 0.5);
-}
-
-.evacuationBtn:hover {
   background: linear-gradient(135deg, #991b1b, #7f1d1d);
-  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
-}
-
-.supportBtn {
-  background: linear-gradient(135deg, #059669, #047857);
-  border-color: rgba(5, 150, 105, 0.5);
-}
-
-.supportBtn:hover {
-  background: linear-gradient(135deg, #047857, #065f46);
-  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
-}
-
-.actionButton span {
-  flex: 1;
-  text-align: left;
-}
-
-.arrow {
-  width: 24px;
-  height: 24px;
-  opacity: 0.8;
-  transition: transform 0.3s ease;
-}
-
-.actionButton:hover .arrow {
-  transform: translateX(4px);
-}
-
-.footer {
-  margin-top: 40px;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #9ca3af;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 20px;
-  max-width: 900px;
-  width: 100%;
-}
-
-.footer p {
-  margin: 5px 0;
-}
-
-.dataInfo {
-  font-size: 0.8rem;
-  color: #6b7280;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 8px 16px;
-  border-radius: 8px;
-  margin-top: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
 }
 
 /* Анимации */
 @keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 1024px) {
+  .gridContainer {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .evacuationHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .evacuationSearch {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+  }
+  
+  .evacuationList,
+  .emergencyContacts {
+    padding: 20px;
+  }
+  
+  .alertStatus {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .evacuationTitle {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 1.7rem;
+  }
+  
+  .evacuationList,
+  .emergencyContacts {
+    padding: 16px;
+  }
+  
+  .evacuationSearch {
+    padding: 10px 14px;
+  }
+  
+  .contactLink {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+/* src/components/Evacuation/EmergencyBanner.module.css */
+.banner {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.critical {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-color: #7f1d1d;
+  animation: criticalPulse 2s infinite;
+}
+
+.high {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-color: #92400e;
+}
+
+.medium {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #1d4ed8;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.iconContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  font-size: 3rem;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  position: relative;
+  z-index: 2;
+}
+
+.pulse {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  animation: pulse 2s infinite;
+  z-index: 1;
+}
+
+.text {
+  flex: 1;
+}
+
+.text h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.text p {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.location,
+.time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.actionBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  animation: progressSlide 3s ease-in-out infinite;
+}
+
+/* Анимации */
+@keyframes criticalPulse {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 12px 48px rgba(220, 38, 38, 0.4);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  .banner {
+    padding: 20px;
+  }
+  
+  .content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .text h3 {
+    font-size: 1.3rem;
+  }
+  
+  .meta {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .icon {
+    font-size: 2.5rem;
+  }
+  
+  .pulse {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner {
+    padding: 16px;
+    margin: 16px 0;
+  }
+  
+  .text h3 {
+    font-size: 1.2rem;
+  }
+  
+  .text p {
+    font-size: 0.95rem;
+  }
+  
+  .meta {
+    font-size: 0.85rem;
+    gap: 12px;
+  }
+  
+  .actionBtn {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .icon {
+    font-size: 2rem;
+  }
+  
+  .pulse {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* Режим высокого контраста */
+@media (prefers-contrast: high) {
+  .banner {
+    border: 2px solid white;
+  }
+  
+  .actionBtn {
+    border: 2px solid white;
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Режим пониженного движения */
+@media (prefers-reduced-motion: reduce) {
+  .critical {
+    animation: none;
+  }
+  
+  .pulse {
+    animation: none;
+    opacity: 0.3;
+  }
+  
+  .progressBar {
+    animation: none;
+  }
+  
+  .actionBtn:hover {
+    transform: none;
+  }
+}
+/* src/components/Evacuation/LocationCard.module.css */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.emergencyCard {
+  border: 2px solid #dc2626;
+  background: linear-gradient(135deg, #fff, #fef2f2);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+.emergencyCard:hover {
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.3);
+}
+
+.emergencyBadge {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+  animation: emergencyPulse 2s infinite;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.typeIcon {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+}
+
+.info {
+  flex: 1;
+}
+
+.name {
+  margin: 0 0 4px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.type {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 80px;
+}
+
+.details {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address,
+.hours,
+.capacity,
+.phone,
+.coordinates {
+  font-size: 0.9rem;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.directionsBtn,
+.callBtn,
+.infoBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.directionsBtn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  flex: 1;
+}
+
+.directionsBtn:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.callBtn {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+}
+
+.callBtn:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  transform: translateY(-1px);
+}
+
+.infoBtn {
+  background: #f8fafc;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+.infoBtn:hover {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.emergencyNote {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #991b1b;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Анимации */
+@keyframes emergencyPulse {
   0%, 100% {
     transform: scale(1);
     opacity: 1;
@@ -313,95 +759,107 @@
   }
 }
 
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.alertContent {
-  animation: slideInUp 0.6s ease-out;
-}
-
-.actionButton {
-  animation: slideInUp 0.8s ease-out;
-}
-
-.actionButton:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-.actionButton:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
 /* Мобильная адаптация */
 @media (max-width: 768px) {
-  .alertContainer {
-    padding: 15px;
+  .card {
+    padding: 16px;
   }
-
-  .alertTitle {
-    font-size: 2rem;
+  
+  .header {
+    gap: 10px;
   }
-
-  .alertSubtitle {
+  
+  .typeIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+  
+  .name {
     font-size: 1.1rem;
   }
-
-  .alertContent {
-    padding: 25px 20px;
-  }
-
-  .actionButtons {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .actionButton {
-    padding: 16px 20px;
-    font-size: 1rem;
-  }
-
-  .contactsList {
+  
+  .actions {
     flex-direction: column;
   }
-
-  .emergencyIcon {
-    font-size: 36px;
-  }
-
-  .alertIcon svg {
-    width: 48px;
-    height: 48px;
+  
+  .directionsBtn,
+  .callBtn,
+  .infoBtn {
+    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
-  .alertTitle {
-    font-size: 1.7rem;
+  .card {
+    padding: 14px;
   }
-
-  .alertSubtitle {
+  
+  .header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .info {
+    order: -1;
+  }
+  
+  .name {
     font-size: 1rem;
   }
-
-  .alertContent {
-    padding: 20px 15px;
+  
+  .type {
+    font-size: 0.85rem;
   }
-
-  .guidelines li {
-    padding: 10px 14px;
-    font-size: 0.95rem;
+  
+  .details {
+    gap: 6px;
   }
-
-  .actionButton {
-    padding: 14px 16px;
-    font-size: 0.95rem;
+  
+  .address,
+  .hours,
+  .capacity,
+  .phone,
+  .coordinates {
+    font-size: 0.85rem;
+  }
+  
+  .emergencyBadge {
+    position: static;
+    margin-bottom: 8px;
+    text-align: center;
   }
 }
+
+/* Режим высокого контраста */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid #000;
+  }
+  
+  .emergencyCard {
+    border: 3px solid #dc2626;
+  }
+  
+  .status {
+    border: 1px solid #000;
+  }
+}
+
+/* Режим пониженного движения */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover {
+    transform: none;
+  }
+  
+  .emergencyBadge {
+    animation: none;
+  }
+  
+  .directionsBtn:hover,
+  .callBtn:hover {
+    transform: none;
+  }
+}
+

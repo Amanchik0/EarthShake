@@ -29,11 +29,14 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CommunityMembersPage from './features/Community/CommunityPage/CommunityMembersPage';
 import CommunityEventsPage from './features/Community/CommunityPage/CommunityEventPage';
 
+import { EmergencyResponse } from './types/emergencyTypes';
+
 type Props = {
   isEmergency: boolean;
+  emergencyData?: EmergencyResponse | null;
 };
 
-const AppRoutes: React.FC<Props> = ({ isEmergency }) => (
+const AppRoutes: React.FC<Props> = ({ isEmergency, emergencyData }) => (
   <Routes>
     <Route path="/*" element={
       <div>
@@ -41,10 +44,22 @@ const AppRoutes: React.FC<Props> = ({ isEmergency }) => (
         <Routes>
           {isEmergency ? (
             <>
-              <Route path="/emergency" element={<EmergencyNotification />} />
-              <Route path="/reference" element={<ReferencePage />} />
-              <Route path="/evacuation" element={<EvacuationPage />} />
-              <Route path="/support" element={<SupportPage />} />
+              <Route 
+                path="/emergency" 
+                element={<EmergencyNotification emergencyData={emergencyData} />} 
+              />
+              <Route 
+                path="/reference" 
+                element={<ReferencePage emergencyData={emergencyData} />} 
+              />
+              <Route 
+                path="/evacuation" 
+                element={<EvacuationPage emergencyData={emergencyData} />} 
+              />
+              <Route 
+                path="/support" 
+                element={<SupportPage emergencyData={emergencyData} />} 
+              />
               <Route path="*" element={<Navigate to="/emergency" replace />} />
             </>
           ) : (

@@ -1,7 +1,7 @@
 // src/hooks/useEmergencySystem.ts
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { EmergencyResponse, EmergencyEvent, ReferenceInfo } from '../types/emergency';
+import { EmergencyResponse, EmergencyEvent, ReferenceInfo } from '../types/emergencyTypes';
 
 const EMERGENCY_CHECK_INTERVAL = 15000; 
 const EMERGENCY_API_URL = 'http://localhost:8090/api/events/emergency/Almaty';

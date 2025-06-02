@@ -83,7 +83,7 @@ const Header: React.FC = () => {
       return userProfile.imageUrl;
     }
     // Дефолтная картинка
-    return "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg";
+    return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDwmG52pVI5JZfn04j9gdtsd8pAGbqjjLswg&s";
   };
 
   return (
@@ -144,7 +144,7 @@ const Header: React.FC = () => {
                         alt="Profile"
                         className={styles.headerProfileAvatar}
                         onError={(e) => {
-                          e.currentTarget.src = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg";
+                          e.currentTarget.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDwmG52pVI5JZfn04j9gdtsd8pAGbqjjLswg&s";
                         }}
                       />
                     )}

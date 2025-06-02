@@ -4,7 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/HeadFoot/Header';
 import Footer from './components/HeadFoot/Footer';
 
-import MainPage from './features/Main/MainPage';
+import MainPage from './features/main/MainPage';
 import EventPage from './features/Events/EventPage/EventPage';
 import EventsListPage from './features/Events/EventsListPage/EventsListPage';
 import EventEditPage from './features/Events/EventEditPage/EventEditPage';
@@ -19,7 +19,7 @@ import EvacuationPage from './features/Evacuation/EvacuationPage';
 import ReferencePage from './features/Reference/ReferencePage';
 import SupportPage from './features/Support/SupportPage';
 import ProfilePage from './features/Profile/ProfilePage';
-import ProfileEditPage from './features/Profile/ProfileEditPage';
+// import ProfileEditPage from './features/Profile/ProfileEditPage';
 import NewsListPage from './features/News/NewsListPage';
 import AuthPage from './features/AuthPage/AuthPage';
 import LoginPage from './features/AuthPage/LoginPage';

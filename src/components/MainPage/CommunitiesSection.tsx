@@ -6,7 +6,7 @@ import { Community } from '../../types/community';
 interface CommunitySectionProps {
     communities: Community[];
     onCommunityClick: (communityId: number) => void;
-    maxVisibleCards?: number; // Optional prop to limit the number of visible cards
+    maxVisibleCards?: number; 
     
 }
 const CommunitySection: React.FC<CommunitySectionProps> = ({ communities, onCommunityClick, maxVisibleCards = 4 }) => {

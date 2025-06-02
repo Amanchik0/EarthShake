@@ -4,11 +4,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 export function useEmergencyRedirect() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isEmergency, setIsEmergency] = useState(false);
+  const [isEmergency, setIsEmergency] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const data = { emergency: false }; // В будущем можно заменить на fetch('/emergency')
+      const data = { emergency: true }; // В будущем можно заменить на fetch('/emergency')
       setIsEmergency(data.emergency);
 
       const allowed = ['/emergency', '/reference', '/evacuation', '/support'];

@@ -94,7 +94,7 @@ const MainPage: React.FC = () => {
         };
     }, []);
 
-    // Функция для форматирования даты
+    // Функция для форматирования даты юзаем при преобразовании данных на ивент из за даты 
     const formatEventDate = (dateTime: string): string => {
         try {
             const date = new Date(dateTime);
@@ -148,7 +148,7 @@ const MainPage: React.FC = () => {
                 <EventSection events={events} onEventClick={handleEventClick} />
                 <CommunitySection communities={communities} onCommunityClick={handleCommunityClick} />
 
-                <section className={styles.section}>
+                {/* <section className={styles.section}>
                     <div className={styles.container}>
                         <div className={styles.guidelinesContainer}>
                             <div className={styles.guidelinesContent}>
@@ -196,7 +196,7 @@ const MainPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </section>
+                </section> */}
 
                 <section className={styles.section}>
                     <div className={styles.container}>
@@ -217,9 +217,9 @@ const MainPage: React.FC = () => {
                                 </div>
                                 <div className={styles.featureCard}>
                                     <div className={styles.featureIcon}>📱</div>
-                                    <h3 className={styles.featureTitle}>Мобильное приложение</h3>
+                                    <h3 className={styles.featureTitle}>Мобильное веб приложение</h3>
                                     <p className={styles.featureDescription}>
-                                        Все функции платформы доступны в нашем мобильном приложении для iOS и Android.
+                                        Все функции платформы доступны в нашем мобильном веб приложении.
                                     </p>
                                 </div>
                                 <div className={styles.featureCard}>

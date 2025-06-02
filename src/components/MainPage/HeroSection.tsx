@@ -24,7 +24,7 @@ const HeroSection: React.FC = () => {
           </div>
           <div className={styles.heroImage}>
             <img
-              src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/d9/fa/1b/lost-valley.jpg?w=1200&h=-1&s=1"
+              src="https://www.akorda.kz/assets/media/flag.jpg"
               alt="Hero Image"
             />
           </div>

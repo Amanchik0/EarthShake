@@ -79,7 +79,7 @@ const CommunityMembersPage: React.FC = () => {
           });
 
           if (!response.ok) {
-            console.warn(`⚠️ Профиль ${username} не найден (${response.status})`);
+            console.warn(` Профиль ${username} не найден (${response.status})`);
             return {
               id: username,
               username: username,
@@ -90,7 +90,7 @@ const CommunityMembersPage: React.FC = () => {
           const profile: UserProfile = await response.json();
           return profile;
         } catch (error) {
-          console.error(`❌ Ошибка загрузки профиля ${username}:`, error);
+          console.error(`Ошибка загрузки профиля ${username}:`, error);
           return {
             id: username,
             username: username,
@@ -107,11 +107,11 @@ const CommunityMembersPage: React.FC = () => {
         }
       });
 
-      console.log(`✅ Загружено ${profilesMap.size} профилей пользователей`);
+      console.log(` Загружено ${profilesMap.size} профилей пользователей`);
       setUserProfiles(profilesMap);
 
     } catch (error) {
-      console.error('❌ Общая ошибка загрузки профилей:', error);
+      console.error('Общая ошибка загрузки профилей:', error);
       setMembersError('Ошибка при загрузке профилей пользователей');
     } finally {
       setMembersLoading(false);
@@ -302,7 +302,7 @@ const CommunityMembersPage: React.FC = () => {
 
           {membersError && (
             <div className={styles.error}>
-              <p>❌ {membersError}</p>
+              <p>{membersError}</p>
               <button onClick={() => loadUserProfiles(community.users)}>
                 Попробовать снова
               </button>

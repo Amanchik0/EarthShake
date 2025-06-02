@@ -1,603 +1,407 @@
-:root {
-  --primary: #e11d48;
-  --primary-light: #fecdd3;
-  --secondary: #a1a1aa;
-  --dark-gray: #4b5563;
-  --light-gray: #f3f4f6;
-  --white: #ffffff;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --safe: #10b981;
+.alertContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
+.alertHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  border-top: 6px solid #dc2626;
+  padding-top: 30px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.alertIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+.emergencyIcon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.5));
+}
+
+.alertIcon svg {
+  width: 64px;
+  height: 64px;
+  color: #dc2626;
+  filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.3));
+}
+
+.alertTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 15px 0;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.alertSubtitle {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 0 0 20px 0;
+  color: #e5e5e5;
+  line-height: 1.4;
+}
+
+.alertTime {
+  font-size: 1rem;
+  color: #b0b0b0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.alertLocation {
+  font-size: 1rem;
+  color: #fbbf24;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.alertContent {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.alertMessage {
+  margin-bottom: 30px;
+}
+
+.alertMessage p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #e5e5e5;
+}
+
+.guidelines {
+  margin-bottom: 30px;
+}
+
+.guidelines h3 {
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-weight: 700;
+  border-bottom: 2px solid #dc2626;
+  padding-bottom: 8px;
+}
+
+.guidelines ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.guidelines li {
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  line-height: 1.4;
+  border-left: 4px solid #dc2626;
+  color: #e5e5e5;
+  position: relative;
+}
+
+.guidelines li::before {
+  content: "•";
+  color: #dc2626;
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.contacts {
+  margin-bottom: 30px;
+}
+
+.contacts h3 {
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 15px;
+  font-weight: 700;
+  border-bottom: 2px solid #059669;
+  padding-bottom: 8px;
+}
+
+.contactsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contactLink {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+.contactLink:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4);
+}
+
+.evacuationInfo {
+  margin-bottom: 30px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
   padding: 20px;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 0;
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--primary-light);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 24px;
-}
-
-.alertStatus {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  gap: 8px;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  padding: 8px 16px;
-  border-radius: 24px;
+.evacuationInfo h3 {
+  color: #60a5fa;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
   font-weight: 600;
-  font-size: 14px;
 }
 
-.active {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: var(--danger);
+.evacuationInfo p {
+  color: #e5e5e5;
+  margin: 0;
+  line-height: 1.5;
 }
 
-.nav {
-  display: flex;
-  gap: 32px;
+.actionButtons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 30px;
 }
 
-.navLink {
-  color: var(--dark-gray);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.navLink:hover, .activeNavLink {
-  color: var(--primary);
-}
-
-.pageTitle {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 16px;
-  color: var(--dark-gray);
-}
-
-.pageDescription {
-  font-size: 16px;
-  color: var(--secondary);
-  max-width: 800px;
-  margin-bottom: 32px;
-  line-height: 1.6;
-}
-
-.emergencyBanner {
-  background: linear-gradient(to right, var(--primary), #be123c);
+.actionButton {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 16px;
+  padding: 20px 24px;
   border-radius: 12px;
-  margin-bottom: 32px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.emergencyBannerContent {
-  flex: 1;
-}
-
-.emergencyBanner h2 {
-  font-size: 20px;
+  gap: 16px;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.emergencyBanner p {
-  max-width: 600px;
-  opacity: 0.9;
-}
-
-.emergencyNumber {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-  padding: 12px 20px;
-  border-radius: 8px;
-}
-
-.emergencyNumberLabel {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.emergencyNumberValue {
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.mapContainer {
-  background-color: var(--white);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 24px;
-  margin-bottom: 32px;
-}
-
-.mapHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.mapTitle {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.mapActions {
-  display: flex;
-  gap: 8px;
-}
-
-.actionBtn {
-  background-color: var(--white);
-  border: 1px solid var(--light-gray);
-  color: var(--dark-gray);
-  border-radius: 8px;
-  padding: 8px 16px;
   cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.actionBtn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.primaryBtn {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
-}
-
-.primaryBtn:hover {
-  background-color: #be123c;
-}
-
-.mapArea {
-  height: 400px;
-  background-color: #eee;
-  border-radius: 12px;
+  transition: all 0.3s ease;
+  text-decoration: none;
   position: relative;
   overflow: hidden;
 }
 
-.mapArea img {
+.actionButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.actionButton:active {
+  transform: translateY(-1px);
+}
+
+.referenceBtn {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.referenceBtn:hover {
+  background: linear-gradient(135deg, #5b21b6, #4c1d95);
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+}
+
+.evacuationBtn {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  border-color: rgba(220, 38, 38, 0.5);
+}
+
+.evacuationBtn:hover {
+  background: linear-gradient(135deg, #991b1b, #7f1d1d);
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+}
+
+.supportBtn {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: rgba(5, 150, 105, 0.5);
+}
+
+.supportBtn:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+  box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+}
+
+.actionButton span {
+  flex: 1;
+  text-align: left;
+}
+
+.arrow {
+  width: 24px;
+  height: 24px;
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.actionButton:hover .arrow {
+  transform: translateX(4px);
+}
+
+.footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #9ca3af;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 20px;
+  max-width: 900px;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
-.mapMarker {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  transform: translate(-50%, -100%);
+.footer p {
+  margin: 5px 0;
 }
 
-.shelterMarker {
-  color: var(--safe);
-}
-
-.medicalMarker {
-  color: var(--primary);
-}
-
-.foodMarker {
-  color: var(--warning);
-}
-
-.mapLegend {
-  display: flex;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: var(--dark-gray);
-}
-
-.legendColor {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.shelterColor {
-  background-color: var(--safe);
-}
-
-.medicalColor {
-  background-color: var(--primary);
-}
-
-.foodColor {
-  background-color: var(--warning);
-}
-
-.gridContainer {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-}
-
-.evacuationList {
-  background-color: var(--white);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 24px;
-}
-
-.evacuationHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.evacuationTitle {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.evacuationSearch {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: var(--light-gray);
+.dataInfo {
+  font-size: 0.8rem;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
   border-radius: 8px;
-  padding: 0 12px;
+  margin-top: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.evacuationSearch input {
-  background: transparent;
-  border: none;
-  outline: none;
-  padding: 12px 8px;
-  width: 200px;
-  color: var(--dark-gray);
-}
-
-.locationCards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.locationCard {
-  border: 1px solid var(--light-gray);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.locationCard:hover {
-  box-shadow: var(--shadow);
-  transform: translateY(-4px);
-}
-
-.locationType {
-  padding: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.shelterType {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: var(--safe);
-}
-
-.medicalType {
-  background-color: rgba(225, 29, 72, 0.1);
-  color: var(--primary);
-}
-
-.foodType {
-  background-color: rgba(245, 158, 11, 0.1);
-  color: var(--warning);
-}
-
-.locationBadge {
-  background-color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.locationInfo {
-  padding: 16px;
-}
-
-.locationName {
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.locationAddress {
-  color: var(--secondary);
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.locationStatus {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-
-.statusIndicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.openStatus {
-  background-color: var(--safe);
-}
-
-.fullStatus {
-  background-color: var(--danger);
-}
-
-.limitedStatus {
-  background-color: var(--warning);
-}
-
-.locationCapacity {
-  font-size: 13px;
-  color: var(--secondary);
-  margin-bottom: 16px;
-}
-
-.capacityBar {
-  width: 100%;
-  height: 6px;
-  background-color: var(--light-gray);
-  border-radius: 3px;
-  margin-top: 4px;
-  overflow: hidden;
-}
-
-.capacityProgress {
-  height: 100%;
-  border-radius: 3px;
-}
-
-.lowCapacity {
-  background-color: var(--safe);
-  width: 30%;
-}
-
-.mediumCapacity {
-  background-color: var(--warning);
-  width: 65%;
-}
-
-.highCapacity {
-  background-color: var(--danger);
-  width: 90%;
-}
-
-.locationActions {
-  display: flex;
-  gap: 8px;
-}
-
-.sidebarCard {
-  background-color: var(--white);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 24px;
-  margin-bottom: 24px;
-}
-
-.sidebarTitle {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.infoList {
-  list-style: none;
-}
-
-.infoItem {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.infoItem:last-child {
-  border-bottom: none;
-}
-
-.infoIcon {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-.infoContent {
-  flex: 1;
-}
-
-.infoTitle {
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.infoText {
-  font-size: 14px;
-  color: var(--secondary);
-}
-
-.checklistItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.checklistItem:last-child {
-  border-bottom: none;
-}
-
-.checklistCheckbox {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--primary-light);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  cursor: pointer;
-}
-
-.checklistText {
-  flex: 1;
-}
-
-.notificationItem {
-  display: flex;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--light-gray);
-}
-
-.notificationItem:last-child {
-  border-bottom: none;
-}
-
-.notificationIcon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.notificationContent {
-  flex: 1;
-}
-
-.notificationTitle {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.notificationText {
-  font-size: 14px;
-  color: var(--secondary);
-  margin-bottom: 8px;
-}
-
-.notificationTime {
-  font-size: 12px;
-  color: var(--secondary);
-}
-
-.backButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--dark-gray);
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.eventTag {
-  padding: 6px 12px;
-  border-radius: 16px;
-  background-color: var(--secondary);
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.emergencyTag {
-  background-color: var(--danger);
-}
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-}
-
-@media (max-width: 992px) {
-  .gridContainer {
-    grid-template-columns: 1fr;
+/* Анимации */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
   }
 }
 
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alertContent {
+  animation: slideInUp 0.6s ease-out;
+}
+
+.actionButton {
+  animation: slideInUp 0.8s ease-out;
+}
+
+.actionButton:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.actionButton:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+/* Мобильная адаптация */
 @media (max-width: 768px) {
-  .locationCards {
+  .alertContainer {
+    padding: 15px;
+  }
+
+  .alertTitle {
+    font-size: 2rem;
+  }
+
+  .alertSubtitle {
+    font-size: 1.1rem;
+  }
+
+  .alertContent {
+    padding: 25px 20px;
+  }
+
+  .actionButtons {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
-  
-  .emergencyBanner {
+
+  .actionButton {
+    padding: 16px 20px;
+    font-size: 1rem;
+  }
+
+  .contactsList {
     flex-direction: column;
-    gap: 16px;
-    align-items: flex-start;
   }
-  
-  .nav {
-    display: none;
+
+  .emergencyIcon {
+    font-size: 36px;
+  }
+
+  .alertIcon svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .alertTitle {
+    font-size: 1.7rem;
+  }
+
+  .alertSubtitle {
+    font-size: 1rem;
+  }
+
+  .alertContent {
+    padding: 20px 15px;
+  }
+
+  .guidelines li {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .actionButton {
+    padding: 14px 16px;
+    font-size: 0.95rem;
   }
 }

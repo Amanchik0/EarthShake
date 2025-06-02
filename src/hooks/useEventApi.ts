@@ -44,15 +44,15 @@ export const useEventAPI = (): UseEventAPIReturn => {
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const textResponse = await response.text();
-        console.error('❌ Сервер вернул не JSON:', textResponse);
+        console.error('Сервер вернул не JSON:', textResponse);
         throw new Error('Сервер вернул некорректный ответ');
       }
 
       const eventData: BackendEventData = await response.json();
-      console.log('✅ Событие загружено:', eventData);
+      console.log(' Событие загружено:', eventData);
       return eventData;
     } catch (err) {
-      console.error('❌ Ошибка загрузки события:', err);
+      console.error('Ошибка загрузки события:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки события';
       setError(errorMessage);
       return null;
@@ -89,7 +89,7 @@ export const useEventAPI = (): UseEventAPIReturn => {
         let errorDetails = '';
         try {
           const errorText = await response.text();
-          console.error('❌ Ошибка сервера:', errorText);
+          console.error('Ошибка сервера:', errorText);
           errorDetails = errorText;
         } catch {}
 
@@ -109,10 +109,10 @@ export const useEventAPI = (): UseEventAPIReturn => {
         throw new Error(`Ошибка обновления: ${response.status}`);
       }
 
-      console.log('✅ Событие обновлено успешно');
+      console.log(' Событие обновлено успешно');
       return true;
     } catch (err) {
-      console.error('❌ Ошибка обновления события:', err);
+      console.error('Ошибка обновления события:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка обновления события';
       setError(errorMessage);
       return false;
@@ -176,10 +176,10 @@ export const useEventAPI = (): UseEventAPIReturn => {
         }
       }
 
-      console.log('✅ Файл загружен');
+      console.log(' Файл загружен');
       return null;
     } catch (err) {
-      console.error('❌ Ошибка загрузки файла:', err);
+      console.error('Ошибка загрузки файла:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки файла';
       setError(errorMessage);
       return null;

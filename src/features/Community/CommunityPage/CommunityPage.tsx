@@ -155,7 +155,7 @@ const loadUserProfiles = async (usernames: string[]) => {
         });
 
         if (!response.ok) {
-          console.warn(`⚠️ Профиль ${username} не найден (${response.status})`);
+          console.warn(` Профиль ${username} не найден (${response.status})`);
           return {
             id: username,
             username: username,
@@ -186,7 +186,7 @@ const loadUserProfiles = async (usernames: string[]) => {
 
     setUserProfiles(profilesMap);
   } catch (error) {
-    console.error('❌ Общая ошибка загрузки профилей:', error);
+    console.error('Общая ошибка загрузки профилей:', error);
   } finally {
     setMembersLoading(false);
   }
@@ -215,12 +215,12 @@ const loadUserProfiles = async (usernames: string[]) => {
           });
 
           if (!response.ok) {
-            console.warn(`⚠️ Событие ${eventId} не найдено (${response.status})`);
+            console.warn(` Событие ${eventId} не найдено (${response.status})`);
             return null;
           }
 
           const eventData: EventAPIResponse = await response.json();
-          console.log(`✅ Событие ${eventId} загружено:`, eventData);
+          console.log(` Событие ${eventId} загружено:`, eventData);
 
           // Преобразуем данные события в формат CommunityEvent
           const transformedEvent: CommunityEvent = {
@@ -246,7 +246,7 @@ const loadUserProfiles = async (usernames: string[]) => {
 
           return transformedEvent;
         } catch (error) {
-          console.error(`❌ Ошибка загрузки события ${eventId}:`, error);
+          console.error(`Ошибка загрузки события ${eventId}:`, error);
           return null;
         }
       });
@@ -256,7 +256,7 @@ const loadUserProfiles = async (usernames: string[]) => {
       // Фильтруем успешно загруженные события
       const validEvents = loadedEvents.filter((event): event is CommunityEvent => event !== null);
       
-      console.log(`✅ Загружено ${validEvents.length} из ${eventIds.length} событий`);
+      console.log(` Загружено ${validEvents.length} из ${eventIds.length} событий`);
       setEvents(validEvents);
 
       if (validEvents.length === 0 && eventIds.length > 0) {
@@ -264,7 +264,7 @@ const loadUserProfiles = async (usernames: string[]) => {
       }
 
     } catch (error) {
-      console.error('❌ Общая ошибка загрузки событий:', error);
+      console.error('Общая ошибка загрузки событий:', error);
       setEventsError('Ошибка при загрузке событий');
       setEvents([]);
     } finally {
@@ -322,7 +322,7 @@ const loadUserProfiles = async (usernames: string[]) => {
       setRecommendedCommunities(communityDetails);
 
     } catch (error) {
-      console.error('❌ Ошибка загрузки рекомендуемых сообществ:', error);
+      console.error('Ошибка загрузки рекомендуемых сообществ:', error);
       setRecommendationsError('Не удалось загрузить рекомендуемые сообщества');
       setRecommendedCommunities([]);
     } finally {
@@ -554,7 +554,7 @@ const loadUserProfiles = async (usernames: string[]) => {
           
           {eventsError && (
             <div className={styles.eventsError}>
-              <p>❌ {eventsError}</p>
+              <p>{eventsError}</p>
               <button onClick={() => loadCommunityEvents(community.listEvents)}>
                 Попробовать снова
               </button>
@@ -639,7 +639,7 @@ const loadUserProfiles = async (usernames: string[]) => {
           
           {recommendationsError && (
             <div className={styles.recommendationsError}>
-              <p>❌ {recommendationsError}</p>
+              <p>{recommendationsError}</p>
               <button onClick={loadRandomCommunities}>
                 Попробовать снова
               </button>

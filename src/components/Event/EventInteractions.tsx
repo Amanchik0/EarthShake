@@ -63,7 +63,7 @@ const EventInteractions: React.FC<EventInteractionsProps> = ({ event, styles, on
 // Исправленная функция с двумя API вызовами
 const handleToggleParticipation = async () => {
   if (!user) {
-    console.log('❌ Нет пользователя для участия');
+    console.log('Нет пользователя для участия');
     return;
   }
 
@@ -93,7 +93,7 @@ const handleToggleParticipation = async () => {
 
     const userData = await userResponse.json();
     const userId = userData.id;
-    console.log('✅ Получен ID пользователя:', userId);
+    console.log(' Получен ID пользователя:', userId);
 
     // Шаг 2: PATCH запрос - добавляем/удаляем событие в списке событий пользователя
     console.log(`📝 Шаг 1: ${actionText} события в профиле пользователя...`);
@@ -185,7 +185,7 @@ const handleToggleParticipation = async () => {
     console.log('📥 PUT ответ (обновление события):', putResponse.status, putResponseText);
 
     if (!putResponse.ok) {
-      console.error('❌ Ошибка PUT запроса:', putResponse.status, putResponseText);
+      console.error('Ошибка PUT запроса:', putResponse.status, putResponseText);
       throw new Error(`PUT ошибка ${putResponse.status}: ${putResponseText}`);
     }
 
@@ -194,11 +194,11 @@ const handleToggleParticipation = async () => {
     try {
       result = putResponseText ? JSON.parse(putResponseText) : updatedEventData;
     } catch (e) {
-      console.warn('⚠️ Не удалось парсить ответ PUT запроса, используем локальные данные');
+      console.warn(' Не удалось парсить ответ PUT запроса, используем локальные данные');
       result = updatedEventData;
     }
 
-    console.log('✅ Оба API вызова успешны! Обновляем UI...', {
+    console.log(' Оба API вызова успешны! Обновляем UI...', {
       previousParticipants: event.usersIds.length,
       newParticipants: result.usersIds.length,
       action: shouldJoin ? 'присоединение' : 'выход',
@@ -272,7 +272,7 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
     console.log('📥 Ответ сервера (обновление):', response.status, responseText);
 
     if (!response.ok) {
-      console.error('❌ Ошибка обновления:', response.status, responseText);
+      console.error('Ошибка обновления:', response.status, responseText);
       throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
     }
 
@@ -280,11 +280,11 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
     try {
       result = responseText ? JSON.parse(responseText) : updatedEventData;
     } catch (e) {
-      console.warn('⚠️ Не удалось парсить ответ, используем отправленные данные');
+      console.warn(' Не удалось парсить ответ, используем отправленные данные');
       result = updatedEventData;
     }
 
-    console.log('✅ Событие обновлено:', result);
+    console.log(' Событие обновлено:', result);
     onEventUpdate(result);
     return result;
   } catch (error) {
@@ -296,7 +296,7 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
   // Добавление комментария
   const handleAddComment = async () => {
     if (!user || !commentText.trim()) {
-      console.log('❌ Нет пользователя или пустой комментарий');
+      console.log('Нет пользователя или пустой комментарий');
       return;
     }
 
@@ -327,7 +327,7 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
   // Добавление/изменение оценки
   const handleRateEvent = async (rating: number) => {
     if (!user) {
-      console.log('❌ Нет пользователя для оценки');
+      console.log('Нет пользователя для оценки');
       return;
     }
 
@@ -335,7 +335,7 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
     setIsSubmittingRating(true);
     try {
       const scores = getScores();
-      console.log('📊 Текущие оценки:', scores);
+      console.log(' Текущие оценки:', scores);
       
       // Ищем существующую оценку пользователя
       const existingScoreIndex = scores.findIndex(score => {
@@ -354,11 +354,11 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
         updatedScores = [...scores, { [user.username]: rating }];
       }
 
-      console.log('📊 Обновленные оценки:', updatedScores);
+      console.log(' Обновленные оценки:', updatedScores);
 
       await updateEvent({ score: updatedScores });
       setUserRating(rating);
-      console.log('✅ Оценка успешно сохранена');
+      console.log(' Оценка успешно сохранена');
     } catch (error) {
       console.error('💥 Ошибка оценки события:', error);
       alert('Не удалось оценить событие');
@@ -429,7 +429,7 @@ const updateEvent = async (updates: Partial<BackendEventData>) => {
           disabled={isJoiningEvent}
           className={`${styles.participationButton} ${isParticipant ? styles.leaveButton : styles.joinButton}`}
         >
-          {isJoiningEvent ? '...' : isParticipant ? '❌ Покинуть событие' : '✅ Участвовать в событии'}
+          {isJoiningEvent ? '...' : isParticipant ? 'Покинуть событие' : ' Участвовать в событии'}
         </button>
         <span className={styles.participantsCount}>
           {event.usersIds.length} участник{event.usersIds.length === 1 ? '' : event.usersIds.length < 5 ? 'а' : 'ов'}

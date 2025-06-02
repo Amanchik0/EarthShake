@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CitySelect from '../../components/CitySelect/CitySelect';
 import styles from './AuthPage.module.css';
@@ -29,10 +29,116 @@ const AuthPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+
+  const debounce = useCallback((func: Function, delay: number) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(null, args), delay);
+    };
+  }, []);
+
+  const checkUsernameAvailability = async (username: string) => {
+    if (!username || username.length < 3) {
+      setUsernameAvailable(null);
+      return;
+    }
+
+    setIsCheckingUsername(true);
+    try {
+      const response = await fetch(`http://localhost:8090/api/users/get-by-username/${encodeURIComponent(username)}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        
+        if (userData === null) {
+          setUsernameAvailable(true);
+          setErrors(prev => {
+            const newErrors = { ...prev };
+            delete newErrors.username;
+            return newErrors;
+          });
+        } else {
+          setUsernameAvailable(false);
+          setErrors(prev => ({ ...prev, username: 'Имя пользователя уже занято' }));
+        }
+      } else {
+        setUsernameAvailable(null);
+      }
+    } catch (error) {
+      console.error('Error checking username:', error);
+      setUsernameAvailable(null);
+    } finally {
+      setIsCheckingUsername(false);
+    }
+  };
+
+  const debouncedCheckUsername = useCallback(
+    debounce(checkUsernameAvailability, 500),
+    []
+  );
+
+  useEffect(() => {
+    if (formData.username) {
+      debouncedCheckUsername(formData.username);
+    } else {
+      setUsernameAvailable(null);
+      setIsCheckingUsername(false);
+    }
+  }, [formData.username, debouncedCheckUsername]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    if (name === 'phoneNumber') {
+      let cleaned = value.replace(/[^\d]/g, '');
+      
+      if (cleaned.length === 0) {
+        cleaned = '7';
+      } else if (!cleaned.startsWith('7')) {
+        cleaned = '7' + cleaned;
+      }
+      
+      if (cleaned.length > 11) {
+        cleaned = cleaned.slice(0, 11);
+      }
+      
+      let formatted = '';
+      if (cleaned.length >= 1) {
+        formatted = '+7';
+        if (cleaned.length > 1) {
+          formatted += ' (' + cleaned.slice(1, 4);
+          if (cleaned.length > 4) {
+            formatted += ') ' + cleaned.slice(4, 7);
+            if (cleaned.length > 7) {
+              formatted += '-' + cleaned.slice(7, 9);
+              if (cleaned.length > 9) {
+                formatted += '-' + cleaned.slice(9, 11);
+              }
+            }
+          } else if (cleaned.length > 1) {
+        
+          }
+        }
+      }
+      
+      setFormData(prev => ({ ...prev, [name]: formatted }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+    
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleCityChange = (cityName: string) => {
@@ -44,23 +150,57 @@ const AuthPage: React.FC = () => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
+    
     if (!formData.firstName) newErrors.firstName = 'Имя обязательно';
     if (!formData.lastName) newErrors.lastName = 'Фамилия обязательна';
-    if (!formData.username) newErrors.username = 'Имя пользователя обязательно';
+    if (!formData.username) {
+      newErrors.username = 'Имя пользователя обязательно';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Минимум 3 символа';
+    } else if (usernameAvailable === false) {
+      newErrors.username = 'Имя пользователя уже занято';
+    }
+    
     if (!formData.email) newErrors.email = 'Email обязателен';
     else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = 'Введите корректный email';
-    if (!formData.phoneNumber) newErrors.phoneNumber = 'Телефон обязателен';
+    
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = 'Телефон обязателен';
+    } else {
+      const phoneDigits = formData.phoneNumber.replace(/\D/g, '');
+      
+      if (!phoneDigits.startsWith('77')) {
+        newErrors.phoneNumber = 'Номер должен начинаться с +7 7';
+      } else if (phoneDigits.length < 11) {
+        newErrors.phoneNumber = 'Номер телефона слишком короткий';
+      }
+    }
+    
     if (!formData.city) newErrors.city = 'Город обязателен'; 
+    
     if (!formData.password) newErrors.password = 'Пароль обязателен';
     else if (formData.password.length < 8) newErrors.password = 'Минимум 8 символов';
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Пароли не совпадают';
+    
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Пароли не совпадают';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isCheckingUsername) {
+      alert('Подождите, проверяем доступность имени пользователя...');
+      return;
+    }
+    
     if (!validateForm()) return;
+
+    const cleanPhone = formData.phoneNumber.replace(/\D/g, ''); 
+    const formattedPhone = '+' + cleanPhone; 
 
     const payload = {
       username: formData.username,
@@ -68,10 +208,13 @@ const AuthPage: React.FC = () => {
       password: formData.password,
       city: formData.city,
       role: 'USER',
-      phoneNumber: formData.phoneNumber,
+      phoneNumber: formattedPhone, 
       firstName: formData.firstName,  
       lastName: formData.lastName
     };
+
+    console.log('Sending payload:', payload);
+    console.log('Phone number will be saved as:', formattedPhone);
 
     try {
       const response = await fetch('http://localhost:8090/api/auth/register', {
@@ -82,6 +225,13 @@ const AuthPage: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        if (errorData.message && errorData.message.toLowerCase().includes('username')) {
+          setErrors(prev => ({ ...prev, username: 'Имя пользователя уже занято' }));
+          setUsernameAvailable(false);
+          return;
+        }
+        
         alert(errorData.message || 'Ошибка при регистрации');
         return;
       }
@@ -99,6 +249,20 @@ const AuthPage: React.FC = () => {
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const getUsernameInputClass = () => {
+    let className = styles.input;
+    if (formData.username) {
+      if (isCheckingUsername) {
+        className += ` ${styles.inputChecking}`;
+      } else if (usernameAvailable === true) {
+        className += ` ${styles.inputValid}`;
+      } else if (usernameAvailable === false) {
+        className += ` ${styles.inputInvalid}`;
+      }
+    }
+    return className;
   };
 
   return (
@@ -157,7 +321,7 @@ const AuthPage: React.FC = () => {
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
                 <input
-                  className={styles.input}
+                  className={getUsernameInputClass()}
                   type="text"
                   id="username"
                   name="username"
@@ -166,8 +330,35 @@ const AuthPage: React.FC = () => {
                   onChange={handleChange}
                   required
                 />
+                {isCheckingUsername && (
+                  <div className={styles.checkingIndicator}>
+                    <svg className={styles.spinner} width="16" height="16" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" stroke="#FF6B98" strokeWidth="2" fill="none" strokeDasharray="31.416" strokeDashoffset="31.416">
+                        <animate attributeName="stroke-dashoffset" dur="2s" values="31.416;0" repeatCount="indefinite"/>
+                      </circle>
+                    </svg>
+                  </div>
+                )}
+                {!isCheckingUsername && usernameAvailable === true && formData.username.length >= 3 && (
+                  <div className={styles.availabilityIndicator}>
+                    <svg className={styles.checkIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34C759" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20,6 9,17 4,12"></polyline>
+                    </svg>
+                  </div>
+                )}
+                {!isCheckingUsername && usernameAvailable === false && (
+                  <div className={styles.availabilityIndicator}>
+                    <svg className={styles.crossIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </div>
+                )}
               </div>
               {errors.username && <div className={styles.errorMessage}>{errors.username}</div>}
+              {!errors.username && usernameAvailable === true && formData.username.length >= 3 && (
+                <div className={styles.successMessage}>Имя пользователя доступно</div>
+              )}
             </div>
             
             <div className={styles.formGroup}>
@@ -202,9 +393,10 @@ const AuthPage: React.FC = () => {
                   type="tel"
                   id="phoneNumber"
                   name="phoneNumber"
-                  placeholder="+7 (___) ___-__-__"
+                  placeholder="+7 (7__) ___-__-__"
                   value={formData.phoneNumber}
                   onChange={handleChange}
+                  maxLength={18}
                   required
                 />
               </div>

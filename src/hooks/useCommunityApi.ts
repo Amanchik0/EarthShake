@@ -45,7 +45,7 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
         let errorDetails = '';
         try {
           const errorText = await response.text();
-          console.error('❌ Ошибка сервера:', errorText);
+          console.error('Ошибка сервера:', errorText);
           errorDetails = errorText;
         } catch {}
 
@@ -66,7 +66,7 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
       }
 
       const createdCommunity: CommunityCreateResponse = await response.json();
-      console.log('✅ Сообщество создано успешно:', createdCommunity);
+      console.log(' Сообщество создано успешно:', createdCommunity);
       
       // Перенаправление на страницу созданного сообщества
       if (createdCommunity.id) {
@@ -75,7 +75,7 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
       
       return createdCommunity;
     } catch (err) {
-      console.error('❌ Ошибка создания сообщества:', err);
+      console.error('Ошибка создания сообщества:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка создания сообщества';
       setError(errorMessage);
       return null;
@@ -139,10 +139,10 @@ export const useCommunityAPI = (): UseCommunityAPIReturn => {
         }
       }
 
-      console.log('✅ Изображение загружено');
+      console.log(' Изображение загружено');
       return null;
     } catch (err) {
-      console.error('❌ Ошибка загрузки изображения:', err);
+      console.error('Ошибка загрузки изображения:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки изображения';
       setError(errorMessage);
       return null;

@@ -50,18 +50,18 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
 
       if (!response.ok) {
         if (response.status === 404) {
-          console.warn(`❌ Пользователь ${username} не найден`);
+          console.warn(`Пользователь ${username} не найден`);
           return null;
         }
         throw new Error(`Ошибка получения пользователя: ${response.status}`);
       }
 
       const user: User = await response.json();
-      console.log('✅ Пользователь получен:', user);
+      console.log(' Пользователь получен:', user);
       
       return user;
     } catch (err) {
-      console.error('❌ Ошибка получения пользователя:', err);
+      console.error('Ошибка получения пользователя:', err);
       return null;
     }
   }, []);
@@ -95,20 +95,20 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
         let errorDetails = '';
         try {
           const errorText = await response.text();
-          console.error('❌ Ответ сервера PATCH:', errorText);
+          console.error('Ответ сервера PATCH:', errorText);
           errorDetails = errorText;
         } catch (e) {
-          console.error('❌ Не удалось прочитать ответ сервера');
+          console.error('Не удалось прочитать ответ сервера');
         }
 
-        console.warn(`⚠️ PATCH запрос неудачен (${response.status}), но продолжаем`);
+        console.warn(` PATCH запрос неудачен (${response.status}), но продолжаем`);
         return false; // Не критичная ошибка
       }
 
-      console.log('✅ PATCH запрос выполнен успешно');
+      console.log(' PATCH запрос выполнен успешно');
       return true;
     } catch (err) {
-      console.error('❌ Ошибка PATCH запроса:', err);
+      console.error('Ошибка PATCH запроса:', err);
       return false; // Не критичная ошибка
     }
   }, []);
@@ -146,7 +146,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
             };
           }
         } catch (error) {
-          console.warn(`⚠️ Не удалось загрузить пользователя ${username}:`, error);
+          console.warn(` Не удалось загрузить пользователя ${username}:`, error);
           // Возвращаем fallback данные
           return {
             id: username,
@@ -157,11 +157,11 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       });
 
       const loadedMembers = await Promise.all(memberPromises);
-      console.log('✅ Участники загружены:', loadedMembers);
+      console.log(' Участники загружены:', loadedMembers);
       setMembers(loadedMembers);
       
     } catch (err) {
-      console.error('❌ Ошибка загрузки участников:', err);
+      console.error('Ошибка загрузки участников:', err);
       
       // В случае ошибки показываем участников без фотографий
       const fallbackMembers = usernames.slice(0, 10).map((username) => ({
@@ -194,7 +194,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       }
 
       const communityData: Community = await response.json();
-      console.log('✅ Сообщество загружено:', communityData);
+      console.log(' Сообщество загружено:', communityData);
       
       // Преобразуем в формат для отображения
       const communityDetails = toCommunityDetails(communityData, currentUserId);
@@ -204,7 +204,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       await loadMembers(communityData.users);
       
     } catch (err) {
-      console.error('❌ Ошибка загрузки сообщества:', err);
+      console.error('Ошибка загрузки сообщества:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки сообщества';
       setError(errorMessage);
     } finally {
@@ -235,10 +235,10 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
         let errorDetails = '';
         try {
           const errorText = await response.text();
-          console.error('❌ Ответ сервера:', errorText);
+          console.error('Ответ сервера:', errorText);
           errorDetails = errorText;
         } catch (e) {
-          console.error('❌ Не удалось прочитать ответ сервера');
+          console.error('Не удалось прочитать ответ сервера');
         }
 
         if (response.status === 404) {
@@ -257,7 +257,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       }
 
       const updatedCommunity: Community = await response.json();
-      console.log('✅ Сообщество обновлено:', updatedCommunity);
+      console.log(' Сообщество обновлено:', updatedCommunity);
       
       // Обновляем локальное состояние
       const communityDetails = toCommunityDetails(updatedCommunity, currentUserId);
@@ -268,7 +268,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       
       return true;
     } catch (err) {
-      console.error('❌ Ошибка обновления сообщества:', err);
+      console.error('Ошибка обновления сообщества:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка обновления сообщества';
       setError(errorMessage);
       return false;
@@ -280,7 +280,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
   // Вступление в сообщество
   const joinCommunity = useCallback(async (id: string): Promise<boolean> => {
     if (!community || !currentUserId) {
-      console.warn('❌ Нет данных сообщества или пользователя для вступления');
+      console.warn('Нет данных сообщества или пользователя для вступления');
       return false;
     }
 
@@ -288,7 +288,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
     
     // Проверяем, не является ли пользователь уже участником
     if (community.users.includes(currentUserId)) {
-      console.warn('❌ Пользователь уже является участником сообщества');
+      console.warn('Пользователь уже является участником сообщества');
       setError('Вы уже являетесь участником этого сообщества');
       return false;
     }
@@ -333,14 +333,14 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       const userUpdateSuccess = await updateUserCommunity(community.id, user.id, 'insert');
       
       if (!userUpdateSuccess) {
-        console.warn('⚠️ Сообщество обновлено, но не удалось обновить профиль пользователя');
+        console.warn(' Сообщество обновлено, но не удалось обновить профиль пользователя');
         // Не считаем это критической ошибкой
       }
 
-      console.log('✅ Успешно вступили в сообщество');
+      console.log(' Успешно вступили в сообщество');
       return true;
     } catch (err) {
-      console.error('❌ Ошибка при вступлении:', err);
+      console.error('Ошибка при вступлении:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка вступления в сообщество';
       setError(errorMessage);
       return false;
@@ -350,7 +350,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
   // Выход из сообщества
   const leaveCommunity = useCallback(async (id: string): Promise<boolean> => {
     if (!community || !currentUserId) {
-      console.warn('❌ Нет данных сообщества или пользователя для выхода');
+      console.warn('Нет данных сообщества или пользователя для выхода');
       return false;
     }
 
@@ -358,7 +358,7 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
 
     // Проверяем, является ли пользователь участником
     if (!community.users.includes(currentUserId)) {
-      console.warn('❌ Пользователь не является участником сообщества');
+      console.warn('Пользователь не является участником сообщества');
       setError('Вы не являетесь участником этого сообщества');
       return false;
     }
@@ -403,14 +403,14 @@ export const useCommunityDetail = (currentUserId?: string): UseCommunityDetailRe
       const userUpdateSuccess = await updateUserCommunity(community.id, user.id, 'delete');
       
       if (!userUpdateSuccess) {
-        console.warn('⚠️ Сообщество обновлено, но не удалось обновить профиль пользователя');
+        console.warn(' Сообщество обновлено, но не удалось обновить профиль пользователя');
         // Не считаем это критической ошибкой
       }
 
-      console.log('✅ Успешно покинули сообщество');
+      console.log(' Успешно покинули сообщество');
       return true;
     } catch (err) {
-      console.error('❌ Ошибка при выходе:', err);
+      console.error('Ошибка при выходе:', err);
       const errorMessage = err instanceof Error ? err.message : 'Ошибка выхода из сообщества';
       setError(errorMessage);
       return false;

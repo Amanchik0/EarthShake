@@ -4,7 +4,7 @@ interface AuthUser {
   username: string;
   role: string;
   city: string;
-  isSubscriber: boolean; // Добавляем новое поле
+  isSubscriber: boolean; 
 }
 
 interface AuthContextValue {
@@ -16,7 +16,7 @@ interface AuthContextValue {
     username: string;
     role: string;
     city: string;
-    isSubscriber: boolean; // Добавляем в интерфейс login
+    isSubscriber: boolean; 
   }) => void;
   logout: () => void;
   updateUser: (userData: Partial<AuthUser>) => void;
@@ -29,7 +29,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // При монтировании проверяем данные в localStorage
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
     const city = localStorage.getItem('city');
@@ -40,7 +39,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         username, 
         role, 
         city, 
-        isSubscriber: isSubscriber === 'true' // Преобразуем строку в boolean
+        isSubscriber: isSubscriber === 'true' 
       });
     }
     setIsLoading(false);
@@ -52,7 +51,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('username', username);
     localStorage.setItem('role', role);
     localStorage.setItem('city', city);
-    localStorage.setItem('isSubscriber', isSubscriber.toString()); // Сохраняем как строку
+    localStorage.setItem('isSubscriber', isSubscriber.toString()); 
     
     setUser({ username, role, city, isSubscriber });
   };
@@ -62,13 +61,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(null);
   };
 
-  // Функция для обновления данных пользователя
   const updateUser = (userData: Partial<AuthUser>) => {
     if (!user) return;
 
     const updatedUser = { ...user, ...userData };
     
-    // Обновляем localStorage
     if (userData.username !== undefined) {
       localStorage.setItem('username', userData.username);
     }
@@ -82,7 +79,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       localStorage.setItem('isSubscriber', userData.isSubscriber.toString());
     }
     
-    // Обновляем состояние
     setUser(updatedUser);
   };
 

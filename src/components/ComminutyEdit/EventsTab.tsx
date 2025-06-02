@@ -57,7 +57,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
           });
 
           if (!response.ok) {
-            console.warn(`⚠️ Событие ${eventId} не найдено (${response.status})`);
+            console.warn(` Событие ${eventId} не найдено (${response.status})`);
             return null;
           }
 
@@ -76,7 +76,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
             mediaUrl: eventData.mediaUrl || []
           };
         } catch (error) {
-          console.error(`❌ Ошибка загрузки события ${eventId}:`, error);
+          console.error(`Ошибка загрузки события ${eventId}:`, error);
           return null;
         }
       });
@@ -85,10 +85,10 @@ const EventsTab: React.FC<EventsTabProps> = ({
       const validEvents = loadedEvents.filter((event): event is Event => event !== null);
       
       setEvents(validEvents);
-      console.log(`✅ Загружено ${validEvents.length} событий сообщества`);
+      console.log(` Загружено ${validEvents.length} событий сообщества`);
 
     } catch (error) {
-      console.error('❌ Ошибка загрузки событий:', error);
+      console.error('Ошибка загрузки событий:', error);
       onMessage('Ошибка при загрузке событий');
     } finally {
       setLoading(false);
@@ -162,7 +162,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
       } else if (!deleteResponse.ok) {
         throw new Error(`Ошибка удаления события: ${deleteResponse.status}`);
       } else {
-        console.log('✅ Событие успешно удалено из API');
+        console.log(' Событие успешно удалено из API');
         eventDeleted = true;
       }
 
@@ -173,7 +173,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
         if (updateSuccess) {
           // 7. Обновляем локальное состояние только после успешного обновления сообщества
           setEvents(prev => prev.filter(e => e.id !== eventId));
-          console.log('✅ Событие полностью удалено и синхронизировано');
+          console.log(' Событие полностью удалено и синхронизировано');
         } else {
           // Если не удалось обновить сообщество, показываем предупреждение
           onMessage(`Событие удалено, но возможны проблемы с синхронизацией. Обновите страницу.`);
@@ -181,7 +181,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
       }
 
     } catch (error) {
-      console.error('❌ Ошибка удаления события:', error);
+      console.error('Ошибка удаления события:', error);
       onMessage(error instanceof Error ? error.message : 'Ошибка при удалении события');
     } finally {
       setDeletingEventId(null);
@@ -240,12 +240,12 @@ const EventsTab: React.FC<EventsTabProps> = ({
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Ошибка обновления сообщества:', response.status, errorText);
+        console.error('Ошибка обновления сообщества:', response.status, errorText);
         throw new Error(`Ошибка обновления сообщества: ${response.status}`);
       }
 
       const updatedCommunity = await response.json();
-      console.log('✅ Сообщество успешно обновлено:', updatedCommunity);
+      console.log(' Сообщество успешно обновлено:', updatedCommunity);
       
       // Уведомляем родительский компонент об обновлении
       onCommunityUpdate?.(updatedCommunity);
@@ -255,7 +255,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
       return true;
 
     } catch (error) {
-      console.error('❌ Критическая ошибка обновления списка событий:', error);
+      console.error('Критическая ошибка обновления списка событий:', error);
       onMessage('Ошибка синхронизации: событие удалено, но список сообщества не обновлен');
       return false;
     }
@@ -312,12 +312,12 @@ const EventsTab: React.FC<EventsTabProps> = ({
 
   //     if (!archiveResponse.ok) {
   //       const errorText = await archiveResponse.text();
-  //       console.error('❌ Ошибка архивирования:', archiveResponse.status, errorText);
+  //       console.error('Ошибка архивирования:', archiveResponse.status, errorText);
   //       throw new Error(`Ошибка архивирования: ${archiveResponse.status}`);
   //     }
 
   //     const updatedEvent = await archiveResponse.json();
-  //     console.log('✅ Событие успешно архивировано:', updatedEvent);
+  //     console.log(' Событие успешно архивировано:', updatedEvent);
 
   //     // Обновляем локальное состояние
   //     setEvents(prev => prev.map(e => 
@@ -329,7 +329,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
   //     onMessage(`Событие "${event.title}" архивировано`);
 
   //   } catch (error) {
-  //     console.error('❌ Ошибка архивирования события:', error);
+  //     console.error('Ошибка архивирования события:', error);
   //     onMessage(error instanceof Error ? error.message : 'Ошибка при архивировании события');
   //   } finally {
   //     setDeletingEventId(null);
@@ -383,12 +383,12 @@ const EventsTab: React.FC<EventsTabProps> = ({
 
   //     if (!restoreResponse.ok) {
   //       const errorText = await restoreResponse.text();
-  //       console.error('❌ Ошибка восстановления:', restoreResponse.status, errorText);
+  //       console.error('Ошибка восстановления:', restoreResponse.status, errorText);
   //       throw new Error(`Ошибка восстановления: ${restoreResponse.status}`);
   //     }
 
   //     const updatedEvent = await restoreResponse.json();
-  //     console.log('✅ Событие успешно восстановлено:', updatedEvent);
+  //     console.log(' Событие успешно восстановлено:', updatedEvent);
 
   //     setEvents(prev => prev.map(e => 
   //       e.id === eventId 
@@ -399,7 +399,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
   //     onMessage(`Событие "${event.title}" восстановлено`);
 
   //   } catch (error) {
-  //     console.error('❌ Ошибка восстановления события:', error);
+  //     console.error('Ошибка восстановления события:', error);
   //     onMessage(error instanceof Error ? error.message : 'Ошибка при восстановлении события');
   //   } finally {
   //     setDeletingEventId(null);
@@ -566,7 +566,7 @@ const EventsTab: React.FC<EventsTabProps> = ({
                     {event.title}
                     {event.eventType === 'EMERGENCY' && (
                       <span style={{ marginLeft: '8px', fontSize: '12px', color: '#ff4444' }}>
-                        ⚠️ Экстренное
+                         Экстренное
                       </span>
                     )}
                   </div>

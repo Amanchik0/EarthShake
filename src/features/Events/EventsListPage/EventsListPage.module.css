@@ -224,6 +224,104 @@
   box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
 }
 
+/* Header with create event button */
+.header {
+  margin-bottom: 24px;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.headerText {
+  flex-grow: 1;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a202c;
+  background: linear-gradient(135deg, #2d3748, #4a5568);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 16px;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Create Event Button Styles */
+.createEventButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.createEventButton:hover {
+  background-color: #e54b9d;
+}
+
+.createEventButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Secondary create event button */
+.createEventButtonSecondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.createEventButtonSecondary:hover {
+  background-color: #e54b9d;
+}
+
+.createEventButtonSecondary svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Create event prompt in no results */
+.createEventPrompt {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #dee2e6;
+}
+
+.createEventPrompt p {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+}
+
 /* Filter styles */
 .filterSection {
   background: linear-gradient(135deg, #ffffff, #f8fafc);
@@ -516,28 +614,6 @@
   margin-bottom: 200px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.header h1 {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a202c;
-  background: linear-gradient(135deg, #2d3748, #4a5568);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-  color: #64748b;
-  font-size: 16px;
-  margin-top: 4px;
-}
-
 .contentWrapper {
   display: flex;
   gap: 24px;
@@ -639,11 +715,38 @@
   .splitView .mapView {
     width: 50%;
   }
+
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .createEventButton {
+    align-self: flex-start;
+  }
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 16px;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .createEventButton {
+    padding: 10px 20px;
+    font-size: 13px;
+    align-self: stretch;
+    justify-content: center;
   }
   
   .filters {
@@ -682,18 +785,31 @@
     padding: 10px 16px;
     font-size: 12px;
   }
-
 }
 
 @media (max-width: 480px) {
-  .header {
+  .headerContent {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    align-items: stretch;
+    gap: 12px;
   }
   
   .header h1 {
     font-size: 24px;
+  }
+
+  .createEventButton {
+    padding: 10px 16px;
+    font-size: 12px;
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .createEventButtonSecondary {
+    padding: 8px 16px;
+    font-size: 12px;
+    align-self: stretch;
+    justify-content: center;
   }
   
   .mapControls {
@@ -711,25 +827,35 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-
-
   }
+
   .filterLabel {
-      text-align: left;
-      margin-left: 0;
-    }
-    .filterDropdown {
-      text-align: left;
-      width: 100%;
-
+    text-align: left;
+    margin-left: 0;
   }
+
+  .filterDropdown {
+    text-align: left;
+    width: 100%;
+  }
+
   .filters {
     text-align: left;
   }
+
   .noResults h3 {
     font-size: 1.5rem;
   }
+
   .noResults p {
     font-size: 0.9rem;
   }
- }
+
+  .createEventPrompt {
+    padding: 16px;
+  }
+
+  .createEventPrompt p {
+    font-size: 14px;
+  }
+}

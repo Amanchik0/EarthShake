@@ -99,7 +99,7 @@ const CommunityCreatePage: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('❌ Ошибка загрузки изображения:', error);
+        console.error('Ошибка загрузки изображения:', error);
       } finally {
         setUploading(false);
       }
@@ -174,7 +174,7 @@ const CommunityCreatePage: React.FC = () => {
       const createdCommunity = await createCommunity(communityData);
       
       if (createdCommunity) {
-        console.log('✅ Сообщество создано:', createdCommunity);
+        console.log(' Сообщество создано:', createdCommunity);
         showNotificationMessage('Сообщество успешно создано!', 'success');
         
         // Переходим на страницу созданного сообщества через 1.5 секунды
@@ -183,7 +183,7 @@ const CommunityCreatePage: React.FC = () => {
         }, 1500);
       }
     } catch (error) {
-      console.error('❌ Ошибка создания сообщества:', error);
+      console.error('Ошибка создания сообщества:', error);
       showNotificationMessage('Не удалось создать сообщество. Попробуйте еще раз.', 'error');
     }
   };

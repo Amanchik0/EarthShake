@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../components/auth/AuthContext';
 import styles from '../../features/Profile/profile.module.css';
 import SubscriptionModal from '../Modal/SubscriptionModal';
 import { SubscriptionSectionProps } from '../../types/profile';
@@ -13,6 +14,7 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
   currentProfile,
   onSubscriptionUpdate
 }) => {
+  const { updateUser } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,6 +33,8 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
       throw new Error('Токен авторизации не найден');
     }
 
+    console.log('📤 Отправляем запрос на обновление подписки:', subscriptionData);
+
     const response = await fetch('http://localhost:8090/api/users/update', {
       method: 'PUT',
       headers: {
@@ -44,15 +48,21 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
       if (response.status === 401) {
         throw new Error('Ошибка авторизации');
       }
-      throw new Error(`Ошибка ${response.status}: Не удалось обновить подписку`);
+      const errorText = await response.text();
+      throw new Error(`Ошибка ${response.status}: ${errorText}`);
     }
 
-    return await response.json();
+    const result = await response.json();
+    console.log(' Ответ сервера на обновление подписки:', result);
+    return result;
   };
 
   const handleSubscriptionChange = async () => {
     setIsLoading(true);
     try {
+      console.log('🔄 Начинаем процесс изменения подписки...');
+      console.log(' Текущее состояние подписки:', hasSubscription);
+      
       // Получаем актуальные данные профиля с сервера перед обновлением
       const token = localStorage.getItem('accessToken');
       const profileResponse = await fetch(
@@ -70,8 +80,12 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
       }
       
       const actualProfile = await profileResponse.json();
+      console.log('📋 Актуальные данные профиля с сервера:', actualProfile);
       
       // Подготавливаем данные для обновления с актуальными массивами
+      const newSubscriptionStatus = !hasSubscription;
+      console.log('📝 Новый статус подписки:', newSubscriptionStatus);
+      
       const subscriptionData = {
         id: actualProfile.id,
         username: actualProfile.username,
@@ -91,10 +105,13 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
           lastProfileUpdate: new Date().toISOString(),
           subscriptionUpdatedAt: new Date().toISOString()
         },
-        subscriber: !hasSubscription // Переключаем состояние подписки
+        isSubscriber: newSubscriptionStatus // Правильное поле!
       };
 
+      console.log('📤 Данные для отправки:', subscriptionData);
+
       const updatedProfile = await updateSubscription(subscriptionData);
+      console.log(' Профиль обновлен на сервере:', updatedProfile);
 
       // Преобразуем ответ API в формат FullProfile
       const fullProfile = {
@@ -110,13 +127,27 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
         phoneNumber: updatedProfile.phoneNumber,
         registrationDate: updatedProfile.registrationDate,
         metadata: updatedProfile.metadata,
-        subscriber: updatedProfile.subscriber,
+        subscriber: updatedProfile.isSubscriber, // Сохраняем как subscriber для совместимости
+        eventIds: updatedProfile.eventIds || [],
+        communityIds: updatedProfile.communityId || [],
         events: currentProfile.events || [], // Сохраняем уже загруженные события
         communities: currentProfile.communities || [] // Сохраняем уже загруженные сообщества
       };
 
+      console.log('🔄 Обновляем профиль в компоненте:', fullProfile);
+
       // Обновляем профиль в родительском компоненте
       onSubscriptionUpdate(fullProfile);
+
+      // Обновляем AuthContext с новым статусом подписки
+      console.log('🔄 Обновляем AuthContext...');
+      updateUser({ 
+        isSubscriber: updatedProfile.isSubscriber
+      });
+
+      // Также обновляем localStorage напрямую для гарантии
+      localStorage.setItem('isSubscriber', updatedProfile.isSubscriber.toString());
+      console.log('💾 Обновлен localStorage isSubscriber:', updatedProfile.isSubscriber);
 
       // Показываем уведомление
       const notification = document.createElement('div');
@@ -142,6 +173,8 @@ const SubscriptionSection: React.FC<ExtendedSubscriptionSectionProps> = ({
           document.body.removeChild(notification);
         }
       }, 3000);
+
+      console.log(' Процесс изменения подписки завершен успешно');
 
     } catch (error) {
       console.error('Ошибка при изменении подписки:', error);

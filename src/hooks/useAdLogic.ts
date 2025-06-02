@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../components/auth/AuthContext";
 
 interface AdData {
   id: string;
@@ -20,6 +21,7 @@ interface AdDisplayData {
 }
 
 export function useAdLogic() {
+  const { user } = useAuth();
   const location = useLocation();
   const [adClicks, setAdClicks] = useState(0);
   const [adData, setAdData] = useState<AdDisplayData | null>(null);
@@ -28,55 +30,61 @@ export function useAdLogic() {
   // Функция для получения рекламы из API
   const fetchAdvertisement = async (): Promise<AdData | null> => {
     try {
+      console.log('📡 Загружаем рекламу...');
       const response = await fetch('http://localhost:8090/api/advertisement/get-advertisement');
       if (!response.ok) {
-        throw new Error('Failed to fetch advertisement');
+        console.warn(' Не удалось загрузить рекламу:', response.status);
+        return null;
       }
       const data = await response.json();
       
       // Проверяем, что реклама активна и не истекла
       if (data && data.active && new Date(data.finishDate) > new Date()) {
+        console.log(' Реклама загружена:', data);
         return data;
       }
+      console.log(' Реклама неактивна или истекла');
       return null;
     } catch (error) {
-      console.error('Error fetching advertisement:', error);
+      console.error(' Ошибка загрузки рекламы:', error);
       return null;
     }
   };
 
-  // Функция для обновления счетчика показов
   const updateShowCount = async (adId: string) => {
     try {
-      // Предполагаем, что есть API для обновления счетчика показов
-      // Если такого API нет, можете удалить эту функцию
+      console.log(' Обновляем счетчик показов для рекламы:', adId);
       await fetch(`http://localhost:8090/api/advertisement/${adId}/show`, {
         method: 'POST'
       });
+      console.log(' Счетчик показов обновлен');
     } catch (error) {
-      console.error('Error updating show count:', error);
+      console.error(' Ошибка обновления счетчика показов:', error);
     }
   };
 
-  // Функция для обновления счетчика кликов
   const updateClickCount = async (adId: string) => {
     try {
-      // Предполагаем, что есть API для обновления счетчика кликов
-      // Если такого API нет, можете удалить эту функцию
-      await fetch(`http://localhost:8090/api/advertisement/${adId}/click`, {
-        method: 'POST'
+      console.log(' Обновляем счетчик кликов для рекламы:', adId);
+      const response = await fetch(`http://localhost:8090/api/advertisement/increment/${adId}`, {
+        method: 'PATCH'
       });
+      
+      if (response.ok) {
+        console.log(' Счетчик кликов обновлен');
+      } else {
+        console.error(' Ошибка обновления счетчика кликов:', response.status);
+      }
     } catch (error) {
-      console.error('Error updating click count:', error);
+      console.error(' Ошибка PATCH запроса для счетчика кликов:', error);
     }
   };
 
-  // Увеличиваем счетчик при смене страницы
   useEffect(() => {
     setAdClicks(prev => prev + 1);
+    console.log('🔄 Переход на новую страницу, счетчик кликов:', adClicks + 1);
   }, [location.pathname]);
 
-  // Загружаем рекламу при инициализации
   useEffect(() => {
     const loadAdvertisement = async () => {
       const ad = await fetchAdvertisement();
@@ -86,39 +94,54 @@ export function useAdLogic() {
     loadAdvertisement();
   }, []);
 
-  // Показываем рекламу каждые 10 кликов
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
 
-    if (adClicks > 0 && adClicks % 10 === 0 && currentAd) {
-      // Преобразуем данные для компонента AdModal
+    const shouldShowAd = adClicks > 0 && 
+                        adClicks % 10 === 0 && 
+                        currentAd && 
+                        (!user || !user.isSubscriber);
+
+    console.log('🔍 Проверка показа рекламы:', {
+      adClicks,
+      hasCurrentAd: !!currentAd,
+      isUserLoggedIn: !!user,
+      isSubscriber: user?.isSubscriber,
+      shouldShowAd
+    });
+
+    if (shouldShowAd) {
+      console.log('📺 Показываем рекламу пользователю');
+      
       setAdData({
         name: currentAd.name,
         mediaUrl: currentAd.mediaUrl,
         targetUrl: currentAd.targetUrl
       });
 
-      // Обновляем счетчик показов
       updateShowCount(currentAd.id);
 
-      // Автоматически закрываем через 10 секунд
       timer = setTimeout(() => {
+        console.log('⏰ Автоматически закрываем рекламу');
         setAdData(null);
       }, 10000);
+    } else if (user?.isSubscriber) {
+      console.log(' У пользователя есть подписка, реклама отключена');
     }
 
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [adClicks, currentAd]);
+  }, [adClicks, currentAd, user?.isSubscriber]);
 
   const handleCloseAd = () => {
+    console.log('Пользователь закрыл рекламу');
     setAdData(null);
   };
 
-  // Обработчик клика по рекламе (для счетчика кликов)
   const handleAdClick = () => {
     if (currentAd) {
+      console.log(' Клик по рекламе, отправляем PATCH запрос');
       updateClickCount(currentAd.id);
     }
   };
@@ -127,6 +150,6 @@ export function useAdLogic() {
     adData, 
     handleCloseAd, 
     handleAdClick,
-    currentAd // Возвращаем текущую рекламу для дополнительной информации если нужно
+    currentAd 
   };
 }

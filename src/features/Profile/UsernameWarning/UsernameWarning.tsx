@@ -72,7 +72,7 @@ const UsernameWarning: React.FC<UsernameWarningProps> = ({
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <div className={styles.warningIcon}>⚠️</div>
+          <div className={styles.warningIcon}></div>
           <h2 className={styles.title}>Смена username</h2>
         </div>
 

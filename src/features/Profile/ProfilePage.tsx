@@ -103,7 +103,7 @@ const ProfilePage: React.FC = () => {
       const loadedEvents = await Promise.all(eventPromises);
       const validEvents = loadedEvents.filter(Boolean) as ApiEvent[];
       
-      console.log('✅ Загружены события:', validEvents.map(e => ({ id: e.id, title: e.title })));
+      console.log(' Загружены события:', validEvents.map(e => ({ id: e.id, title: e.title })));
       
       // Преобразуем API данные в EventData
       const transformedEvents: EventData[] = validEvents.map(event => ({
@@ -159,7 +159,7 @@ const ProfilePage: React.FC = () => {
       const loadedCommunities = await Promise.all(communityPromises);
       const validCommunities = loadedCommunities.filter(Boolean) as ApiCommunity[];
       
-      console.log('✅ Загружены сообщества:', validCommunities.map(c => ({ id: c.id, name: c.name })));
+      console.log(' Загружены сообщества:', validCommunities.map(c => ({ id: c.id, name: c.name })));
       
       // Преобразуем API данные в CommunityData
       const transformedCommunities: CommunityData[] = validCommunities.map(community => ({
@@ -218,7 +218,7 @@ const ProfilePage: React.FC = () => {
           // Обновляем eventIds в профиле
           setFullProfile(prev => prev ? { ...prev, eventIds: newEventIds } : null);
         } else {
-          console.log('✅ ID событий не изменились');
+          console.log(' ID событий не изменились');
         }
       }
     } catch (error) {
@@ -291,7 +291,7 @@ const ProfilePage: React.FC = () => {
         
         if (!res.ok) {
           if (res.status === 401) {
-            console.error('❌ Ошибка авторизации, выполняем logout');
+            console.error('Ошибка авторизации, выполняем logout');
             logout();
             return;
           }
@@ -299,7 +299,7 @@ const ProfilePage: React.FC = () => {
         }
         
         const apiProfile: ApiProfile = await res.json();
-        console.log('✅ Профиль загружен:', {
+        console.log(' Профиль загружен:', {
           username: apiProfile.username,
           eventIds: apiProfile.eventIds,
           communityIds: apiProfile.communityId
@@ -320,8 +320,8 @@ const ProfilePage: React.FC = () => {
           registrationDate: apiProfile.registrationDate,
           metadata: apiProfile.metadata,
           subscriber: apiProfile.isSubscriber,
-          events: [], // Будут загружены отдельно
-          communities: [], // Будут загружены отдельно
+          // events: [], // Будут загружены отдельно
+          // communities: [], // Будут загружены отдельно
           eventIds: apiProfile.eventIds || [], // Сохраняем ID событий
           communityIds: apiProfile.communityId || [] // Сохраняем ID сообществ
         };
@@ -423,9 +423,9 @@ const ProfilePage: React.FC = () => {
           }
         }
       } catch (error) {
-        console.log('⚠️ Не удалось проверить изменения в событиях/сообществах:', error);
+        console.log(' Не удалось проверить изменения в событиях/сообществах:', error);
       }
-    }
+    }ф
     
     // Обновляем данные в AuthContext, если изменились username, city или подписка
     if (user) {

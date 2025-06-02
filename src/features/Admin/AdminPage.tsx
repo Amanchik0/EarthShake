@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Типы данных
 interface User {
@@ -64,7 +65,7 @@ const AdminPage: React.FC = () => {
   // Состояния загрузки
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
   // API функции
   const fetchUsers = async () => {
     try {
@@ -108,7 +109,7 @@ const AdminPage: React.FC = () => {
   const fetchAdvertisements = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8090/api/advertisement/get-advertisement');
+      const response = await fetch('http://localhost:8090/api/advertisement/get-all');
       const data = await response.json();
       
       // API возвращает один объект рекламы, оборачиваем в массив
@@ -163,7 +164,6 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  // Загрузка данных при смене вкладок
   useEffect(() => {
     switch (activeTab) {
       case 'users':
@@ -197,7 +197,6 @@ const AdminPage: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'Segoe UI, sans-serif' }}>
-      {/* Sidebar */}
       <aside style={{
         width: '260px',
         background: 'linear-gradient(180deg, #ec4899 0%, #a1a1aa 100%)',
@@ -270,7 +269,13 @@ const AdminPage: React.FC = () => {
           alignItems: 'center',
           gap: '12px',
           padding: '16px',
-          borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+          borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+          cursor: 'pointer'
+        }}
+        onClick={() => {
+                            navigate('/profile')
+
+          console.log('Переход на страницу профиля');
         }}>
           <div style={{
             width: '42px',
@@ -290,10 +295,43 @@ const AdminPage: React.FC = () => {
         </div>
       </aside>
       
-      {/* Main content */}
       <main style={{ flex: 1, padding: '24px', backgroundColor: '#f9fafb' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: '600', color: '#4b5563' }}>Панель управления</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: '600', color: '#4b5563' }}>Панель управления</h1>
+            <button
+              onClick={() => {
+                  navigate('/')
+                console.log('Переход на главную страницу');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                cursor: 'pointer',
+                color: '#4b5563',
+                fontSize: '14px',
+                fontWeight: '500',
+                textDecoration: 'none',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#f9fafb';
+                e.currentTarget.style.borderColor = '#d1d5db';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.borderColor = '#e5e7eb';
+              }}
+            >
+              <span>🏠</span>
+              На главную
+            </button>
+          </div>
           {activeTab === 'ads' && (
             <button
               onClick={() => setShowAdModal(true)}
@@ -431,12 +469,11 @@ const AdminPage: React.FC = () => {
                   )}
                   {activeTab === 'ads' && (
                     <>
-                      <th style={{ padding: '16px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Реклама</th>
-                      <th style={{ padding: '16px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Тип</th>
-                      <th style={{ padding: '16px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Статус</th>
-                      <th style={{ padding: '16px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Показы</th>
-                      <th style={{ padding: '16px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Клики</th>
-                      <th style={{ padding: '16px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Действия</th>
+                      <th style={{ padding: '20px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Реклама</th>
+                      <th style={{ padding: '20px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Тип</th>
+                      <th style={{ padding: '20px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Статус</th>
+                      <th style={{ padding: '20px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Показы</th>
+                      <th style={{ padding: '20px', textAlign: 'left', color: '#a1a1aa', fontWeight: '500' }}>Клики</th>
                     </>
                   )}
                 </tr>
@@ -643,8 +680,8 @@ const AdminPage: React.FC = () => {
                     <td style={{ padding: '16px' }}>{ad.showCount || 0}</td>
                     <td style={{ padding: '16px' }}>{ad.clickCount || 0}</td>
                     <td style={{ padding: '16px' }}>
-                      <button
-                        onClick={() => {/* Удаление рекламы */}}
+                      {/* <button
+                        onClick={() => }
                         style={{
                           width: '32px',
                           height: '32px',
@@ -659,7 +696,7 @@ const AdminPage: React.FC = () => {
                         }}
                       >
                         ❌
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))}

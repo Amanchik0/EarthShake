@@ -48,13 +48,13 @@ export class UsernameUpdateService {
       // 3. Если есть ошибки, считаем операцию частично неуспешной
       if (result.errors.length > 0) {
         result.success = false;
-        console.warn('⚠️ Обновление username завершено с ошибками:', result.errors);
+        console.warn(' Обновление username завершено с ошибками:', result.errors);
       } else {
-        console.log('✅ Username успешно обновлен во всех записях');
+        console.log(' Username успешно обновлен во всех записях');
       }
 
     } catch (error) {
-      console.error('❌ Критическая ошибка при обновлении username:', error);
+      console.error('Критическая ошибка при обновлении username:', error);
       result.success = false;
       result.errors.push('Критическая ошибка при обновлении данных');
     }
@@ -115,7 +115,7 @@ export class UsernameUpdateService {
 
             if (updateResponse.ok) {
               result.updated++;
-              console.log(`✅ Сообщество "${community.name}" обновлено`);
+              console.log(` Сообщество "${community.name}" обновлено`);
             } else {
               const errorText = await updateResponse.text().catch(() => 'Неизвестная ошибка');
               result.errors.push(`Ошибка обновления сообщества "${community.name}": ${errorText}`);
@@ -123,13 +123,13 @@ export class UsernameUpdateService {
           }
 
         } catch (error) {
-          console.error(`❌ Ошибка обработки сообщества "${community.name}":`, error);
+          console.error(`Ошибка обработки сообщества "${community.name}":`, error);
           result.errors.push(`Ошибка обработки сообщества "${community.name}": ${error}`);
         }
       }
 
     } catch (error) {
-      console.error('❌ Ошибка получения списка сообществ:', error);
+      console.error('Ошибка получения списка сообществ:', error);
       result.errors.push(`Ошибка получения списка сообществ: ${error}`);
     }
 
@@ -194,7 +194,7 @@ export class UsernameUpdateService {
 
             if (updateResponse.ok) {
               result.updated++;
-              console.log(`✅ Событие "${event.title}" обновлено`);
+              console.log(` Событие "${event.title}" обновлено`);
             } else {
               const errorText = await updateResponse.text().catch(() => 'Неизвестная ошибка');
               result.errors.push(`Ошибка обновления события "${event.title}": ${errorText}`);
@@ -202,13 +202,13 @@ export class UsernameUpdateService {
           }
 
         } catch (error) {
-          console.error(`❌ Ошибка обработки события "${event.title}":`, error);
+          console.error(`Ошибка обработки события "${event.title}":`, error);
           result.errors.push(`Ошибка обработки события "${event.title}": ${error}`);
         }
       }
 
     } catch (error) {
-      console.error('❌ Ошибка получения списка событий:', error);
+      console.error('Ошибка получения списка событий:', error);
       result.errors.push(`Ошибка получения списка событий: ${error}`);
     }
 
@@ -257,7 +257,7 @@ export class UsernameUpdateService {
       usage.total = usage.communities + usage.events;
 
     } catch (error) {
-      console.error('❌ Ошибка проверки использования username:', error);
+      console.error('Ошибка проверки использования username:', error);
     }
 
     return usage;

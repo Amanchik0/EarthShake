@@ -93,11 +93,11 @@ const CommunityEventsPage: React.FC = () => {
       }
 
       const communityData: Community = await response.json();
-      console.log('✅ Сообщество загружено:', communityData);
+      console.log(' Сообщество загружено:', communityData);
       setCommunity(communityData);
 
     } catch (error) {
-      console.error('❌ Ошибка загрузки сообщества:', error);
+      console.error('Ошибка загрузки сообщества:', error);
       setError(error instanceof Error ? error.message : 'Неизвестная ошибка');
     } finally {
       setLoading(false);
@@ -125,7 +125,7 @@ const CommunityEventsPage: React.FC = () => {
           });
 
           if (!response.ok) {
-            console.warn(`⚠️ Событие ${eventId} не найдено (${response.status})`);
+            console.warn(` Событие ${eventId} не найдено (${response.status})`);
             return null;
           }
 
@@ -160,7 +160,7 @@ const CommunityEventsPage: React.FC = () => {
 
           return transformedEvent;
         } catch (error) {
-          console.error(`❌ Ошибка загрузки события ${eventId}:`, error);
+          console.error(`Ошибка загрузки события ${eventId}:`, error);
           return null;
         }
       });
@@ -168,11 +168,11 @@ const CommunityEventsPage: React.FC = () => {
       const loadedEvents = await Promise.all(eventPromises);
       const validEvents = loadedEvents.filter((event): event is CommunityEvent => event !== null);
       
-      console.log(`✅ Загружено ${validEvents.length} из ${eventIds.length} событий`);
+      console.log(` Загружено ${validEvents.length} из ${eventIds.length} событий`);
       setEvents(validEvents);
 
     } catch (error) {
-      console.error('❌ Общая ошибка загрузки событий:', error);
+      console.error('Общая ошибка загрузки событий:', error);
       setError('Ошибка при загрузке событий');
     } finally {
       setEventsLoading(false);

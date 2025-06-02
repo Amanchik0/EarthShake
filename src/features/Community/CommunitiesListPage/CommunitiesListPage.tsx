@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../components/auth/AuthContext';
 import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import CommunityCard from '../../../components/Community/CommunityCard';
+import SubscriptionCheckModal from '../../../components/Modal/SubscriptionCheckModal';
+import { useSubscriptionCheck } from '../../../hooks/useSubscriptionCheck';
 import styles from './CommunitiesListPage.module.css';
 import { Community, CommunityDetails, toCommunityDetails } from '../../../types/community';
 
@@ -49,6 +51,7 @@ export interface FilterOption {
 const CommunitiesListPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isModalOpen, pendingNavigation, checkSubscriptionAndNavigate, closeModal } = useSubscriptionCheck();
 
   // Состояния для данных
   const [communities, setCommunities] = useState<CommunityDetails[]>([]);
@@ -148,13 +151,13 @@ const CommunitiesListPage: React.FC = () => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Ошибка загрузки сообществ:', response.status, errorText);
+        console.error('Ошибка загрузки сообществ:', response.status, errorText);
         throw new Error(`Ошибка ${response.status}: ${errorText}`);
       }
 
       const data: CommunityPageResponse = await response.json();
-      console.log('✅ Ответ API сообществ:', data);
-      console.log(`📊 Найдено ${data.totalElements} сообществ на ${data.totalPages} страницах`);
+      console.log(' Ответ API сообществ:', data);
+      console.log(` Найдено ${data.totalElements} сообществ на ${data.totalPages} страницах`);
 
       // Извлекаем массив сообществ из поля content
       const communitiesArray: Community[] = data.content || [];
@@ -169,11 +172,11 @@ const CommunitiesListPage: React.FC = () => {
         toCommunityDetails(community, user?.username)
       );
 
-      console.log(`✅ Обработано ${communityDetails.length} сообществ`);
+      console.log(` Обработано ${communityDetails.length} сообществ`);
       setCommunities(communityDetails);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Неизвестная ошибка';
-      console.error('❌ Ошибка загрузки сообществ:', errorMessage);
+      console.error('Ошибка загрузки сообществ:', errorMessage);
       setError(errorMessage);
       setCommunities([]);
     } finally {
@@ -201,8 +204,9 @@ const CommunitiesListPage: React.FC = () => {
     }
   };
 
+  // Обработчик создания сообщества с проверкой подписки
   const handleCreateCommunity = () => {
-    navigate('/communities/create');
+    checkSubscriptionAndNavigate('community', '/communities/create', navigate);
   };
 
   const handleSort = (field: 'name' | 'members' | 'rating' | 'created') => {
@@ -319,7 +323,7 @@ const CommunitiesListPage: React.FC = () => {
       {error && (
         <div className={styles.errorBanner}>
           <div className={styles.errorContent}>
-            <span>❌ {error}</span>
+            <span>{error}</span>
             <div className={styles.errorActions}>
               <button onClick={clearError} className={styles.closeError}>✕</button>
               <button onClick={loadCommunities} className={styles.retryButton}>
@@ -345,8 +349,6 @@ const CommunitiesListPage: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-
-
 
         {/* Фильтры */}
         <div className={styles.filters}>
@@ -444,6 +446,16 @@ const CommunitiesListPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Модальное окно проверки подписки */}
+      {pendingNavigation && (
+        <SubscriptionCheckModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          feature={pendingNavigation.feature}
+          targetPath={pendingNavigation.targetPath}
+        />
+      )}
     </div>
   );
 };

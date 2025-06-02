@@ -90,7 +90,7 @@ const MembersTab: React.FC<MembersTabProps> = ({ community, onMessage }) => {
       onMessage(`Участник "${member.username}" удален из сообщества`);
 
     } catch (error) {
-      console.error('❌ Ошибка удаления участника:', error);
+      console.error('Ошибка удаления участника:', error);
       onMessage('Ошибка при удалении участника');
     } finally {
       setLoading(false);
@@ -125,7 +125,7 @@ const MembersTab: React.FC<MembersTabProps> = ({ community, onMessage }) => {
       onMessage(`Роль участника "${member.username}" изменена на "${newRole === 'admin' ? 'Администратор' : 'Участник'}"`);
 
     } catch (error) {
-      console.error('❌ Ошибка изменения роли:', error);
+      console.error('Ошибка изменения роли:', error);
       onMessage('Ошибка при изменении роли участника');
     } finally {
       setLoading(false);
@@ -236,7 +236,7 @@ const MembersTab: React.FC<MembersTabProps> = ({ community, onMessage }) => {
                       disabled={loading}
                       title={`Сделать ${member.role === 'admin' ? 'участником' : 'администратором'}`}
                     >
-                      {member.role === 'admin' ? '👤' : '👑'}
+                      {member.role === 'admin' ? '👤' : ''}
                     </button>
                     */}
                     <button 

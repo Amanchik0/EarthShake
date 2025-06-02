@@ -1,10 +1,13 @@
 // features/Events/EventsListPage/EventsListPage.tsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import EventCard from '../../../components/EventList/EventCard';
 import FilterDropdown from '../../../components/EventList/FilterDropdown';
 import ViewToggle from '../../../components/EventList/ViewToggle';
 import MapView from '../../../components/EventList/MapView';
 import CitySelect from '../../../components/CitySelect/CitySelect';
+import SubscriptionCheckModal from '../../../components/Modal/SubscriptionCheckModal';
+import { useSubscriptionCheck } from '../../../hooks/useSubscriptionCheck';
 import styles from './EventsListPage.module.css';
 import { EventDetails, BackendEventData, EventComment } from '../../../types/event';
 
@@ -59,6 +62,9 @@ const isThisMonth = (date: Date): boolean => {
 };
 
 const EventsListPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { isModalOpen, pendingNavigation, checkSubscriptionAndNavigate, closeModal } = useSubscriptionCheck();
+  
   const [viewMode, setViewMode] = useState<'list' | 'split' | 'map'>('list');
   const [isFullMap, setIsFullMap] = useState(false);
   const [events, setEvents] = useState<EventDetails[]>([]);
@@ -72,7 +78,7 @@ const EventsListPage: React.FC = () => {
       label: 'category',
       options: [
         { value: '', label: 'Все категории' },
-        { value: 'sport', label: '1орт' },
+        { value: 'sport', label: 'Спорт' },
         { value: 'soccer', label: 'Футбол' },
         { value: 'музыка', label: 'Музыка' },
         { value: 'образование', label: 'Образование' },
@@ -188,10 +194,10 @@ const EventsListPage: React.FC = () => {
       const transformedEvents = data.content.map(transformEvent);
       setEvents(transformedEvents);
       
-      console.log('✅ События загружены:', transformedEvents.length);
+      console.log(' События загружены:', transformedEvents.length);
       
     } catch (err) {
-      console.error('❌ Ошибка загрузки событий:', err);
+      console.error('Ошибка загрузки событий:', err);
       setError('Не удалось загрузить события');
     } finally {
       setLoading(false);
@@ -217,6 +223,11 @@ const EventsListPage: React.FC = () => {
       location: cityName,
     }));
     console.log('🏙️ Выбран город:', cityName);
+  };
+
+  // Обработчик создания события с проверкой подписки
+  const handleCreateEvent = () => {
+    checkSubscriptionAndNavigate('event', '/events/create', navigate);
   };
 
   const toggleFullMap = () => {
@@ -330,10 +341,25 @@ const EventsListPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>События</h1>
-        <p className={styles.subtitle}>
-          Найдено {filteredEvents.length} из {events.length} событий
-        </p>
+        <div className={styles.headerContent}>
+          <div className={styles.headerText}>
+            <h1>События</h1>
+            <p className={styles.subtitle}>
+              Найдено {filteredEvents.length} из {events.length} событий
+            </p>
+          </div>
+          <button 
+            className={styles.createEventButton}
+            onClick={handleCreateEvent}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Создать событие
+          </button>
+        </div>
       </div>
       
       <div className={styles.filterSection}>
@@ -426,6 +452,15 @@ const EventsListPage: React.FC = () => {
                   Очистить фильтры
                 </button>
               )}
+              <div className={styles.createEventPrompt}>
+                <p>Или создайте свое событие!</p>
+                <button 
+                  className={styles.createEventButtonSecondary}
+                  onClick={handleCreateEvent}
+                >
+                  Создать событие
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -446,6 +481,16 @@ const EventsListPage: React.FC = () => {
           />
         )}
       </div>
+
+      {/* Модальное окно проверки подписки */}
+      {pendingNavigation && (
+        <SubscriptionCheckModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          feature={pendingNavigation.feature}
+          targetPath={pendingNavigation.targetPath}
+        />
+      )}
     </div>
   );
 };

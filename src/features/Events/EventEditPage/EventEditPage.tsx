@@ -96,12 +96,12 @@ const EventEditPage: React.FC = () => {
     const eventData = await loadEvent(id);
     
     if (eventData) {
-      console.log('✅ Данные события получены:', eventData);
+      console.log(' Данные события получены:', eventData);
       
       // Проверяем авторство
       const currentUser = user?.username || 'anonymous';
       if (eventData.author !== currentUser) {
-        console.warn('❌ Пользователь не является автором события');
+        console.warn('Пользователь не является автором события');
         navigate('/events', { replace: true });
         return;
       }
@@ -138,7 +138,7 @@ const EventEditPage: React.FC = () => {
       console.log('📝 Устанавливаем данные формы:', formDataToSet);
       setFormData(formDataToSet);
     } else {
-      console.error('❌ Не удалось загрузить данные события');
+      console.error('Не удалось загрузить данные события');
     }
   };
 
@@ -148,7 +148,7 @@ const EventEditPage: React.FC = () => {
 
     const mapContainer = document.getElementById('event-edit-map');
     if (!mapContainer) {
-      console.error('❌ Контейнер карты не найден');
+      console.error('Контейнер карты не найден');
       return;
     }
 
@@ -164,13 +164,13 @@ const EventEditPage: React.FC = () => {
       });
 
       mapRef.current.on('load', () => {
-        console.log('✅ Карта загружена');
+        console.log(' Карта загружена');
         setMapError('');
         setMapLoading(false);
       });
 
       mapRef.current.on('error', (e) => {
-        console.error('❌ Ошибка карты:', e);
+        console.error('Ошибка карты:', e);
         setMapError('Ошибка загрузки карты');
         setMapLoading(false);
       });
@@ -205,7 +205,7 @@ const EventEditPage: React.FC = () => {
       });
 
     } catch (error) {
-      console.error('❌ Ошибка инициализации карты:', error);
+      console.error('Ошибка инициализации карты:', error);
       setMapError('Ошибка инициализации карты');
       setMapLoading(false);
     }
@@ -245,7 +245,7 @@ const EventEditPage: React.FC = () => {
         location: `${lng.toFixed(6)}, ${lat.toFixed(6)}`
       }));
     } catch (error) {
-      console.error('❌ Ошибка геокодирования:', error);
+      console.error('Ошибка геокодирования:', error);
       setFormData(prev => ({
         ...prev,
         coordinates: { x: lng, y: lat },
@@ -321,7 +321,7 @@ const EventEditPage: React.FC = () => {
         console.warn('🤷 Город не найден через геокодирование');
       }
     } catch (error) {
-      console.error('❌ Ошибка геокодирования города:', error);
+      console.error('Ошибка геокодирования города:', error);
     }
   };
 
@@ -337,7 +337,7 @@ const EventEditPage: React.FC = () => {
         }));
       }
     } catch (error) {
-      console.error('❌ Ошибка загрузки фото:', error);
+      console.error('Ошибка загрузки фото:', error);
     } finally {
       setUploading(false);
     }
@@ -358,7 +358,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   
   if (!originalEvent || !eventId) {
-    console.error('❌ Отсутствуют данные события');
+    console.error('Отсутствуют данные события');
     return;
   }
   
@@ -404,7 +404,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   // Передаем eventId как первый параметр
   const success = await updateEvent(eventId, updateData);
   if (success) {
-    console.log('✅ Событие обновлено');
+    console.log(' Событие обновлено');
     navigate(`/events/${eventId}`);
   }
 };

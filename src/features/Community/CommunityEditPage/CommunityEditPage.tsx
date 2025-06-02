@@ -56,7 +56,7 @@ const CommunityEditPage: React.FC = () => {
 
       setCommunity(communityData);
     } catch (error) {
-      console.error('❌ Ошибка загрузки сообщества:', error);
+      console.error('Ошибка загрузки сообщества:', error);
       setError('Не удалось загрузить данные сообщества');
     } finally {
       setLoading(false);
@@ -120,13 +120,13 @@ const CommunityEditPage: React.FC = () => {
       }
 
       const updatedCommunity: Community = await response.json();
-      console.log('✅ Сообщество успешно обновлено:', updatedCommunity);
+      console.log(' Сообщество успешно обновлено:', updatedCommunity);
 
       setCommunity(updatedCommunity);
       showNotificationMessage('Изменения успешно сохранены!');
 
     } catch (error) {
-      console.error('❌ Ошибка сохранения сообщества:', error);
+      console.error('Ошибка сохранения сообщества:', error);
       showNotificationMessage('Ошибка при сохранении изменений');
     } finally {
       setSaving(false);

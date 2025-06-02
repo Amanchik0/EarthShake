@@ -98,7 +98,7 @@ const ProfileTab: React.FC<ProfileTabProps> = ({
       onMessage('Изображение успешно загружено!');
 
     } catch (error) {
-      console.error('❌ Ошибка загрузки изображения:', error);
+      console.error('Ошибка загрузки изображения:', error);
       onMessage('Ошибка при загрузке изображения');
     } finally {
       setUploadingImage(false);

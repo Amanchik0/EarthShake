@@ -127,14 +127,14 @@ const EventCreatePage: React.FC = () => {
 
           if (response.ok) {
             community = await response.json();
-            console.log('✅ Информация о сообществе загружена:', community);
+            console.log(' Информация о сообществе загружена:', community);
             break;
           } else {
-            console.log(`❌ ${endpoint} вернул ${response.status}`);
+            console.log(`${endpoint} вернул ${response.status}`);
             lastError = `${response.status}: ${response.statusText}`;
           }
         } catch (err) {
-          console.log(`❌ Ошибка запроса к ${endpoint}:`, err);
+          console.log(`Ошибка запроса к ${endpoint}:`, err);
           lastError = err;
         }
       }
@@ -151,7 +151,7 @@ const EventCreatePage: React.FC = () => {
           }, 1000);
         }
       } else {
-        console.error('❌ Все эндпоинты не сработали. Последняя ошибка:', lastError);
+        console.error('Все эндпоинты не сработали. Последняя ошибка:', lastError);
         showNotificationMessage(`Сообщество не найдено (ID: ${id}). Проверьте правильность ссылки.`, false);
         
         // Все равно позволяем создать событие, но без привязки к сообществу
@@ -163,7 +163,7 @@ const EventCreatePage: React.FC = () => {
         }, 3000);
       }
     } catch (error) {
-      console.error('❌ Общая ошибка при загрузке сообщества:', error);
+      console.error('Общая ошибка при загрузке сообщества:', error);
       showNotificationMessage('Ошибка при загрузке сообщества', false);
     } finally {
       setLoadingCommunity(false);
@@ -205,12 +205,12 @@ const EventCreatePage: React.FC = () => {
             attributionControl: false
           });
 
-          console.log('✅ Карта создана через callback ref');
+          console.log(' Карта создана через callback ref');
           
           // Добавляем все обработчики
           setupMapHandlers();
         } catch (mapError) {
-          console.error('❌ Ошибка создания карты:', mapError);
+          console.error('Ошибка создания карты:', mapError);
           setMapError(`Ошибка создания карты: ${mapError instanceof Error ? mapError.message : String(mapError)}`);
           setMapLoading(false);
         }
@@ -220,7 +220,7 @@ const EventCreatePage: React.FC = () => {
       checkSizeAndInit();
       
     } catch (error) {
-      console.error('❌ Ошибка в callback ref:', error);
+      console.error('Ошибка в callback ref:', error);
       setMapError(`Ошибка callback ref: ${error instanceof Error ? error.message : String(error)}`);
       setMapLoading(false);
     }
@@ -231,14 +231,14 @@ const EventCreatePage: React.FC = () => {
 
     // Обработчик загрузки
     map.current.on('load', () => {
-      console.log('✅ Карта загружена (callback)');
+      console.log(' Карта загружена (callback)');
       setMapError('');
       setMapLoading(false);
     });
 
     // Обработчик ошибок
     map.current.on('error', (e) => {
-      console.error('❌ Ошибка карты (callback):', e);
+      console.error('Ошибка карты (callback):', e);
       setMapError(`Ошибка карты: ${e.error?.message || 'Неизвестная ошибка'}`);
       setMapLoading(false);
     });
@@ -337,7 +337,7 @@ const EventCreatePage: React.FC = () => {
       );
       
       if (!response.ok) {
-        console.error('❌ Ошибка запроса к 2GIS API:', response.status, response.statusText);
+        console.error('Ошибка запроса к 2GIS API:', response.status, response.statusText);
         throw new Error(`2GIS API error: ${response.status}`);
       }
       
@@ -359,15 +359,15 @@ const EventCreatePage: React.FC = () => {
         }
         
         if (address) {
-          console.log('✅ Адрес получен через 2GIS:', address);
+          console.log(' Адрес получен через 2GIS:', address);
           return address;
         }
       }
       
-      console.log('❌ Адрес не найден в ответе 2GIS API');
+      console.log('Адрес не найден в ответе 2GIS API');
       throw new Error('No address found in 2GIS response');
     } catch (error) {
-      console.error('❌ Ошибка 2GIS геокодирования:', error);
+      console.error('Ошибка 2GIS геокодирования:', error);
       throw error;
     }
   };
@@ -429,13 +429,13 @@ const EventCreatePage: React.FC = () => {
           finalAddress += ` (${lng.toFixed(6)}, ${lat.toFixed(6)})`;
         }
         
-        console.log('✅ Адрес получен через Mapbox (fallback):', finalAddress);
+        console.log(' Адрес получен через Mapbox (fallback):', finalAddress);
         return finalAddress;
       }
       
       throw new Error('No address found in Mapbox response');
     } catch (error) {
-      console.error('❌ Ошибка Mapbox геокодирования:', error);
+      console.error('Ошибка Mapbox геокодирования:', error);
       throw error;
     }
   };
@@ -446,12 +446,12 @@ const EventCreatePage: React.FC = () => {
       // Сначала пробуем 2GIS
       return await reverseGeocode2GIS(lng, lat);
     } catch (error) {
-      console.log('⚠️ 2GIS не удался, используем Mapbox fallback');
+      console.log(' 2GIS не удался, используем Mapbox fallback');
       try {
         // Если 2GIS не сработал, используем Mapbox
         return await reverseGeocodeMapbox(lng, lat);
       } catch (fallbackError) {
-        console.error('❌ Оба API не сработали');
+        console.error('Оба API не сработали');
         return `Координаты: ${lng.toFixed(6)}, ${lat.toFixed(6)}`;
       }
     }
@@ -492,7 +492,7 @@ const EventCreatePage: React.FC = () => {
           ...prev.location,
           x: lng,
           y: lat,
-          address: `❌ Координаты: ${lng.toFixed(6)}, ${lat.toFixed(6)}`
+          address: `Координаты: ${lng.toFixed(6)}, ${lat.toFixed(6)}`
         }
       }));
     }
@@ -643,17 +643,17 @@ const updateCommunityEvents = async (eventId: string) => {
     });
 
     if (updateResponse.ok) {
-      console.log('✅ Список событий сообщества обновлен');
+      console.log(' Список событий сообщества обновлен');
     } else {
       const errorText = await updateResponse.text();
-      console.error(`❌ Ошибка обновления сообщества:`, updateResponse.status, errorText);
+      console.error(`Ошибка обновления сообщества:`, updateResponse.status, errorText);
       throw new Error(`Ошибка ${updateResponse.status}: ${errorText}`);
     }
 
   } catch (error) {
-    console.error('❌ Ошибка обновления сообщества:', error);
+    console.error('Ошибка обновления сообщества:', error);
     // Не прерываем процесс, так как событие уже создано
-    console.log('⚠️ Событие создано, но связь с сообществом может быть не установлена');
+    console.log(' Событие создано, но связь с сообществом может быть не установлена');
     showNotificationMessage('Событие создано, но может потребоваться ручное добавление в сообщество', true);
   }
 };
@@ -696,12 +696,12 @@ const updateCommunityEvents = async (eventId: string) => {
 
           if (!uploadResponse.ok) {
             const errorText = await uploadResponse.text();
-            console.error('❌ Ошибка загрузки изображения:', errorText);
+            console.error('Ошибка загрузки изображения:', errorText);
             throw new Error('Ошибка загрузки изображения');
           }
 
           const mediaUrl = await uploadResponse.text();
-          console.log('✅ Изображение загружено:', mediaUrl);
+          console.log(' Изображение загружено:', mediaUrl);
 
           // Проверяем, нужно ли добавить базовый URL
           const fullMediaUrl = mediaUrl.startsWith('http') 
@@ -779,7 +779,7 @@ const updateCommunityEvents = async (eventId: string) => {
       let result;
       try {
         result = JSON.parse(responseText);
-        console.log('✅ Событие успешно создано:', result);
+        console.log(' Событие успешно создано:', result);
       } catch {
         result = { id: 'created' };
       }
@@ -807,7 +807,7 @@ const updateCommunityEvents = async (eventId: string) => {
       }, 1500);
 
     } catch (error: any) {
-      console.error('❌ Ошибка создания события:', error);
+      console.error('Ошибка создания события:', error);
       showNotificationMessage(error.message || 'Не удалось создать событие', false);
     } finally {
       setIsSubmitting(false);

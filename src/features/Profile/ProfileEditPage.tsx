@@ -77,7 +77,7 @@ const ProfileEditPage: React.FC<ProfileEditPageProps> = ({
 
             if (updateResponse.ok) {
               result.updatedCount++;
-              console.log(`✅ Сообщество "${community.name}" обновлено`);
+              console.log(` Сообщество "${community.name}" обновлено`);
             } else {
               const errorText = await updateResponse.text().catch(() => 'Неизвестная ошибка');
               result.errors.push(`Сообщество "${community.name}": ${errorText}`);
@@ -93,7 +93,7 @@ const ProfileEditPage: React.FC<ProfileEditPageProps> = ({
       }
 
     } catch (error) {
-      console.error('❌ Ошибка обновления сообществ:', error);
+      console.error('Ошибка обновления сообществ:', error);
       result.success = false;
       result.errors.push(`Общая ошибка: ${error}`);
     }

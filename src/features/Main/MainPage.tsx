@@ -230,7 +230,7 @@ const MainPage: React.FC = () => {
                                     </p>
                                 </div>
                                 <div className={styles.featureCard}>
-                                    <div className={styles.featureIcon}>📊</div>
+                                    <div className={styles.featureIcon}></div>
                                     <h3 className={styles.featureTitle}>Аналитика</h3>
                                     <p className={styles.featureDescription}>
                                         Подробные отчеты и статистика по посещаемости и активности участников.

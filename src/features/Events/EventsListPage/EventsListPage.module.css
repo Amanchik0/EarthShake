@@ -1,0 +1,861 @@
+/* EventCard styles */
+.card {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff69b4, #ff8c94, #ffaaa5);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Стиль для выбранной карточки */
+.selectedEvent {
+  border-color: #ff69b4;
+  background: linear-gradient(145deg, #fff5f8, #ffffff);
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.2);
+  transform: translateY(-2px);
+}
+
+.selectedEvent::before {
+  transform: scaleX(1);
+  background: linear-gradient(90deg, #ff69b4, #ff1493);
+}
+
+.selectedEvent .title {
+  color: #ff1493;
+}
+
+.image {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #f0f2f5, #e1e8ed);
+  border-radius: 12px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image img {
+  transform: scale(1.05);
+}
+
+.details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #2c3e50;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.eventIcon {
+  font-size: 24px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.eventInfo {
+  flex-grow: 1;
+}
+
+.info {
+  font-size: 14px;
+  color: #64748b;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 8px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.leftSection {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.rightSection {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stars {
+  color: #fbbf24;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.ratingNumber {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.ratingCount {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.comments {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.participants {
+  font-size: 14px;
+  color: #059669;
+  font-weight: 500;
+}
+
+.emergencyBadge {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  75% { opacity: 0.7; }
+}
+
+.button {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #ff1493, #e91e63);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+/* Header with create event button */
+.header {
+  margin-bottom: 24px;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.headerText {
+  flex-grow: 1;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a202c;
+  background: linear-gradient(135deg, #2d3748, #4a5568);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 16px;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* Create Event Button Styles */
+.createEventButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.createEventButton:hover {
+  background-color: #e54b9d;
+}
+
+.createEventButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Secondary create event button */
+.createEventButtonSecondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.createEventButtonSecondary:hover {
+  background-color: #e54b9d;
+}
+
+.createEventButtonSecondary svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Create event prompt in no results */
+.createEventPrompt {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #dee2e6;
+}
+
+.createEventPrompt p {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Filter styles */
+.filterSection {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.filters {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.filterItem {
+  flex-grow: 1;
+  min-width: 180px;
+}
+
+.cityFilter {
+  flex-grow: 1;
+  min-width: 200px;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterDropdown {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filterDropdown:focus {
+  border-color: #ff69b4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+}
+
+.clearFilters {
+  background: linear-gradient(135deg, #64748b, #475569);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.clearFilters:hover {
+  background: linear-gradient(135deg, #475569, #334155);
+  transform: translateY(-2px);
+}
+
+/* View Toggle styles */
+.viewToggle {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.toggleButton {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  color: #64748b;
+}
+
+.toggleButton.active {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+}
+
+.toggleButton:hover:not(.active) {
+  background: #e2e8f0;
+  color: #374151;
+}
+
+/* Map styles */
+.mapView {
+  width: 60%;
+  height: 600px;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.mapControls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.mapButton {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  backdrop-filter: blur(10px);
+}
+
+.mapButton:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Selected event info on map */
+.selectedEventMapInfo {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+
+.mapEventBanner {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+.eventTitle {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.eventLocation {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.viewEventMapButton {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.viewEventMapButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+}
+
+.clearMapSelectionButton {
+  background: rgba(100, 116, 139, 0.1);
+  color: #64748b;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.clearMapSelectionButton:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* Selected event info in list header */
+.selectedEventInfo {
+  margin-bottom: 20px;
+}
+
+.selectedEventBanner {
+  background: linear-gradient(135deg, rgba(255, 105, 180, 0.1), rgba(255, 140, 148, 0.1));
+  border: 2px solid rgba(255, 105, 180, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.viewEventButton {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clearSelectionButton {
+  background: rgba(100, 116, 139, 0.1);
+  color: #64748b;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+/* Layout improvements */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  margin-bottom: 200px;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 24px;
+}
+
+.listView {
+  width: 100%;
+}
+
+.splitView .listView {
+  width: 40%;
+}
+
+.splitView .mapView {
+  display: block;
+}
+
+.fullMapView .mapView {
+  display: block;
+  width: 100%;
+}
+
+.fullMapView .listView {
+  display: none;
+}
+
+/* Loading and error states */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #ff69b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  text-align: center;
+  padding: 60px 20px;
+  color: #ef4444;
+}
+
+.retryButton {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.retryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.noResults {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.clearFiltersButton {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .splitView .listView {
+    width: 50%;
+  }
+  
+  .splitView .mapView {
+    width: 50%;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .createEventButton {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .createEventButton {
+    padding: 10px 20px;
+    font-size: 13px;
+    align-self: stretch;
+    justify-content: center;
+  }
+  
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .contentWrapper {
+    flex-direction: column;
+  }
+  
+  .splitView .listView,
+  .splitView .mapView {
+    width: 100%;
+  }
+  
+  .mapView {
+    height: 400px;
+  }
+  
+  .card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .image {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .viewToggle {
+    justify-content: space-around;
+  }
+  
+  .toggleButton {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerContent {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .createEventButton {
+    padding: 10px 16px;
+    font-size: 12px;
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .createEventButtonSecondary {
+    padding: 8px 16px;
+    font-size: 12px;
+    align-self: stretch;
+    justify-content: center;
+  }
+  
+  .mapControls {
+    top: 8px;
+    right: 8px;
+  }
+  
+  .selectedEventBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .mapEventBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .filterLabel {
+    text-align: left;
+    margin-left: 0;
+  }
+
+  .filterDropdown {
+    text-align: left;
+    width: 100%;
+  }
+
+  .filters {
+    text-align: left;
+  }
+
+  .noResults h3 {
+    font-size: 1.5rem;
+  }
+
+  .noResults p {
+    font-size: 0.9rem;
+  }
+
+  .createEventPrompt {
+    padding: 16px;
+  }
+
+  .createEventPrompt p {
+    font-size: 14px;
+  }
+}

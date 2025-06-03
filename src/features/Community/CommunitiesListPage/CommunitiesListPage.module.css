@@ -1,0 +1,553 @@
+/* CommunitiesListPage styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-bottom: 200px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+    color: #444;
+  }
+  
+  .createButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+  }
+  
+  .createButton:hover {
+    background-color: #e54b9d;
+  }
+  
+  .filterSection {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .searchBox {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  
+  .searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #999;
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  
+  .searchInput:focus {
+    border-color: #ff69b4;
+    outline: none;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .contentWrapper {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .listView {
+    width: 100%;
+  }
+  
+  .communitiesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .splitView .listView {
+    width: 40%;
+  }
+  
+  .splitView .mapView {
+    display: block;
+  }
+  
+  .splitView .communitiesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .fullMapView .mapView {
+    display: block;
+    width: 100%;
+  }
+  
+  .fullMapView .listView {
+    display: none;
+  }
+  
+  .noResults {
+    text-align: center;
+    padding: 40px 0;
+    color: #999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .noResults p {
+    margin: 5px 0;
+  }
+  
+  /* Стили для тэгов категорий сообществ */
+  .tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 8px;
+  }
+  
+  .active {
+    background-color: #c2f0c2;
+    color: #2d8a2d;
+  }
+  
+  .education {
+    background-color: #c2e0ff;
+    color: #0066cc;
+  }
+  
+  .creative {
+    background-color: #f9d6ff;
+    color: #9933cc;
+  }
+  
+  .tech {
+    background-color: #e0e0e0;
+    color: #333333;
+  }
+  
+  .entertainment {
+    background-color: #fff0c2;
+    color: #cc9900;
+  }
+  
+  .sports {
+    background-color: #ffd6d6;
+    color: #cc3333;
+  }
+  
+  /* Адаптивные стили */
+  @media (max-width: 768px) {
+    .filters {
+      flex-direction: column;
+    }
+    
+    .contentWrapper {
+      flex-direction: column;
+    }
+    
+    .splitView .listView,
+    .splitView .mapView {
+      width: 100%;
+    }
+  
+    .communitiesGrid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+  }
+  
+  /* Расширенные стили для карточки сообщества */
+  .communityCard {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .communityCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  .coverImage {
+    width: 100%;
+    height: 120px;
+    background-color: #ddd;
+    position: relative;
+  }
+  
+  .coverImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .avatarContainer {
+    position: absolute;
+    bottom: -30px;
+    left: 16px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #fff;
+    padding: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .cardContent {
+    padding: 36px 16px 16px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .communityTitle {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+  }
+  
+  .communityLocation {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .stats {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .footer {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #ff69b4;
+    font-weight: 500;
+  }
+  
+  .joinButton {
+    background-color: #ff69b4;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s;
+  }
+  
+  .joinButton:hover {
+    background-color: #e54b9d;
+  }
+  
+  .memberBadge {
+    background-color: #f0f0f0;
+    color: #666;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  
+  .communityCard .joinButton {
+    opacity: 0.95;
+  }
+  
+  .communityCard:hover .joinButton {
+    opacity: 1;
+  }/* Дополнительные стили для CommunitiesListPage.module.css */
+
+/* Состояние загрузки */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff69b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.miniSpinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #ff69b4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Баннер ошибки */
+.errorBanner {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.errorContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #c33;
+}
+
+.errorActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.closeError {
+  background: none;
+  border: none;
+  color: #c33;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+}
+
+.retryButton {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.retryButton:hover {
+  background: #e54b9d;
+}
+
+/* Фильтр по городу */
+.cityFilter {
+  margin-bottom: 16px;
+}
+
+/* Секция сортировки */
+.sortSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.sortLabel {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.sortButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sortButton {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sortButton:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.sortButton.active {
+  background: #ff69b4;
+  color: white;
+  border-color: #ff69b4;
+}
+
+.sortIcon {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Статистическая панель */
+.statsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.resultsCount {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #ff69b4;
+}
+
+/* Улучшенное состояние отсутствия результатов */
+.createFirstButton {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.2s ease;
+}
+
+.createFirstButton:hover {
+  background: #e54b9d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+/* Адаптивные улучшения */
+@media (max-width: 768px) {
+  .sortSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .sortButtons {
+    width: 100%;
+  }
+  
+  .sortButton {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+  
+  .statsBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .errorContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .cityFilter {
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sortButtons {
+    flex-direction: column;
+  }
+  
+  .sortButton {
+    justify-content: space-between;
+  }
+}

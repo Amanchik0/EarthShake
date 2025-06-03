@@ -1,0 +1,90 @@
+:root {
+    --pink-primary: #ff6b9b;
+    --pink-light: #ffd0e0;
+    --gray-dark: #4a4a4a;
+    --gray-medium: #7a7a7a;
+    --gray-light: #e5e5e5;
+    --white: #ffffff;
+}
+
+.profileForm {
+    padding: 30px;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--gray-medium);
+    font-weight: 500;
+}
+
+.formGroup input[type="text"], 
+.formGroup input[type="email"],
+.formGroup input[type="password"],
+.formGroup textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border 0.3s;
+    box-sizing: border-box;
+}
+
+.formGroup input[type="text"]:focus, 
+.formGroup input[type="email"]:focus,
+.formGroup input[type="password"]:focus,
+.formGroup textarea:focus {
+    border-color: var(--pink-primary);
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+.cancelBtn {
+    background-color: var(--gray-light);
+    color: var(--gray-dark);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.cancelBtn:hover:not(:disabled) {
+    background-color: #d5d5d5;
+}
+
+.cancelBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.saveBtn {
+    background-color: var(--pink-primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.saveBtn:hover:not(:disabled) {
+    background-color: #e55b8a;
+}
+
+.saveBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

@@ -1,0 +1,691 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.pageWrapper {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    margin-bottom: 0;
+}
+
+.appHeader {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.appHeaderContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+}
+
+.appHeaderLogo {
+    display: flex;
+    align-items: center;
+}
+
+.appHeaderLogo img {
+    height: 40px;
+    margin-right: 12px;
+}
+
+.appHeaderLogoText {
+    font-size: 22px;
+    font-weight: 700;
+    color: #e83e8c;
+}
+
+.appHeaderNavMenu {
+    display: flex;
+    list-style-type: none;
+}
+
+.appHeaderNavItem {
+    margin-left: 32px;
+}
+
+.appHeaderNavLink {
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.appHeaderNavLink:hover {
+    color: #e83e8c;
+}
+
+.appHeaderNavLink.active {
+    color: #e83e8c;
+}
+
+.appHeaderProfileButton {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.profileAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+
+.heroSection {
+    padding: 80px 0;
+    background: linear-gradient(rgba(232, 62, 140, 0.1), rgba(232, 62, 140, 0.05));
+    margin-bottom: 60px;
+    border-radius: 0 0 20px 20px;
+}
+
+.heroContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.heroText {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.heroTitle {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #343a40;
+    line-height: 1.2;
+}
+
+.heroTitle span {
+    color: #e83e8c;
+}
+
+.heroDescription {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #4a5568;
+    margin-bottom: 32px;
+}
+
+.ctaButton {
+    display: inline-block;
+    background-color: #e83e8c;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.ctaButton:hover {
+    background-color: #d33076;
+}
+
+.heroImage {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.heroImage img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.sectionTitle {
+    font-size: 36px;
+    font-weight: 700;
+    color: #343a40;
+    margin-bottom: 16px;
+}
+
+.sectionSubtitle {
+    font-size: 18px;
+    color: #6c757d;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.mapContainer {
+    background-color: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+      width: 100%;
+  height: 720px; 
+}
+.mapWrapper {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+
+.mapTitle {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #343a40;
+}
+
+.mapImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.eventCards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.eventCard {
+    background-color: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.eventCard:hover {
+    transform: translateY(-8px);
+}
+
+.eventImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.eventDetails {
+    padding: 20px;
+}
+
+.eventMeta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.eventDate {
+    background-color: #f8d7e5;
+    color: #e83e8c;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.eventLocation {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.eventTitle {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #343a40;
+}
+
+.eventDescription {
+    font-size: 15px;
+    color: #6c757d;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.eventButton {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    color: #e83e8c;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.eventButton:hover {
+    background-color: #e83e8c;
+    color: white;
+    border-color: #e83e8c;
+}
+
+.viewAll {
+    display: block;
+    text-align: center;
+    margin-top: 32px;
+    color: #e83e8c;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.communityCards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.communityCard {
+    background-color: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.communityCard:hover {
+    transform: translateY(-8px);
+}
+
+.communityIcon {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.communityTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #343a40;
+}
+
+.communityMembers {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 16px;
+}
+
+.communityButton {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    color: #e83e8c;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.communityButton:hover {
+    background-color: #e83e8c;
+    color: white;
+    border-color: #e83e8c;
+}
+
+.guidelinesContainer {
+    background-color: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.guidelinesContent {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.guidelinesText {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.guidelinesTitle {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #343a40;
+}
+
+.guidelinesDescription {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.guidelinesList {
+    list-style-type: none;
+    margin-bottom: 24px;
+}
+
+.guidelinesItem {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.guidelinesIcon {
+    width: 24px;
+    height: 24px;
+    background-color: #fce7f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    flex-shrink: 0;
+    color: #e83e8c;
+    font-weight: bold;
+}
+
+.guidelinesItemText {
+    font-size: 16px;
+    color: #6c757d;
+}
+
+.guidelinesImage {
+    flex: 1;
+    max-width: 40%;
+}
+
+.guidelinesImage img {
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+  
+  .featuresCards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  
+  .featureCard {
+    background-color: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+  }
+  .featureCard:nth-last-child(-n + 3) {
+    margin-bottom: 40px;
+  }
+    
+.featureIcon {
+    width: 64px;
+    height: 64px;
+    background-color: #fce7f0;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #e83e8c;
+    font-size: 24px;
+}
+
+.featureTitle {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #343a40;
+}
+
+.featureDescription {
+    font-size: 15px;
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.appFooter {
+    background-color: #343a40;
+    color: white;
+    padding: 60px 0 30px;
+}
+
+.appFooterContent {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.appFooterLogo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.appFooterLogo img {
+    height: 40px;
+    margin-right: 12px;
+}
+
+.appFooterLogoText {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+}
+
+.appFooterDescription {
+    font-size: 15px;
+    color: #adb5bd;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.appFooterSocialLinks {
+    display: flex;
+    gap: 16px;
+}
+
+.appFooterSocialLink {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(232, 62, 140, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.appFooterSocialLink:hover {
+    background-color: rgba(232, 62, 140, 0.5);
+}
+
+.appFooterTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.appFooterLinks {
+    list-style-type: none;
+}
+
+.appFooterLink {
+    margin-bottom: 12px;
+}
+
+.appFooterLink a {
+    color: #adb5bd;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+
+.appFooterLink a:hover {
+    color: white;
+}
+
+.appFooterBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.appFooterCopyright {
+    font-size: 14px;
+    color: #adb5bd;
+}
+
+.appFooterBottomLinks {
+    display: flex;
+    gap: 24px;
+}
+
+.appFooterBottomLink {
+    color: #adb5bd;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.appFooterBottomLink:hover {
+    color: B;
+}
+@media (max-width: 768px) {
+    .heroSection {
+        padding: 100px 0;
+        width: 100%;
+    }
+    .heroTitle {
+        font-size: 2rem;
+    }
+    .heroDescription {
+        font-size: 1rem;
+    }
+    .ctaButton {
+        margin-left: 5%;
+    }
+    .heroImage img {
+        max-width: 100%;
+        height: 100%;
+    }
+    .mapTitle {
+        font-size: 1.5rem;
+    }
+    .eventCards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    .eventCard {
+        background-color: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+        
+    }
+
+    .eventDate {
+    background-color: #f8d7e5;
+    color: #e83e8c;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 8px;
+    }
+
+    .eventLocation {
+    font-size: 14px;
+    color: #6c757d;
+    }
+
+    .eventTitle {
+    font-size: 15px;
+    font-weight: 700;
+    }
+
+    .eventDescription {
+    font-size: 12px;
+    }
+
+    .eventButton {
+    font-size: 11px;
+    }
+    .sectionTitle {
+        font-size: 1.5rem;
+    }
+    .sectionSubtitle{
+        font-size: 0.9rem;
+    }
+    .communityCards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .communityTitle {
+        font-size: 1.5rem;
+    }
+    
+      .guidelinesTitle {
+        font-size: 1.5rem;
+      }
+      .guidelinesDescription {
+        font-size: 0.9rem;
+      }
+    
+      .ctaButton {
+        display: block;
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+      }
+      .guidelinesItemText {
+        font-size: 12px;
+      }
+      .featuresCards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .featureCard:nth-last-child(-n + 2) {
+        margin-bottom: 40px;
+      }
+}

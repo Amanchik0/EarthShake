@@ -1,0 +1,245 @@
+/* Header.module.css */
+
+.headerRoot {
+  background: white;
+  border-bottom: 1px solid #E0E0E0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.headerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.headerLogo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  gap: 12px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerLogoText {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.headerNavMenu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 32px;
+}
+
+.headerNavItem {
+  display: flex;
+  align-items: center;
+}
+
+.headerNavLink {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.headerNavLink:hover {
+  color: #FF6B98;
+  background-color: #f8f9fa;
+}
+
+.headerNavLinkActive {
+  color: #FF6B98;
+  background-color: rgba(255, 107, 152, 0.1);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+}
+
+.headerProfileBlock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerProfileLink {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.headerProfileLink:hover {
+  background-color: #f8f9fa;
+}
+
+.headerProfileInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerProfileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E0E0E0;
+  transition: border-color 0.2s ease;
+}
+
+.headerProfileAvatar:hover {
+  border-color: #FF6B98;
+}
+
+.headerAvatarSkeleton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.headerUserInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.headerUsername {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  line-height: 1;
+}
+
+.headerPremiumBadge {
+  background: linear-gradient(135deg, #FF6B98, #FF8A65);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.headerLogoutButton {
+  background: none;
+  border: 1px solid #E0E0E0;
+  color: #666;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.headerLogoutButton:hover {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+  color: #333;
+}
+
+.headerAuthLinks {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.burgerButton {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 11;
+}
+
+.burgerLine {
+  width: 25px;
+  height: 3px;
+  background-color: #333;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .burgerButton {
+    display: flex;
+  }
+
+  .headerNav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: white;
+    z-index: 10;
+    padding: 20px 0;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid #eee;
+  }
+
+  .menuOpen {
+    display: flex;
+  }
+
+  .headerNavMenu {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .headerActions {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+}
